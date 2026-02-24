@@ -1,1 +1,6 @@
-<Solution />
+<Solution>
+  <Project Path="InvoiceProcessingPipeline.Application/InvoiceProcessingPipeline.Application.csproj" Id="0e719cae-4269-4ade-901e-4a1d6502dbb1" />
+  <Project Path="InvoiceProcessingPipeline.Domain/InvoiceProcessingPipeline.Domain.csproj" Id="2e81bf50-7c09-4fed-8a59-1c81ea0d3d1d" />
+  <Project Path="InvoiceProcessingPipeline.Functions/InvoiceProcessingPipeline.Functions.csproj" Id="c77c9d78-c54d-4561-bcaa-607e9ef7a801" />
+  <Project Path="InvoiceProcessingPipeline.Infrastructure/InvoiceProcessingPipeline.Infrastructure.csproj" Id="1bbf6e31-0891-48f5-9012-4e03a5e215c9" />
+</Solution>
