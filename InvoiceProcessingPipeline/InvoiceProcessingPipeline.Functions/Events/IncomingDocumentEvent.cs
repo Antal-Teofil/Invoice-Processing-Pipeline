@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using Azure.Messaging;
+using Azure.Messaging.EventGrid.SystemEvents;
 using InvoiceProcessingPipeline.Application.BoundaryContracts;
 using InvoiceProcessingPipeline.Application.Ports;
 using InvoiceProcessingPipeline.Functions.Orchestrators;
@@ -17,6 +18,23 @@ public sealed class IncomingDocumentEvent(ILogger<IncomingDocumentEvent> logger,
         [DurableClient] DurableTaskClient client,
         CancellationToken ct)
     {
+
+        logger.LogInformation(
+            "Received event. Id={EventId}, Type={EventType}, Subject={Subject}",
+            cloudEvent.Id, cloudEvent.Type, cloudEvent.Subject);
+
+        if (cloudEvent.Data is null)
+        {
+            logger.LogWarning("CloudEvent.Data is null");
+            return;
+        }
+
+        var data = cloudEvent.Data.ToObjectFromJson<StorageBlobCreatedEventData>();
+
+        logger.LogInformation(
+            "Blob created. Url={Url}, ContentType={ContentType}, Size={Size}",
+            data.Url, data.ContentType, data.Sequencer);
+
         var ingestionEvent = new IngestionEvent
         {
             CorrelationId = cloudEvent.Id, 
