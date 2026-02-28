@@ -54,3 +54,4 @@ TestResult.xml
 nunit-*.xml
 
 .vs/
+/InvoiceProcessingPipeline/InvoiceProcessingPipeline.Functions/local.settings.json
