@@ -19,13 +19,14 @@
     <PackageReference Include="Microsoft.Azure.Functions.Worker.ApplicationInsights" Version="2.50.0" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.DurableTask" Version="1.14.1" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.EventGrid" Version="3.6.0" />
+    <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http" Version="3.3.0" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http.AspNetCore" Version="2.1.0" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker.Sdk" Version="2.0.7" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Activities\" />
-    <Folder Include="Orchestrators\" />
+    <ProjectReference Include="..\InvoiceProcessingPipeline.Application\InvoiceProcessingPipeline.Application.csproj" />
+    <ProjectReference Include="..\InvoiceProcessingPipeline.Infrastructure\InvoiceProcessingPipeline.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
