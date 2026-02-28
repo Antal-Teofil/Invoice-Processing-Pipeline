@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: './InvoiceProcessingPipeline/InvoiceProcessingPipeline.Functions' # set this to the path to your web app project, defaults to the repository root
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: '.' # set this to the path to your web app project, defaults to the repository root
   DOTNET_VERSION: '10.0.x' # set this to the dotnet version to use
 
 jobs:
@@ -39,9 +39,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_D2D57882149C4D65BFEC3236F879DD67 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_36EA02B8067F46059B6334A175856FE2 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_30B54C71646A434FAC6BDE7EA44CDA14 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_5F23EB5EB2864A66850852A604F51813 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_7C55C952CF1B4428836FC170C3D78D1C }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_A0EC80D2138C4A5EB92669475877B7E3 }}
 
       - name: 'Run Azure Functions Action'
         uses: Azure/functions-action@v1
