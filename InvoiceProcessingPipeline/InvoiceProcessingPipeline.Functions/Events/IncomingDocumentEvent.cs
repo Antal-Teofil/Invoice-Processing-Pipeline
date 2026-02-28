@@ -8,6 +8,7 @@ using System.Text;
 
 namespace InvoiceProcessingPipeline.Functions.Events
 {
+    // This function is triggered by an Event Grid event when a new document is uploaded to the blob storage.
     public sealed class IncomingDocumentEvent(ILogger<IncomingDocumentEvent> logger)
     {
         [Function(nameof(IncomingDocumentEvent))]
