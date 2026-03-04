@@ -34,6 +34,8 @@ public sealed class IncomingDocumentEvent(ILogger<IncomingDocumentEvent> logger,
             EventMetadata = documentEventMetadata
         };
 
+        // valami normalis visszateritesi erteket ki kene talalni.
+
         await orchestratorService.OrchestrateEventAsync(client, nameof(DocumentIngestionOrchestrator), documentIngestionEvent, ct);
     }
 }

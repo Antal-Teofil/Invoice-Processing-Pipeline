@@ -9,6 +9,6 @@ namespace InvoiceProcessingPipeline.Application.Ports
 {
     public interface IDocumentEventOrchestrator
     {
-        public Task<string> OrchestrateEventAsync(DurableTaskClient client, string orchestratorName, DocumentIngestionEvent docEvent, CancellationToken token);
+        public Task OrchestrateEventAsync(DurableTaskClient client, string orchestratorName, DocumentIngestionEvent docEvent, CancellationToken token);
     }
 }
