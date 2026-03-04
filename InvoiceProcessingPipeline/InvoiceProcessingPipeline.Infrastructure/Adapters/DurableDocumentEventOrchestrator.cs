@@ -9,11 +9,9 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
 {
     public sealed class DurableDocumentEventOrchestrator(ILogger<DurableDocumentEventOrchestrator> logger) : IDocumentEventOrchestrator
     {
-        public async Task<string> StartOrchestrationEventAsync(DurableTaskClient client, string orchestratorName, BoundaryContract cntr, CancellationToken token)
+        public async Task<string> OrchestrateEventAsync(DurableTaskClient client, string orchestratorName, DocumentIngestionEvent docEvent, CancellationToken token)
         {
-            logger.LogInformation("Starting orchestration {orchestratorName} with correlation id {correlationId}", orchestratorName, cntr.CorrelationId);
-            var instaceId = await client.ScheduleNewOrchestrationInstanceAsync(orchestratorName, cntr, token);
-            return instaceId;
+            return await client.ScheduleNewOrchestrationInstanceAsync(orchestratorName, docEvent, token);
         }
     }
 }

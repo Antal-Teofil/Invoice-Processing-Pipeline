@@ -7,17 +7,8 @@ namespace InvoiceProcessingPipeline.Functions.Activities;
 public sealed class RequestDocumentMetadataActivity
 {
     [Function(nameof(RequestDocumentMetadataActivity))]
-    public Task<ActivityResult<DocumentMetadata>> RunAsync([ActivityTrigger] IngestionEvent ingestionEvent)
+    public Task<ActivityResult<DocumentStorageMetadata>> RunAsync([ActivityTrigger] DocumentIngestionEvent ingestionEvent)
     {
-        var response = new DocumentMetadata
-        {
-            CorrelationId = ingestionEvent.CorrelationId,
-            DocumentId = Guid.NewGuid().ToString(),
-            FileName = "sample.pdf",
-            ContentType = "application/pdf",
-            Size = 1024
-        };
-
-        return Task.FromResult(ActivityResult<DocumentMetadata>.Success(response));
+        throw new NotImplementedException();
     }
 }

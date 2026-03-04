@@ -10,14 +10,14 @@ namespace InvoiceProcessingPipeline.Functions.Orchestrators;
 public sealed class DocumentIngestionOrchestrator
 {
     [Function(nameof(DocumentIngestionOrchestrator))]
-    public static async Task<DocumentMetadata> RunOrchestrator(
+    public static async Task<DocumentStorageMetadata> RunOrchestrator(
         [OrchestrationTrigger] TaskOrchestrationContext ctx,
-        IngestionEvent input)
+        DocumentIngestionEvent input)
     {
         var logger = ctx.CreateReplaySafeLogger(nameof(DocumentIngestionOrchestrator));
         logger.LogInformation("Document Ingestion Orchestrator started. CorrelationId={CorrelationId}", input.CorrelationId);
 
-        var result = await ctx.CallActivityAsync<ActivityResult<DocumentMetadata>>(
+        var result = await ctx.CallActivityAsync<ActivityResult<DocumentStorageMetadata>>(
             nameof(RequestDocumentMetadataActivity),
             input);
 

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace InvoiceProcessingPipeline.Application.Shared;
 
-public sealed class ActivityResult<T> where T : BoundaryContract
+public sealed class ActivityResult<T> where T : class
 {
     public T? Value { get; init; }
     public ActivityError? Error { get; init; }

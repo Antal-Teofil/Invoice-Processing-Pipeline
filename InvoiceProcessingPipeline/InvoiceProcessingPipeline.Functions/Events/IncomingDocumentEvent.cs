@@ -1,9 +1,9 @@
-﻿using System.Text.Json;
-using Azure.Messaging;
+﻿using Azure.Messaging;
 using Azure.Messaging.EventGrid.SystemEvents;
 using InvoiceProcessingPipeline.Application.BoundaryContracts;
 using InvoiceProcessingPipeline.Application.Ports;
 using InvoiceProcessingPipeline.Functions.Orchestrators;
+using Mapster;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.DurableTask.Client;
 using Microsoft.Extensions.Logging;
@@ -19,43 +19,21 @@ public sealed class IncomingDocumentEvent(ILogger<IncomingDocumentEvent> logger,
         CancellationToken ct)
     {
 
-        logger.LogInformation(
-            "Received event. Id={EventId}, Type={EventType}, Subject={Subject}",
-            cloudEvent.Id, cloudEvent.Type, cloudEvent.Subject);
+        logger.LogInformation("Received EventGrid CloudEvent with Id: {EventId}, Type: {EventType}, Source: {EventSource}", cloudEvent.Id, cloudEvent.Type, cloudEvent.Source);
+        logger.LogInformation("Recieved EventGrid CloudEvent");
 
-        if (cloudEvent.Data is null)
+        var blobData = cloudEvent.Data?.ToObjectFromJson<StorageBlobCreatedEventData>();
+
+        var documentMetadata = blobData.Adapt<DocumentStorageMetadata>();
+        var documentEventMetadata = cloudEvent.Adapt<DocumentEventMetadata>();
+
+        DocumentIngestionEvent documentIngestionEvent = new()
         {
-            logger.LogWarning("CloudEvent.Data is null");
-            return;
-        }
-
-        var data = cloudEvent.Data.ToObjectFromJson<StorageBlobCreatedEventData>();
-
-        logger.LogInformation(
-            "Blob created. Url={Url}, ContentType={ContentType}, Size={Size}",
-            data.Url, data.ContentType, data.Sequencer);
-
-        var ingestionEvent = new IngestionEvent
-        {
-            CorrelationId = cloudEvent.Id, 
-
-            EventId = cloudEvent.Id,
-            EventType = cloudEvent.Type,
-            Subject = cloudEvent.Subject ?? string.Empty,
-
-            Body = cloudEvent.Data?.ToString() ?? string.Empty,
-
-            EventTime = cloudEvent.Time?.UtcDateTime ?? DateTime.UtcNow,
-            DataVersion = cloudEvent.DataSchema ?? string.Empty,
-
-            Topic = string.Empty,
-            TopicId = string.Empty
+            CorrelationId = Guid.NewGuid().ToString(),
+            StorageMetadata = documentMetadata,
+            EventMetadata = documentEventMetadata
         };
 
-        var instanceId = await orchestratorService.StartOrchestrationEventAsync(client, nameof(DocumentIngestionOrchestrator), ingestionEvent, ct);
-
-        logger.LogInformation(
-            "Started orchestration. InstanceId={InstanceId}, EventId={EventId}",
-            instanceId, cloudEvent.Id);
+        await orchestratorService.OrchestrateEventAsync(client, nameof(DocumentIngestionOrchestrator), documentIngestionEvent, ct);
     }
 }

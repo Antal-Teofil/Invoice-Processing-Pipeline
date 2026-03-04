@@ -5,10 +5,11 @@ using System.Text;
 
 namespace InvoiceProcessingPipeline.Application.BoundaryContracts;
 
-public sealed record DocumentMetadata : BoundaryContract
+public sealed record DocumentStorageMetadata
 {
-    public required string DocumentId { get; init; }
-    public required string FileName { get; init; }
+    public required string DocumentURL { get; init; }
     public required string ContentType { get; init; }
-    public required long Size { get; init; }
+    public required string BlobType { get; init; }
+    public required string ETag { get; init; }
+    public long? ContentLength { get; init; }
 }
