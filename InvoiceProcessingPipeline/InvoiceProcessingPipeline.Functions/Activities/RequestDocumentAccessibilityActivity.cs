@@ -26,9 +26,9 @@ public sealed class RequestDocumentAccessibilityActivity(
     IOptions<DocumentStorageOptions> options)
 {
 
-    #region
-        // Ide fog kelleni egy kurva nagy refaktoralas, de az meg odebb van. majd a user delegation key cache-elve lesz.
-    #endregion
+
+    // Ide fog kelleni egy kurva nagy refaktoralas, de az meg odebb van. majd a user delegation key cache-elve lesz.
+
     [Function(nameof(RequestDocumentAccessibilityActivity))]
     public async Task<ActivityResult<DocumentSasUri>> RunAsync(
         [ActivityTrigger] DocumentIngestionEvent ingestionEvent,
