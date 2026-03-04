@@ -17,9 +17,8 @@ public sealed class DocumentIngestionOrchestrator
         var logger = ctx.CreateReplaySafeLogger(nameof(DocumentIngestionOrchestrator));
         logger.LogInformation("Document Ingestion Orchestrator started. CorrelationId={CorrelationId}", input.CorrelationId);
 
-        var result = await ctx.CallActivityAsync<ActivityResult<DocumentStorageMetadata>>(
-            nameof(RequestDocumentMetadataActivity),
-            input);
+        // this activity is for recieving document metadata from BLOB storage for AI Document Intelligence processing
+        var result = await ctx.CallActivityAsync<ActivityResult<DocumentStorageMetadata>>(nameof(RequestDocumentAccessibilityActivity), input);
 
         if (!result.IsSuccess)
         {

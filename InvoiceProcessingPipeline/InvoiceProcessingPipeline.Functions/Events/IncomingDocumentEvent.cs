@@ -1,7 +1,6 @@
 ﻿using Azure.Messaging;
 using Azure.Messaging.EventGrid.SystemEvents;
 using InvoiceProcessingPipeline.Application.BoundaryContracts;
-using InvoiceProcessingPipeline.Application.Ports;
 using InvoiceProcessingPipeline.Functions.Orchestrators;
 using Mapster;
 using Microsoft.Azure.Functions.Worker;
@@ -10,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace InvoiceProcessingPipeline.Functions.Events;
 
-public sealed class IncomingDocumentEvent(ILogger<IncomingDocumentEvent> logger, IDocumentEventOrchestrator orchestratorService)
+public sealed class IncomingDocumentEvent(ILogger<IncomingDocumentEvent> logger)
 {
     [Function(nameof(IncomingDocumentEvent))]
     public async Task RunAsync(
@@ -33,9 +32,5 @@ public sealed class IncomingDocumentEvent(ILogger<IncomingDocumentEvent> logger,
             StorageMetadata = documentMetadata,
             EventMetadata = documentEventMetadata
         };
-
-        // valami normalis visszateritesi erteket ki kene talalni.
-
-        await orchestratorService.OrchestrateEventAsync(client, nameof(DocumentIngestionOrchestrator), documentIngestionEvent, ct);
     }
 }
