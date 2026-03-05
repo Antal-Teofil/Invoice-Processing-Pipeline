@@ -2,6 +2,7 @@ using Azure.AI.DocumentIntelligence;
 using Azure.Storage.Blobs;
 using InvoiceProcessingPipeline.Application.Auditing;
 using InvoiceProcessingPipeline.Infrastructure.Adapters;
+using InvoiceProcessingPipeline.Infrastructure.Configurations;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Builder;
@@ -17,8 +18,9 @@ builder.Services
     .AddApplicationInsightsTelemetryWorkerService()
     .ConfigureFunctionsApplicationInsights();
 
-builder.Services.AddSingleton<DocumentAuditOrchestrator>();
-builder.Services.AddSingleton<CosmosClient>();
+
+// Cosmos Client configuration
+builder.Services.AddCosmosClientAccessConfiguration();
 builder.Services.AddSingleton<BlobServiceClient>();
 builder.Services.AddSingleton<DocumentIntelligenceClient>();
 
