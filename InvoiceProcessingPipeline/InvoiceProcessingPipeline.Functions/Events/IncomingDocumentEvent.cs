@@ -22,6 +22,7 @@ public sealed class IncomingDocumentEvent(ILogger<IncomingDocumentEvent> logger,
         var blobData = cloudEvent.Data?.ToObjectFromJson<StorageBlobCreatedEventData>();
 
         // to be verified, event id null, url null
+        // correct mapster mapping
         var documentMetadata = blobData.Adapt<DocumentStorageMetadata>();
         var documentEventMetadata = cloudEvent.Adapt<DocumentEventMetadata>();
 
