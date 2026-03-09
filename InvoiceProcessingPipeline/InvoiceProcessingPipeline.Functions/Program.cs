@@ -1,7 +1,7 @@
-using Azure.AI.DocumentIntelligence;
 using Azure.Core;
 using Azure.Identity;
-using Azure.Storage.Blobs;
+using InvoiceProcessingPipeline.Application.Ports;
+using InvoiceProcessingPipeline.Infrastructure.Adapters;
 using InvoiceProcessingPipeline.Infrastructure.Configurations;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Builder;
@@ -26,5 +26,7 @@ builder.Services.AddBlobClient();
 
 // Azure Document Intelligence Cleint configuration
 builder.Services.AddDocumentIntelligenceClient();
+
+builder.Services.AddSingleton<IDocumentEventOrchestrator, DocumentEventOrchestratorService>();
 
 builder.Build().Run();

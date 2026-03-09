@@ -7,16 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Ports\" />
-    <Folder Include="ServiceExtensions\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Azure.AI.DocumentIntelligence" Version="1.0.0" />
     <PackageReference Include="Azure.Messaging.EventGrid" Version="5.0.0" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.27.0" />
     <PackageReference Include="Mapster" Version="7.4.0" />
-    <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.DurableTask" Version="1.14.1" />
+    <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.DurableTask" Version="1.16.0" />
     <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="10.0.3" />
   </ItemGroup>
 

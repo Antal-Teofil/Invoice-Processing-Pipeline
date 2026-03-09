@@ -31,8 +31,7 @@ public sealed class RequestDocumentAccessibilityActivity(
 
     [Function(nameof(RequestDocumentAccessibilityActivity))]
     public async Task<ActivityResult<DocumentSasUri>> RunAsync(
-        [ActivityTrigger] DocumentIngestionEvent ingestionEvent,
-        CancellationToken cancellationToken) // cancellation tokent majd kezeljuk megfeleloen, csak nem most
+        [ActivityTrigger] DocumentIngestionEvent ingestionEvent) // cancellation tokent majd kezeljuk megfeleloen, csak nem most
     {
         logger.LogInformation("Generating SAS for CorrelationId: {CorrelationId}", ingestionEvent.CorrelationId);
 
@@ -54,8 +53,7 @@ public sealed class RequestDocumentAccessibilityActivity(
         // majd cache-be rakom
         var delegationKeyResponse = await blobServiceClient.GetUserDelegationKeyAsync(
             startsOn,
-            keyExpiresOn,
-            cancellationToken);
+            keyExpiresOn);
 
         var sasBuilder = new BlobSasBuilder
         {

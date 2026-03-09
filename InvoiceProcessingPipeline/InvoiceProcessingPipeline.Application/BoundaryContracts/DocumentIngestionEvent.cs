@@ -4,6 +4,7 @@ namespace InvoiceProcessingPipeline.Application.BoundaryContracts;
 
 public sealed record DocumentIngestionEvent
 {
+    public required string Id { get; init; }
     public required string CorrelationId { get; init; }
     public required DocumentStorageMetadata StorageMetadata { get; set; }
     public required DocumentEventMetadata EventMetadata { get; set; }
