@@ -18,8 +18,6 @@ public static class CosmosServiceCollectionExtensions
                 options => Uri.TryCreate(options.ResourceEndpoint, UriKind.Absolute, out _),
                 "ResourceEndpoint must be a valid absolute URI.");
 
-        services.AddSingleton<TokenCredential, DefaultAzureCredential>();
-
         services.AddSingleton(sp =>
         {
             var options = sp.GetRequiredService<IOptions<CosmosClientOptions>>().Value;
@@ -40,13 +38,14 @@ public static class CosmosServiceCollectionExtensions
 
         return services;
     }
+
+    public sealed record CosmosClientOptions
+    {
+        public const string SectionName = "COSMOS_CLIENT_RESOURCE_ACCESS";
+
+        [Url]
+        public required string ResourceEndpoint { get; init; }
+        public required string DatabaseName { get; init; }
+    }
 }
 
-public sealed record CosmosClientOptions
-{
-    public const string SectionName = "COSMOS_CLIENT_RESOURCE_ACCESS";
-
-    [Url]
-    public required string ResourceEndpoint { get; init; }
-    public required string DatabaseName { get; init; }
-}

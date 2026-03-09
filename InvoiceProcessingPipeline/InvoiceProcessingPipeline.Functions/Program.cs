@@ -1,4 +1,6 @@
 using Azure.AI.DocumentIntelligence;
+using Azure.Core;
+using Azure.Identity;
 using Azure.Storage.Blobs;
 using InvoiceProcessingPipeline.Infrastructure.Configurations;
 using Microsoft.Azure.Functions.Worker;
@@ -14,10 +16,15 @@ builder.Services
     .AddApplicationInsightsTelemetryWorkerService()
     .ConfigureFunctionsApplicationInsights();
 
+builder.Services.AddSingleton<TokenCredential, DefaultAzureCredential>();
 
 // Cosmos Client configuration
 builder.Services.AddCosmosClient();
-builder.Services.AddSingleton<BlobServiceClient>();
-builder.Services.AddSingleton<DocumentIntelligenceClient>();
+
+// Blob Client configuration
+builder.Services.AddBlobClient();
+
+// Azure Document Intelligence Cleint configuration
+builder.Services.AddDocumentIntelligenceClient();
 
 builder.Build().Run();
