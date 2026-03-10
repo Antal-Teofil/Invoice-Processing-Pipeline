@@ -1,14 +1,13 @@
-﻿using Castle.Core.Logging;
-using InvoiceProcessingPipeline.Application.BoundaryContracts;
+﻿using InvoiceProcessingPipeline.Application.BoundaryContracts;
 using InvoiceProcessingPipeline.Application.Ports;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 
 namespace InvoiceProcessingPipeline.Functions.ProcessQueue
 {
-    public sealed class DocumentEventProcessingQueue(ILogger<DocumentEventProcessingQueue> logger, IDocumentEventOrchestrator docOrchestrator)
+    public sealed class DocumentEventOrchestratorQueue(ILogger<DocumentEventOrchestratorQueue> logger, IDocumentEventOrchestrator docOrchestrator)
     {
-        [Function(nameof(DocumentEventProcessingQueue))]
+        [Function(nameof(DocumentEventOrchestratorQueue))]
         public async Task RunAsync([QueueTrigger("document-processing")] DocumentIngestionEvent docEvent)
         {
             await docOrchestrator.RecordEventAsync(docEvent);
