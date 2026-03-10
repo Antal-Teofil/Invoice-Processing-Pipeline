@@ -1,15 +1,18 @@
 ﻿using Azure.Messaging;
 using Azure.Messaging.EventGrid.SystemEvents;
 using InvoiceProcessingPipeline.Application.BoundaryContracts;
-using InvoiceProcessingPipeline.Application.Ports;
-using InvoiceProcessingPipeline.Functions.Orchestrators;
 using Mapster;
 using Microsoft.Azure.Functions.Worker;
-using Microsoft.DurableTask.Client;
 using Microsoft.Extensions.Logging;
 
 namespace InvoiceProcessingPipeline.Functions.Events;
 
+
+/*
+tehat a beerkezo CloudEvent-et kanonizaljuk egy belso reprezentaciora ami a(z) DocumentIngestionEvent ami tartalmaz ket masik fontos absztrakciot,
+a DocumentEventMetadata-t es a DocumentStorageMetadata-t. Ezt az event-et beletesszuk a `document-processing` queue-be, majd egy QueueTrigger-el attributalt Azure Function
+elinditja a workflowt.
+*/
 public sealed class IncomingDocumentEvent(ILogger<IncomingDocumentEvent> logger)
 {
     [Function(nameof(IncomingDocumentEvent))]

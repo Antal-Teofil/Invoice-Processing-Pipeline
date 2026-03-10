@@ -9,7 +9,7 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
 {
     public sealed class DocumentEventOrchestratorService(ILogger<DocumentEventOrchestratorService> logger, [FromKeyedServices("invoice-event")] Container eventContainer) : IDocumentEventOrchestrator
     {
-        public Task RecordDocumentOrchestrationEvent(DocumentOrchestrationProcess docProcess)
+        public Task RecordDocumentOrchestrationEvent(DocumentOrchestrationTask docProcess)
         {
             throw new NotImplementedException();
         }
@@ -45,9 +45,9 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
             throw new NotImplementedException();
         }
 
-        public ValueTask<DocumentOrchestrationProcessID> StartDocumentOrchestrationAsync()
+        public async ValueTask<DocumentOrchestrationTaskID> StartDocumentOrchestrationAsync()
         {
-            throw new NotImplementedException();
+            DocumentOrchestrationTaskID id = null;
         }
 
         public ValueTask<bool> VerifyEventRecordExistanceAsync(EventID Id)

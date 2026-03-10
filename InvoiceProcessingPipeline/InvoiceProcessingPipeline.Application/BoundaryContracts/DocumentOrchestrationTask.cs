@@ -4,5 +4,5 @@ using System.Text;
 
 namespace InvoiceProcessingPipeline.Application.BoundaryContracts
 {
-    public sealed record DocumentOrchestrationProcess(DocumentOrchestrationProcessID Id, DocumentIngestionEvent docEvent) { }
+    public sealed record DocumentOrchestrationTask(DocumentOrchestrationTaskID Id, DocumentIngestionEvent docEvent) { }
 }
