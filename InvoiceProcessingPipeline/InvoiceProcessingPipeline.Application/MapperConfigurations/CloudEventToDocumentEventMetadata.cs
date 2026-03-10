@@ -14,7 +14,7 @@ namespace InvoiceProcessingPipeline.Application.MapperConfigurations
             config.NewConfig<CloudEvent, DocumentEventMetadata>()
                 .MapWith(src => new DocumentEventMetadata
                 {
-                    EventId = src.Id,
+                    EventId = src.Id.ToString(),
                     EventType = src.Type,
                     Source = src.Source,
                     EventTime = src.Time

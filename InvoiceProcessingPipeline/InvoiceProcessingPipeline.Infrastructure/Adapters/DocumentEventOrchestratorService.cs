@@ -9,6 +9,11 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
 {
     public sealed class DocumentEventOrchestratorService(ILogger<DocumentEventOrchestratorService> logger, [FromKeyedServices("invoice-event")] Container eventContainer) : IDocumentEventOrchestrator
     {
+        public Task RecordDocumentOrchestrationEvent(DocumentOrchestrationProcess docProcess)
+        {
+            throw new NotImplementedException();
+        }
+
         // records an incoming document event
         // to be refactored
         public async Task RecordEvent(DocumentIngestionEvent eventRecord)
@@ -28,6 +33,26 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
             catch (CosmosException exeption) {
                 throw;
             }
+        }
+
+        public Task RecordEventAsync(DocumentIngestionEvent eventRecord)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ValueTask<DocumentIngestionEvent?> RetrieveEventRecordAsync(EventID Id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ValueTask<DocumentOrchestrationProcessID> StartDocumentOrchestrationAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public ValueTask<bool> VerifyEventRecordExistanceAsync(EventID Id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

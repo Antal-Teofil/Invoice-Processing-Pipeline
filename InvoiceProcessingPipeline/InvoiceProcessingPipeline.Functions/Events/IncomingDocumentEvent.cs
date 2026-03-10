@@ -10,10 +10,11 @@ using Microsoft.Extensions.Logging;
 
 namespace InvoiceProcessingPipeline.Functions.Events;
 
-public sealed class IncomingDocumentEvent(ILogger<IncomingDocumentEvent> logger, IDocumentEventOrchestrator documentEventOrchestrator)
+public sealed class IncomingDocumentEvent(ILogger<IncomingDocumentEvent> logger)
 {
     [Function(nameof(IncomingDocumentEvent))]
-    public async Task RunAsync([EventGridTrigger] CloudEvent cloudEvent)
+    [QueueOutput("document-processing")]
+    public async Task<DocumentIngestionEvent> RunAsync([EventGridTrigger] CloudEvent cloudEvent)
     {
 
         logger.LogInformation("Received EventGrid CloudEvent with Id: {EventId}, Type: {EventType}, Source: {EventSource}", cloudEvent.Id, cloudEvent.Type, cloudEvent.Source);
@@ -34,8 +35,6 @@ public sealed class IncomingDocumentEvent(ILogger<IncomingDocumentEvent> logger,
             EventMetadata = documentEventMetadata
         };
 
-        await documentEventOrchestrator.RecordEvent(documentIngestionEvent);
-
-        logger.LogInformation("Event Recorded");
+        return documentIngestionEvent;
     }
 }
