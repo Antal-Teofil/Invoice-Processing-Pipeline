@@ -45,9 +45,9 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
             throw new NotImplementedException();
         }
 
-        public async ValueTask<DocumentOrchestrationTaskID> StartDocumentOrchestrationAsync()
+        public async ValueTask<DocumentOrchestrationTaskID> StartDocumentOrchestrationAsync(string TaskName)
         {
-            DocumentOrchestrationTaskID id = null;
+            DocumentOrchestrationTaskID id = 
         }
 
         public ValueTask<bool> VerifyEventRecordExistanceAsync(EventID Id)

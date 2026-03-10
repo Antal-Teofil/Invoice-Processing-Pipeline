@@ -7,7 +7,7 @@ namespace InvoiceProcessingPipeline.Application.Ports
         public Task RecordEventAsync(DocumentIngestionEvent eventRecord);
         public ValueTask<DocumentIngestionEvent?> RetrieveEventRecordAsync(EventID Id);
         public ValueTask<bool> VerifyEventRecordExistanceAsync(EventID Id);
-        public ValueTask<DocumentOrchestrationProcessID> StartDocumentOrchestrationAsync(string TaskName, );
-        public Task RecordDocumentOrchestrationEvent(DocumentOrchestrationProcess docProcess);
+        public ValueTask<DocumentOrchestrationTaskID> StartDocumentOrchestrationAsync(string TaskName, );
+        public Task RecordDocumentOrchestrationEvent(DocumentOrchestrationTask docProcess);
     }
 }
