@@ -1,25 +1,28 @@
 ﻿using Azure.Messaging.EventGrid.SystemEvents;
 using InvoiceProcessingPipeline.Application.BoundaryContracts;
 using Mapster;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace InvoiceProcessingPipeline.Application.MapperConfigurations
+namespace InvoiceProcessingPipeline.Application.MapperConfigurations;
+
+public sealed class StorageBlobCreatedEventDataToDocumentStorageMetadata : IRegister
 {
-    public sealed class StorageBlobCreatedEventDataToDocumentStorageMetadata : IRegister
+    public void Register(TypeAdapterConfig config)
     {
-        public void Register(TypeAdapterConfig config)
+        config.NewConfig<StorageBlobCreatedEventData, DocumentStorageMetadata>()
+            .MapWith(src => Create(src));
+    }
+
+    private static DocumentStorageMetadata Create(StorageBlobCreatedEventData src)
+    {
+        ArgumentNullException.ThrowIfNull(src);
+
+        return new DocumentStorageMetadata
         {
-            config.NewConfig<StorageBlobCreatedEventData, DocumentStorageMetadata>()
-                .MapWith(s => new DocumentStorageMetadata
-                {
-                    DocumentURL = s.Url,
-                    ContentType = s.ContentType,
-                    BlobType = s.BlobType,
-                    ETag = s.ETag,
-                    ContentLength = s.ContentLength
-                });
-        }
+            DocumentUrl = MappingGuard.Required(src.Url, "StorageBlobCreatedEventData.Url"),
+            ContentType = src.ContentType,
+            BlobType = src.BlobType,
+            ETag = src.ETag,
+            ContentLength = src.ContentLength
+        };
     }
 }

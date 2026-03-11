@@ -1,25 +1,58 @@
 ﻿using InvoiceProcessingPipeline.Application.BoundaryContracts;
 using InvoiceProcessingPipeline.Application.Ports;
 using Microsoft.Azure.Functions.Worker;
+using Microsoft.DurableTask.Client;
 using Microsoft.Extensions.Logging;
 
-namespace InvoiceProcessingPipeline.Functions.ProcessQueue
+namespace InvoiceProcessingPipeline.Functions.ProcessQueue;
+
+public sealed class DocumentEventOrchestratorQueue(
+    ILogger<DocumentEventOrchestratorQueue> logger,
+    IDocumentEventOrchestrator docOrchestrator)
 {
-    /*
-     a queue-bol kivesszuk a DocumentIngestionEvent-et es elmentjuk az adatbazisba. Ez azert fontos, hogy az elejetol a vegeig tudjuk kovetni egy dokumentum feldolgozasanak eletciklusat,
-    duplikaciokat ellenorzunk, mivel ugyanaz az event tobbszor is bejohet es nem akarjuk ugyanazt a dokumentumot ketszer feldolgozni.
-    Innen inditjuk a feldolgozast. A sikeres schedule utan mentjuk majd adatbazisba a process id-t a megfelelo dokumentum metaadatokkal, hogy tudjuk kovetni a statuszvaltozast a frontend-rol. Maga a dokumentum statuszvaltozas az
-    az audit feladata, ez csak arra kell hogy lehessen koordinalni az orchestraciot frontendrol (mikor kell feleleszteni a process-t, mikor kell varni kulso esemenyre, stb.). Tehat ezt csak folyamat koordinalasra van, nem auditalasra.
-     */
-    public sealed class DocumentEventOrchestratorQueue(ILogger<DocumentEventOrchestratorQueue> logger, IDocumentEventOrchestrator docOrchestrator)
+    [Function(nameof(DocumentEventOrchestratorQueue))]
+    public async Task RunAsync(
+        [QueueTrigger("document-processing", Connection = "QUEUE_STORAGE")] DocumentIngestionEvent docEvent,
+        [DurableClient] DurableTaskClient client,
+        CancellationToken cancellationToken)
     {
-        [Function(nameof(DocumentEventOrchestratorQueue))]
-        public async Task RunAsync([QueueTrigger("document-processing")] DocumentIngestionEvent docEvent)
+        ArgumentNullException.ThrowIfNull(docEvent);
+
+        logger.LogInformation(
+            "Processing document event. EventId: {EventId}, CorrelationId: {CorrelationId}, DocumentUrl: {DocumentUrl}",
+            docEvent.EventMetadata.EventId,
+            docEvent.CorrelationId,
+            docEvent.StorageMetadata.DocumentUrl);
+
+        var inserted = await docOrchestrator.TryRecordEventAsync(docEvent, cancellationToken);
+
+        if (!inserted)
         {
-            await docOrchestrator.RecordEventAsync(docEvent);
-            DocumentOrchestrationTaskID id = await docOrchestrator.StartDocumentOrchestrationAsync("DocumentIngestionOrchestrator");
-            DocumentOrchestrationTask process = new(id, docEvent);
-            await docOrchestrator.RecordDocumentOrchestrationEvent(process);
+            logger.LogInformation(
+                "Skipping orchestration because the event is duplicate. EventId: {EventId}",
+                docEvent.EventMetadata.EventId);
+
+            return;
         }
+
+        const string orchestratorName = "DocumentIngestionOrchestrator";
+
+        string instanceId = await client.ScheduleNewOrchestrationInstanceAsync(
+            orchestratorName,
+            docEvent,
+            cancellationToken);
+
+        var process = new DocumentOrchestrationTask(
+            new DocumentOrchestrationTaskID(instanceId),
+            orchestratorName,
+            DateTimeOffset.UtcNow,
+            docEvent);
+
+        await docOrchestrator.RecordDocumentOrchestrationEventAsync(process, cancellationToken);
+
+        logger.LogInformation(
+            "Document orchestration started successfully. OrchestrationId: {OrchestrationId}, EventId: {EventId}",
+            instanceId,
+            docEvent.EventMetadata.EventId);
     }
 }

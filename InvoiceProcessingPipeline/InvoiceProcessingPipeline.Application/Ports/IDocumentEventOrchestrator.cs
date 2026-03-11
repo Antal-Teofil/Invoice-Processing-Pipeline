@@ -1,13 +1,22 @@
 ﻿using InvoiceProcessingPipeline.Application.BoundaryContracts;
 
-namespace InvoiceProcessingPipeline.Application.Ports
+namespace InvoiceProcessingPipeline.Application.Ports;
+
+public interface IDocumentEventOrchestrator
 {
-    public interface IDocumentEventOrchestrator
-    {
-        public Task RecordEventAsync(DocumentIngestionEvent eventRecord);
-        public ValueTask<DocumentIngestionEvent?> RetrieveEventRecordAsync(EventID Id);
-        public ValueTask<bool> VerifyEventRecordExistanceAsync(EventID Id);
-        public ValueTask<DocumentOrchestrationTaskID> StartDocumentOrchestrationAsync(string TaskName, );
-        public Task RecordDocumentOrchestrationEvent(DocumentOrchestrationTask docProcess);
-    }
+    Task<bool> TryRecordEventAsync(
+        DocumentIngestionEvent eventRecord,
+        CancellationToken cancellationToken = default);
+
+    Task<DocumentIngestionEvent?> RetrieveEventRecordAsync(
+        string eventId,
+        CancellationToken cancellationToken = default);
+
+    Task<bool> VerifyEventRecordExistenceAsync(
+        string eventId,
+        CancellationToken cancellationToken = default);
+
+    Task RecordDocumentOrchestrationEventAsync(
+        DocumentOrchestrationTask docProcess,
+        CancellationToken cancellationToken = default);
 }

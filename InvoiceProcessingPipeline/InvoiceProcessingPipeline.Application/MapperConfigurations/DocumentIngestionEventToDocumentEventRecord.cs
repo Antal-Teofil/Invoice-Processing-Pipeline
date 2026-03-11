@@ -1,29 +1,34 @@
 ﻿using InvoiceProcessingPipeline.Application.Auditing.Models;
 using InvoiceProcessingPipeline.Application.BoundaryContracts;
 using Mapster;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace InvoiceProcessingPipeline.Application.MapperConfigurations
+namespace InvoiceProcessingPipeline.Application.MapperConfigurations;
+
+public sealed class DocumentIngestionEventToDocumentEventRecord : IRegister
 {
-    public sealed class DocumentIngestionEventToDocumentEventRecord : IRegister
+    public void Register(TypeAdapterConfig config)
     {
-        public void Register(TypeAdapterConfig config)
+        config.NewConfig<DocumentIngestionEvent, DocumentEventRecord>()
+            .MapWith(src => Create(src));
+    }
+
+    private static DocumentEventRecord Create(DocumentIngestionEvent src)
+    {
+        ArgumentNullException.ThrowIfNull(src);
+        ArgumentNullException.ThrowIfNull(src.EventMetadata);
+        ArgumentNullException.ThrowIfNull(src.StorageMetadata);
+
+        return new DocumentEventRecord
         {
-            config.NewConfig<DocumentIngestionEvent, DocumentEventRecord>()
-                .MapWith(src => new DocumentEventRecord
-                {
-                    EventId = src.EventMetadata.EventId,
-                    EventType = src.EventMetadata.EventType,
-                    Source = src.EventMetadata.Source,
-                    EventTime = src.EventMetadata.EventTime,
-                    DocumentURL = src.StorageMetadata.DocumentURL,
-                    ContentType = src.StorageMetadata.ContentType,
-                    BlobType = src.StorageMetadata.BlobType,
-                    ContentLength = src.StorageMetadata.ContentLength,
-                    ETag = src.StorageMetadata.ETag
-                });
-        }
+            EventId = MappingGuard.Required(src.EventMetadata.EventId, "DocumentEventMetadata.EventId"),
+            EventType = MappingGuard.Required(src.EventMetadata.EventType, "DocumentEventMetadata.EventType"),
+            Source = MappingGuard.Required(src.EventMetadata.Source, "DocumentEventMetadata.Source"),
+            EventTime = src.EventMetadata.EventTime,
+            DocumentURL = MappingGuard.Required(src.StorageMetadata.DocumentUrl, "DocumentStorageMetadata.DocumentUrl"),
+            ContentType = src.StorageMetadata.ContentType,
+            BlobType = src.StorageMetadata.BlobType,
+            ContentLength = src.StorageMetadata.ContentLength,
+            ETag = src.StorageMetadata.ETag
+        };
     }
 }

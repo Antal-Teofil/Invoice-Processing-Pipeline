@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace InvoiceProcessingPipeline.Application.BoundaryContracts;
 
-namespace InvoiceProcessingPipeline.Application.BoundaryContracts
-{
-    public sealed record DocumentOrchestrationTask(DocumentOrchestrationTaskID Id, DocumentIngestionEvent docEvent) { }
-}
+public sealed record DocumentOrchestrationTask(
+    DocumentOrchestrationTaskID Id,
+    string OrchestratorName,
+    DateTimeOffset StartedAtUtc,
+    DocumentIngestionEvent DocumentEvent);

@@ -1,11 +1,9 @@
-﻿using InvoiceProcessingPipeline.Application.Shared;
-
-namespace InvoiceProcessingPipeline.Application.BoundaryContracts;
+﻿namespace InvoiceProcessingPipeline.Application.BoundaryContracts;
 
 public sealed record DocumentIngestionEvent
 {
     public required string Id { get; init; }
     public required string CorrelationId { get; init; }
-    public required DocumentStorageMetadata StorageMetadata { get; set; }
-    public required DocumentEventMetadata EventMetadata { get; set; }
+    public required DocumentStorageMetadata StorageMetadata { get; init; }
+    public required DocumentEventMetadata EventMetadata { get; init; }
 }

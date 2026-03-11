@@ -1,58 +1,112 @@
-﻿using InvoiceProcessingPipeline.Application.BoundaryContracts;
+﻿using System.Net;
+using InvoiceProcessingPipeline.Application.BoundaryContracts;
 using InvoiceProcessingPipeline.Application.Ports;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System.Net;
 
-namespace InvoiceProcessingPipeline.Infrastructure.Adapters
+namespace InvoiceProcessingPipeline.Infrastructure.Adapters;
+
+public sealed class DocumentEventOrchestratorService(
+    ILogger<DocumentEventOrchestratorService> logger,
+    [FromKeyedServices("invoice-event")] Container eventContainer,
+    [FromKeyedServices("document-orchestration")] Container orchestrationContainer)
+    : IDocumentEventOrchestrator
 {
-    public sealed class DocumentEventOrchestratorService(ILogger<DocumentEventOrchestratorService> logger, [FromKeyedServices("invoice-event")] Container eventContainer) : IDocumentEventOrchestrator
+    public async Task<bool> TryRecordEventAsync(
+        DocumentIngestionEvent eventRecord,
+        CancellationToken cancellationToken = default)
     {
-        public Task RecordDocumentOrchestrationEvent(DocumentOrchestrationTask docProcess)
+        ArgumentNullException.ThrowIfNull(eventRecord);
+
+        var eventId = eventRecord.EventMetadata.EventId;
+
+        var item = new DocumentEventItem
         {
-            throw new NotImplementedException();
-        }
+            Id = eventId,
+            PartitionKey = eventId,
+            RecordedAtUtc = DateTimeOffset.UtcNow,
+            Payload = eventRecord
+        };
 
-        // records an incoming document event
-        // to be refactored
-        public async Task RecordEvent(DocumentIngestionEvent eventRecord)
+        try
         {
-            ArgumentNullException.ThrowIfNull(eventRecord);
+            await eventContainer.CreateItemAsync(
+                item,
+                new PartitionKey(item.PartitionKey),
+                cancellationToken: cancellationToken);
 
-            try
-            {
-                await eventContainer.CreateItemAsync(item: eventRecord, partitionKey: new PartitionKey(eventRecord.Id));
+            logger.LogInformation(
+                "Document event recorded. EventId: {EventId}, DocumentUrl: {DocumentUrl}",
+                eventRecord.EventMetadata.EventId,
+                eventRecord.StorageMetadata.DocumentUrl);
 
-                logger.LogInformation("Document event recorded.\nEventID: {EventId}\nDocumentURL: {DocumentURL}", eventRecord.EventMetadata.EventId, eventRecord.StorageMetadata.DocumentURL);
-            }
-            catch (CosmosException exception) when (exception.StatusCode == HttpStatusCode.Conflict)
-            {
-                logger.LogWarning("Document event was already emitted.\n EventID: {EventId}\n", eventRecord.EventMetadata.EventId);
-            }
-            catch (CosmosException exeption) {
-                throw;
-            }
+            return true;
         }
-
-        public Task RecordEventAsync(DocumentIngestionEvent eventRecord)
+        catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.Conflict)
         {
-            throw new NotImplementedException();
-        }
+            logger.LogInformation(
+                "Duplicate document event detected. EventId: {EventId}",
+                eventRecord.EventMetadata.EventId);
 
-        public ValueTask<DocumentIngestionEvent?> RetrieveEventRecordAsync(EventID Id)
-        {
-            throw new NotImplementedException();
+            return false;
         }
+    }
 
-        public async ValueTask<DocumentOrchestrationTaskID> StartDocumentOrchestrationAsync(string TaskName)
-        {
-            DocumentOrchestrationTaskID id = 
-        }
+    public async Task<DocumentIngestionEvent?> RetrieveEventRecordAsync(
+        string eventId,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(eventId);
 
-        public ValueTask<bool> VerifyEventRecordExistanceAsync(EventID Id)
+        try
         {
-            throw new NotImplementedException();
+            var response = await eventContainer.ReadItemAsync<DocumentEventItem>(
+                id: eventId,
+                partitionKey: new PartitionKey(eventId),
+                cancellationToken: cancellationToken);
+
+            return response.Resource.Payload;
         }
+        catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+        {
+            return null;
+        }
+    }
+
+    public async Task<bool> VerifyEventRecordExistenceAsync(
+        string eventId,
+        CancellationToken cancellationToken = default)
+    {
+        var result = await RetrieveEventRecordAsync(eventId, cancellationToken);
+        return result is not null;
+    }
+
+    public async Task RecordDocumentOrchestrationEventAsync(
+        DocumentOrchestrationTask docProcess,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(docProcess);
+
+        var item = new DocumentOrchestrationItem
+        {
+            Id = docProcess.Id.Id,
+            PartitionKey = docProcess.Id.Id,
+            OrchestratorName = docProcess.OrchestratorName,
+            EventId = docProcess.DocumentEvent.EventMetadata.EventId,
+            CorrelationId = docProcess.DocumentEvent.CorrelationId,
+            DocumentUrl = docProcess.DocumentEvent.StorageMetadata.DocumentUrl,
+            StartedAtUtc = docProcess.StartedAtUtc
+        };
+
+        await orchestrationContainer.CreateItemAsync(
+            item,
+            new PartitionKey(item.PartitionKey),
+            cancellationToken: cancellationToken);
+
+        logger.LogInformation(
+            "Document orchestration record created. OrchestrationId: {OrchestrationId}, EventId: {EventId}",
+            docProcess.Id.Id,
+            docProcess.DocumentEvent.EventMetadata.EventId);
     }
 }

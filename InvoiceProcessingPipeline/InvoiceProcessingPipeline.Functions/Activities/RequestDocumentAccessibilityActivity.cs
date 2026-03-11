@@ -35,7 +35,7 @@ public sealed class RequestDocumentAccessibilityActivity(
     {
         logger.LogInformation("Generating SAS for CorrelationId: {CorrelationId}", ingestionEvent.CorrelationId);
 
-        var blobUrl = ingestionEvent?.StorageMetadata?.DocumentURL;
+        var blobUrl = ingestionEvent?.StorageMetadata?.DocumentUrl;
         if (string.IsNullOrWhiteSpace(blobUrl))
             throw new ArgumentException("DocumentURL is missing.");
 
