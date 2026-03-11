@@ -1,15 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace InvoiceProcessingPipeline.Application.Shared;
 
-namespace InvoiceProcessingPipeline.Application.Shared;
-
-public sealed class ActivityResult<T> where T : class
+public sealed record ActivityResult<T>
 {
+    public required bool IsSuccess { get; init; }
     public T? Value { get; init; }
-    public ActivityError? Error { get; init; }
-    public bool IsSuccess => Error is null;
+    public string? ErrorMessage { get; init; }
 
-    public static ActivityResult<T> Success(T value) => new() { Value = value };
-    public static ActivityResult<T> Fail(string code, string message) => new() { Error = new ActivityError(code, message) };
+    public static ActivityResult<T> Success(T value) => new()
+    {
+        IsSuccess = true,
+        Value = value
+    };
+
+    public static ActivityResult<T> Failure(string errorMessage) => new()
+    {
+        IsSuccess = false,
+        ErrorMessage = errorMessage
+    };
 }

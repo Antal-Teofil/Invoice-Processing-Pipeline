@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace InvoiceProcessingPipeline.Application.BoundaryContracts
+﻿namespace InvoiceProcessingPipeline.Application.BoundaryContracts
 {
-    public sealed record DocumentSasUri(Uri SasUri) { }
+    public sealed record DocumentSasUri 
+    { 
+        public required Uri SasUri { get; init; }
+        public string? ErrorMessage { get; init; }
+    }
 }

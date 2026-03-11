@@ -1,4 +1,6 @@
-﻿using Azure.Storage.Blobs;
+﻿using Azure;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using Azure.Storage.Sas;
 using InvoiceProcessingPipeline.Application.BoundaryContracts;
 using InvoiceProcessingPipeline.Application.Shared;
@@ -9,68 +11,122 @@ using Microsoft.Extensions.Options;
 
 namespace InvoiceProcessingPipeline.Functions.Activities;
 
-/// <summary>
-/// Provides an activity for generating a Shared Access Signature (SAS) URI that enables secure, time-limited read
-/// access to a document stored in Azure Blob Storage, based on an ingestion event.
-/// </summary>
-/// <remarks>This activity validates the provided document URL and generates a SAS URI with read permissions for
-/// the specified blob. The SAS expiration is configurable via options and defaults to 10 minutes if not set. The
-/// activity logs the correlation ID for traceability and throws an exception if the document URL is missing or
-/// invalid.</remarks>
-/// <param name="logger">The logger used to record informational and error messages during the execution of the activity.</param>
-/// <param name="blobServiceClient">The Azure BlobServiceClient instance used to interact with Blob Storage and generate user delegation SAS tokens.</param>
-/// <param name="options">The configuration options containing settings for document storage, including the SAS time-to-live (TTL) value.</param>
+// to be refactored
 public sealed class RequestDocumentAccessibilityActivity(
     ILogger<RequestDocumentAccessibilityActivity> logger,
     BlobServiceClient blobServiceClient,
     IOptions<DocumentStorageOptions> options)
 {
-
-
-    // Ide fog kelleni egy kurva nagy refaktoralas, de az meg odebb van. majd a user delegation key cache-elve lesz.
-
     [Function(nameof(RequestDocumentAccessibilityActivity))]
     public async Task<ActivityResult<DocumentSasUri>> RunAsync(
-        [ActivityTrigger] DocumentIngestionEvent ingestionEvent) // cancellation tokent majd kezeljuk megfeleloen, csak nem most
+        [ActivityTrigger] DocumentIngestionEvent ingestionEvent,
+        CancellationToken cancellationToken)
     {
-        logger.LogInformation("Generating SAS for CorrelationId: {CorrelationId}", ingestionEvent.CorrelationId);
+        ArgumentNullException.ThrowIfNull(ingestionEvent);
+        ArgumentNullException.ThrowIfNull(ingestionEvent.StorageMetadata);
+        ArgumentNullException.ThrowIfNull(ingestionEvent.EventMetadata);
 
-        var blobUrl = ingestionEvent?.StorageMetadata?.DocumentUrl;
-        if (string.IsNullOrWhiteSpace(blobUrl))
-            throw new ArgumentException("DocumentURL is missing.");
-
-        if (!Uri.TryCreate(blobUrl, UriKind.Absolute, out var blobUriValue)) // itt majd az exception be lesz csomagolva egy ActivityResult-be
-            throw new ArgumentException("DocumentURL is not a valid absolute URI.");
-
-        var blobUri = new BlobUriBuilder(blobUriValue);
-
-        var ttlMinutes = options.Value.SasTtlMinutes <= 0 ? 10 : options.Value.SasTtlMinutes;
-
-        var startsOn = DateTimeOffset.UtcNow.AddMinutes(-5);
-        var sasExpiresOn = DateTimeOffset.UtcNow.AddMinutes(ttlMinutes);
-        var keyExpiresOn = DateTimeOffset.UtcNow.AddHours(1);
-
-        // majd cache-be rakom
-        var delegationKeyResponse = await blobServiceClient.GetUserDelegationKeyAsync(
-            startsOn,
-            keyExpiresOn);
-
-        var sasBuilder = new BlobSasBuilder
+        try
         {
-            BlobContainerName = blobUri.BlobContainerName,
-            BlobName = blobUri.BlobName,
-            Resource = "b",
-            StartsOn = startsOn,
-            ExpiresOn = sasExpiresOn
-        };
-        sasBuilder.SetPermissions(BlobSasPermissions.Read);
+            var correlationId = ingestionEvent.CorrelationId;
+            var blobUrl = ingestionEvent.StorageMetadata.DocumentUrl;
 
-        var blobClient = blobServiceClient
-            .GetBlobContainerClient(blobUri.BlobContainerName)
-            .GetBlobClient(blobUri.BlobName);
+            logger.LogInformation(
+                "Generating document SAS. CorrelationId: {CorrelationId}, DocumentUrl: {DocumentUrl}",
+                correlationId,
+                blobUrl);
 
-        var sasUri = blobClient.GenerateUserDelegationSasUri(sasBuilder, delegationKeyResponse.Value);
+            if (string.IsNullOrWhiteSpace(blobUrl))
+            {
+                return ActivityResult<DocumentSasUri>.Failure(
+                    "DocumentStorageMetadata.DocumentUrl is missing.");
+            }
 
-        return ActivityResult<DocumentSasUri>.Success(new DocumentSasUri(sasUri));
+            if (!Uri.TryCreate(blobUrl, UriKind.Absolute, out var blobUriValue))
+            {
+                return ActivityResult<DocumentSasUri>.Failure(
+                    "DocumentStorageMetadata.DocumentUrl is not a valid absolute URI.");
+            }
+
+            var blobUri = new BlobUriBuilder(blobUriValue);
+
+            if (string.IsNullOrWhiteSpace(blobUri.BlobContainerName))
+            {
+                return ActivityResult<DocumentSasUri>.Failure(
+                    "Blob container name could not be resolved from DocumentUrl.");
+            }
+
+            if (string.IsNullOrWhiteSpace(blobUri.BlobName))
+            {
+                return ActivityResult<DocumentSasUri>.Failure(
+                    "Blob name could not be resolved from DocumentUrl.");
+            }
+
+            var configuredServiceUri = new Uri(options.Value.ServiceUri);
+            var blobAccountUri = new Uri($"{blobUri.Scheme}://{blobUri.Host}");
+
+            if (Uri.Compare(
+                    configuredServiceUri,
+                    blobAccountUri,
+                    UriComponents.SchemeAndServer,
+                    UriFormat.Unescaped,
+                    StringComparison.OrdinalIgnoreCase) != 0)
+            {
+                return ActivityResult<DocumentSasUri>.Failure(
+                    "DocumentUrl does not belong to the configured blob storage account.");
+            }
+
+            var ttlMinutes = options.Value.SasTtlMinutes > 0
+                ? options.Value.SasTtlMinutes
+                : 10;
+
+            var startsOn = DateTimeOffset.UtcNow.AddMinutes(-5);
+            var sasExpiresOn = DateTimeOffset.UtcNow.AddMinutes(ttlMinutes);
+            var keyExpiresOn = DateTimeOffset.UtcNow.AddHours(1);
+
+            Response<UserDelegationKey> delegationKeyResponse =
+                await blobServiceClient.GetUserDelegationKeyAsync(
+                    startsOn,
+                    keyExpiresOn,
+                    cancellationToken);
+
+            var sasBuilder = new BlobSasBuilder
+            {
+                BlobContainerName = blobUri.BlobContainerName,
+                BlobName = blobUri.BlobName,
+                Resource = "b",
+                StartsOn = startsOn,
+                ExpiresOn = sasExpiresOn,
+                Protocol = SasProtocol.Https,
+                CorrelationId = correlationId
+            };
+
+            sasBuilder.SetPermissions(BlobSasPermissions.Read);
+
+            var blobClient = blobServiceClient
+                .GetBlobContainerClient(blobUri.BlobContainerName)
+                .GetBlobClient(blobUri.BlobName);
+
+            var sasUri = blobClient.GenerateUserDelegationSasUri(
+                sasBuilder,
+                delegationKeyResponse.Value);
+
+            logger.LogInformation(
+                "Document SAS generated successfully. CorrelationId: {CorrelationId}, ExpiresOnUtc: {ExpiresOnUtc}",
+                correlationId,
+                sasExpiresOn);
+
+            return ActivityResult<DocumentSasUri>.Success(new DocumentSasUri
+            {
+                SasUri = sasUri
+            });
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to generate SAS for CorrelationId: {CorrelationId}", ingestionEvent.CorrelationId);
+
+            return ActivityResult<DocumentSasUri>.Failure(
+                $"Failed to generate SAS URI: {ex.Message}");
+        }
     }
 }

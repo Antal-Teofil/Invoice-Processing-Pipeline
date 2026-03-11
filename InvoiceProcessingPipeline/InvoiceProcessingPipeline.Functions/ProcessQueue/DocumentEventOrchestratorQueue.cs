@@ -16,43 +16,51 @@ public sealed class DocumentEventOrchestratorQueue(
         [DurableClient] DurableTaskClient client,
         CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(docEvent);
-
-        logger.LogInformation(
-            "Processing document event. EventId: {EventId}, CorrelationId: {CorrelationId}, DocumentUrl: {DocumentUrl}",
-            docEvent.EventMetadata.EventId,
-            docEvent.CorrelationId,
-            docEvent.StorageMetadata.DocumentUrl);
-
-        var inserted = await docOrchestrator.TryRecordEventAsync(docEvent, cancellationToken);
-
-        if (!inserted)
+        try
         {
+            ArgumentNullException.ThrowIfNull(docEvent);
+
             logger.LogInformation(
-                "Skipping orchestration because the event is duplicate. EventId: {EventId}",
+                "Processing document event. EventId: {EventId}, CorrelationId: {CorrelationId}, DocumentUrl: {DocumentUrl}",
+                docEvent.EventMetadata.EventId,
+                docEvent.CorrelationId,
+                docEvent.StorageMetadata.DocumentUrl);
+
+            var inserted = await docOrchestrator.TryRecordEventAsync(docEvent, cancellationToken);
+
+            if (!inserted)
+            {
+                logger.LogInformation(
+                    "Skipping orchestration because the event is duplicate. EventId: {EventId}",
+                    docEvent.EventMetadata.EventId);
+
+                return;
+            }
+
+            const string orchestratorName = "DocumentIngestionOrchestrator";
+
+            string instanceId = await client.ScheduleNewOrchestrationInstanceAsync(
+                orchestratorName,
+                docEvent,
+                cancellationToken);
+
+            var process = new DocumentOrchestrationTask(
+                new DocumentOrchestrationTaskID(instanceId),
+                orchestratorName,
+                DateTimeOffset.UtcNow,
+                docEvent);
+
+            await docOrchestrator.RecordDocumentOrchestrationEventAsync(process, cancellationToken);
+
+            logger.LogInformation(
+                "Document orchestration started successfully. OrchestrationId: {OrchestrationId}, EventId: {EventId}",
+                instanceId,
                 docEvent.EventMetadata.EventId);
-
-            return;
         }
-
-        const string orchestratorName = "DocumentIngestionOrchestrator";
-
-        string instanceId = await client.ScheduleNewOrchestrationInstanceAsync(
-            orchestratorName,
-            docEvent,
-            cancellationToken);
-
-        var process = new DocumentOrchestrationTask(
-            new DocumentOrchestrationTaskID(instanceId),
-            orchestratorName,
-            DateTimeOffset.UtcNow,
-            docEvent);
-
-        await docOrchestrator.RecordDocumentOrchestrationEventAsync(process, cancellationToken);
-
-        logger.LogInformation(
-            "Document orchestration started successfully. OrchestrationId: {OrchestrationId}, EventId: {EventId}",
-            instanceId,
-            docEvent.EventMetadata.EventId);
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "DocumentEventOrchestratorQueue failed.");
+            throw;
+        }
     }
 }

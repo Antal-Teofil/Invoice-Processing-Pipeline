@@ -1,11 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace InvoiceProcessingPipeline.Infrastructure.Configurations
+namespace InvoiceProcessingPipeline.Infrastructure.Configurations;
+
+public sealed record DocumentStorageOptions
 {
-    public sealed record DocumentStorageOptions
-    {
-        public required int SasTtlMinutes { get; init; }
-    }
+    public const string SectionName = "DOCUMENT_STORAGE";
+
+    [Url]
+    public required string ServiceUri { get; init; }
+
+    [Range(1, 1440)]
+    public int SasTtlMinutes { get; init; } = 10;
 }
