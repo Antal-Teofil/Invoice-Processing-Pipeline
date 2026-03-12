@@ -1,14 +1,9 @@
 ﻿using Azure;
 using Azure.AI.DocumentIntelligence;
-using Castle.Core.Logging;
 using InvoiceProcessingPipeline.Application.BoundaryContracts;
 using Microsoft.Azure.Cosmos;
-using Microsoft.Azure.Cosmos.Linq;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 
 namespace InvoiceProcessingPipeline.Functions.Activities
@@ -16,7 +11,7 @@ namespace InvoiceProcessingPipeline.Functions.Activities
     public class ExtractDocumentDataActivity(ILogger<ExtractDocumentDataActivity> logger, CosmosClient cosmosClient, DocumentIntelligenceClient documentIntelligenceClient)
     {
         [Function(nameof(ExtractDocumentDataActivity))]
-        public async Task RunAsync([ActivityTrigger] DocumentSasUri metadata, CancellationToken token)
+        public async Task RunAsync([ActivityTrigger] DocumentUserDelegationSasUri metadata, CancellationToken token)
         {
             Uri SasUri = metadata.SasUri;
 

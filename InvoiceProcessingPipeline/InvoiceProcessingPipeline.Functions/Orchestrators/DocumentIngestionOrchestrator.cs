@@ -23,8 +23,9 @@ public sealed class DocumentIngestionOrchestrator
             input.CorrelationId,
             input.EventMetadata.EventId);
 
-        ActivityResult<DocumentSasUri> sasResult =
-            await ctx.CallActivityAsync<ActivityResult<DocumentSasUri>>(
+        // itt hivodik meg az activity ami eloallitja a user delegation sas uri-t
+        ActivityResult<DocumentUserDelegationSasUri> sasResult =
+            await ctx.CallActivityAsync<ActivityResult<DocumentUserDelegationSasUri>>(
                 nameof(Activities.RequestDocumentAccessibilityActivity),
                 input);
 
@@ -34,9 +35,6 @@ public sealed class DocumentIngestionOrchestrator
                 sasResult.ErrorMessage ?? "RequestDocumentAccessibilityActivity failed.");
         }
 
-        logger.LogInformation(
-            "Document SAS generation completed successfully. CorrelationId: {CorrelationId}",
-            input.CorrelationId);
 
         // Ide jönnek a további activity-k.
         // Példa:
