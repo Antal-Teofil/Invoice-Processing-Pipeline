@@ -35,7 +35,6 @@ public sealed class DocumentIngestionOrchestrator
                 sasResult.ErrorMessage ?? "RequestDocumentAccessibilityActivity failed.");
         }
 
-        ActivityResult<> 
 
         // Ide jönnek a további activity-k.
         // Példa:
