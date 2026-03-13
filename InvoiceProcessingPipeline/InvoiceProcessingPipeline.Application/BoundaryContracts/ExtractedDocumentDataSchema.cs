@@ -7,6 +7,8 @@ namespace InvoiceProcessingPipeline.Application.BoundaryContracts
 {
     public sealed record ExtractedDocumentDataSchema()
     {
+        // ezt meg meglatjuk
         public required DocumentIdentifier Id {  get; init; }
+
     }
 }

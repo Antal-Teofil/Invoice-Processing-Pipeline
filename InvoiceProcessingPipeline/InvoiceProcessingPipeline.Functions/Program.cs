@@ -42,5 +42,9 @@ builder.Services.AddQueueClient();
 
 builder.Services.AddSingleton<IDocumentEventOrchestrator, DocumentEventOrchestratorService>();
 
+builder.Services.AddSingleton<IDocumentExtractor, AzureDocumentIntelligenceExtractor>();
+
+builder.Services.AddSingleton<IDocumentDataStore, CosmosDocumentSchemaStore>();
+
 
 builder.Build().Run();

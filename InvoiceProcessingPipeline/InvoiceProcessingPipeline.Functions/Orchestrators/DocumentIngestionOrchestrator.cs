@@ -31,7 +31,7 @@ public sealed class DocumentIngestionOrchestrator
 
         // ez dolgozza fel a beerkezo BLOB-ot
         ActivityResult<ExtractedDocumentDataSchema> rawDocData =
-            await ctx.CallActivityAsync<ActivityResult<ExtractedDocumentDataSchema>>(nameof(Activities.ExtractDocumentDataActivity), sasResult);
+            await ctx.CallActivityAsync<ActivityResult<ExtractedDocumentDataSchema>>(nameof(Activities.ExtractDocumentDataActivity), sasResult.Value);
 
 
         if (!sasResult.IsSuccess || sasResult.Value is null)

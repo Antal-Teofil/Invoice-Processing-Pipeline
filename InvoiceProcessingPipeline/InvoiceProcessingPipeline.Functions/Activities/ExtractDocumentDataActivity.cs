@@ -16,7 +16,7 @@ namespace InvoiceProcessingPipeline.Functions.Activities
      */
 
     // itt majd nem csak user delegation sas urit fogok atadni hanem korrelacio kulcsot is csak most egyelore meg nem bonyolitjuk
-    public class ExtractDocumentDataActivity(ILogger<ExtractDocumentDataActivity> logger, IDocumentExtractor extractor)
+    public class ExtractDocumentDataActivity(ILogger<ExtractDocumentDataActivity> logger, IDocumentExtractor extractor, IDocumentDataStore store)
     {
         [Function(nameof(ExtractDocumentDataActivity))]
         public async Task<ActivityResult<ExtractedDocumentResponse>> RunAsync([ActivityTrigger] DocumentUserDelegationSasUri sasUri, CancellationToken token)
@@ -30,8 +30,9 @@ namespace InvoiceProcessingPipeline.Functions.Activities
 
             var result = await extractor.ExtractDocumentAsync(userDelegationSasUri, token);
 
+            await store.StoreExtractedDocumentSchema(result);
 
-            return ActivityResult<ExtractedDocumentResponse>.Success(result); // ide nem result jon csak idegesit ha piros
+            return ActivityResult<ExtractedDocumentResponse>.Success(new ExtractedDocumentResponse()); // ide nem result jon csak idegesit ha piros
         }
     }
 }
