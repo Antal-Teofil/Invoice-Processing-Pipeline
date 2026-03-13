@@ -4,8 +4,7 @@ using System.Text;
 
 namespace InvoiceProcessingPipeline.Application.BoundaryContracts
 {
-    public sealed record ExtractedDocumentData()
+    public sealed record ExtractedDocumentResponse
     {
-        // na ez meg vita targya, mert nem akarom betolteni az egeszet a memoriaba.
     }
 }

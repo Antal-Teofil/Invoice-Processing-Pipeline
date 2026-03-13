@@ -57,6 +57,12 @@ public static class CosmosServiceCollectionExtensions
             return database.GetContainer("document-orchestration");
         });
 
+        services.AddKeyedSingleton("invoice-data", (sp, _) =>
+        {
+            var database = sp.GetRequiredService<Database>();
+            return database.GetContainer("invoice-data");
+        });
+
         return services;
     }
 

@@ -11,7 +11,7 @@ using System.Text;
 
 namespace InvoiceProcessingPipeline.Infrastructure.Adapters
 {
-    public sealed class CosmosDocumentAuditStorage(CosmosClient client, IOptions<CosmosAuditOptions> option) : IDocumentAuditStore
+    public sealed class CosmosDocumentAuditStore(CosmosClient client, IOptions<CosmosAuditOptions> option) : IDocumentAuditStore
     {
         public async Task EnsureExistance()
         {
