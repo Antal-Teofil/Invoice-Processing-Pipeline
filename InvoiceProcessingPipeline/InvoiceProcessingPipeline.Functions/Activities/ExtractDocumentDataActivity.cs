@@ -1,6 +1,8 @@
 ﻿using Azure;
 using Azure.AI.DocumentIntelligence;
 using InvoiceProcessingPipeline.Application.BoundaryContracts;
+using InvoiceProcessingPipeline.Application.Ports;
+using InvoiceProcessingPipeline.Application.Shared;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
@@ -8,20 +10,19 @@ using System.Text.Json;
 
 namespace InvoiceProcessingPipeline.Functions.Activities
 {
-    public class ExtractDocumentDataActivity(ILogger<ExtractDocumentDataActivity> logger, CosmosClient cosmosClient, DocumentIntelligenceClient documentIntelligenceClient)
+    public class ExtractDocumentDataActivity(ILogger<ExtractDocumentDataActivity> logger, IDocumentExtractor extractor)
     {
         [Function(nameof(ExtractDocumentDataActivity))]
-        public async Task RunAsync([ActivityTrigger] DocumentUserDelegationSasUri metadata, CancellationToken token)
+        public async Task<ActivityResult<ExtractedDocumentData>> RunAsync([ActivityTrigger] DocumentUserDelegationSasUri sasUri, CancellationToken token)
         {
-            Uri SasUri = metadata.SasUri;
+            Uri userDelegationSasUri = sasUri.SasUri;
 
-            Operation<AnalyzeResult> result = await documentIntelligenceClient.AnalyzeDocumentAsync(WaitUntil.Completed, "prebuilt-invoice", SasUri, token);
-            AnalyzedDocument analyzedDoc = result.Value.Documents.First();
-            Console.WriteLine(JsonSerializer.Serialize(result, new JsonSerializerOptions
+            if(userDelegationSasUri is null)
             {
-                WriteIndented = true
-            }));
+                return ActivityResult<ExtractedDocumentData>.Failure("User Delegation SAS URI must be a non-null value");
+            }
 
+            var result = await extractor.ExtractDocumentAsync(userDelegationSasUri, token);
             return;
         }
     }

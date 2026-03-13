@@ -29,6 +29,11 @@ public sealed class DocumentIngestionOrchestrator
                 nameof(Activities.RequestDocumentAccessibilityActivity),
                 input);
 
+        // ez dolgozza fel a beerkezo BLOB-ot
+        ActivityResult<ExtractedDocumentData> rawDocData =
+            await ctx.CallActivityAsync<ActivityResult<ExtractedDocumentData>>(nameof(Activities.ExtractDocumentDataActivity), sasResult);
+
+
         if (!sasResult.IsSuccess || sasResult.Value is null)
         {
             throw new InvalidOperationException(
