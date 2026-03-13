@@ -10,5 +10,7 @@ namespace InvoiceProcessingPipeline.Domain.CommonDefinitions
         public required Party Vendor { get; set; }
 
         public required Party Client { get; set; }
+
+
     }
 }

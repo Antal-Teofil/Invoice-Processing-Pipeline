@@ -6,5 +6,6 @@ namespace InvoiceProcessingPipeline.Application.Ports
 {
     public interface IDocumentCanonizer
     {
+        public Task CanonizeExtractedDocumentData
     }
 }
