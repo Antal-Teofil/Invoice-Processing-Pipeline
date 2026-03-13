@@ -21,9 +21,8 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
                 sasUri,
                 token);
 
-            AnalyzeResult analyzeResult = result.Value;
+            AnalyzeResult analyzedResult = result.Value;
 
-            Console.WriteLine("Puszi");
             return null!;
         }
     }
