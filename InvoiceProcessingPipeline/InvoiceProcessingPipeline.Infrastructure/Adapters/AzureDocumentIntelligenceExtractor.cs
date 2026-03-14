@@ -8,7 +8,6 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
     public sealed class AzureDocumentIntelligenceExtractor(
         DocumentIntelligenceClient client) : IDocumentExtractor
     {
-        private static readonly SemaphoreSlim LogLock = new(1, 1);
 
         // fapados megoldas, ez betolti a teljes mindenseget
         public async Task<ExtractedDocumentDataSchema> ExtractDocumentAsync(Uri sasUri, CancellationToken token)
