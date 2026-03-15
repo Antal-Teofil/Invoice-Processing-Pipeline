@@ -1,4 +1,4 @@
-﻿using InvoiceProcessingPipeline.Application.BoundaryContracts;
+﻿using InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionContracts;
 using InvoiceProcessingPipeline.Application.Ports;
 using InvoiceProcessingPipeline.Domain.CommonDefinitions;
 using InvoiceProcessingPipeline.Domain.ValueObjects;

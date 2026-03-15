@@ -7,7 +7,7 @@ namespace InvoiceProcessingPipeline.Application.Ports
 {
     public interface IDocumentExtractor
     {
-        public Task<ExtractedDocumentDataSchema> ExtractDocumentAsync(Uri sasUri, CancellationToken token);
+        public Task<ExtractedDocumentResponse> ExtractDocumentAsync(Uri sasUri, CancellationToken token);
         
     }
 }

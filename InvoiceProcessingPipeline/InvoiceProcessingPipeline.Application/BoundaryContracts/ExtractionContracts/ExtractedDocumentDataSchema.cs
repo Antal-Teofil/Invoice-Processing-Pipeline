@@ -3,12 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace InvoiceProcessingPipeline.Application.BoundaryContracts
+namespace InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionContracts
 {
     public sealed record ExtractedDocumentDataSchema()
     {
-        // ezt meg meglatjuk
-        public required DocumentIdentifier Id {  get; init; }
-
+        public ExtractedField<AnalyzerInformation>? AnalyzerInformation { get; set; }
     }
 }

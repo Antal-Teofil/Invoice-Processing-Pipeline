@@ -1,16 +1,17 @@
 ﻿using Azure;
 using Azure.AI.DocumentIntelligence;
 using InvoiceProcessingPipeline.Application.BoundaryContracts;
+using InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionContracts;
 using InvoiceProcessingPipeline.Application.Ports;
 
 namespace InvoiceProcessingPipeline.Infrastructure.Adapters
 {
     public sealed class AzureDocumentIntelligenceExtractor(
-        DocumentIntelligenceClient client) : IDocumentExtractor
+        DocumentIntelligenceClient client, IExtractionResultAdapter<AnalyzeResult> extractionAdapter) : IDocumentExtractor
     {
 
         // fapados megoldas, ez betolti a teljes mindenseget
-        public async Task<ExtractedDocumentDataSchema> ExtractDocumentAsync(Uri sasUri, CancellationToken token)
+        public async Task<ExtractedDocumentResponse> ExtractDocumentAsync(Uri sasUri, CancellationToken token)
         {
             ArgumentNullException.ThrowIfNull(sasUri, nameof(sasUri));
 
@@ -22,7 +23,9 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
 
             AnalyzeResult analyzedResult = result.Value;
 
+            ExtractedDocumentDataSchema schema =  await extractionAdapter.AdaptSchema(analyzedResult);
             return null!;
         }
+
     }
 }

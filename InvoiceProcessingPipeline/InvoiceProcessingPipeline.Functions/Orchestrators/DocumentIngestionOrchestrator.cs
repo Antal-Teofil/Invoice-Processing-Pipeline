@@ -1,4 +1,5 @@
 ﻿using InvoiceProcessingPipeline.Application.BoundaryContracts;
+using InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionContracts;
 using InvoiceProcessingPipeline.Application.Shared;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.DurableTask;
