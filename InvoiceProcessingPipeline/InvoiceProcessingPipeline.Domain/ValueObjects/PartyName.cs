@@ -4,8 +4,6 @@ using System.Text;
 
 namespace InvoiceProcessingPipeline.Domain.ValueObjects
 {
-    public sealed record IssueDate()
-    {
-        public required string DateOnly { get; init; }
-    }
+
+    public sealed record PartyName(string Name);
 }

@@ -4,8 +4,5 @@ using System.Text;
 
 namespace InvoiceProcessingPipeline.Domain.ValueObjects
 {
-    public sealed record DocumentCurrencyCode()
-    {
-        public required string CurrencyCode { get; set; }
-    }
+    public sealed record PartyLegalEntity(string RegistrationName, string? CompanyID, string CompanyLegalForm);
 }
