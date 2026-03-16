@@ -4,5 +4,6 @@ using System.Text;
 
 namespace InvoiceProcessingPipeline.Domain.ValueObjects
 {
+    // InvoiceId (AADI)
     public sealed record InvoiceID(string ID);
 }
