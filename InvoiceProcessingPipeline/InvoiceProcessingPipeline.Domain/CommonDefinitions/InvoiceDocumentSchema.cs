@@ -56,5 +56,11 @@ namespace InvoiceProcessingPipeline.Domain.CommonDefinitions
 
         // 1..2
         public required ICollection<TaxTotal> TaxTotals { get; set; }
+
+        // 1..1
+        public required LegalMonetaryTotal LegalMonetaryTotal { get; set; }
+
+        // 1..n
+        public required ICollection<InvoiceLine> InvoiceLines {  get; set; }
     }
 }
