@@ -30,7 +30,7 @@ namespace InvoiceProcessingPipeline.Functions.Activities
 
             var result = await extractor.ExtractDocumentAsync(userDelegationSasUri, token);
 
-            await store.StoreExtractedDocumentSchema(result);
+            //await store.StoreExtractedDocumentSchema(result);
 
             return ActivityResult<ExtractedDocumentResponse>.Success(new ExtractedDocumentResponse()); // ide nem result jon csak idegesit ha piros
         }
