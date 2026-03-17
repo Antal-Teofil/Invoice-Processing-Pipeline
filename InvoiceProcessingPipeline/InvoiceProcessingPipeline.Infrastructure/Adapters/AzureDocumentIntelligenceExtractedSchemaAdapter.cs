@@ -9,10 +9,6 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
 {
     public class AzureDocumentIntelligenceExtractedSchemaAdapter : IExtractionResultAdapter<AnalyzeResult>
     {
-        public Task<ExtractedDocumentDataSchema> Adapt(AnalyzeResult source)
-        {
-            throw new NotImplementedException();
-        }
 
         public Task<ExtractedDocumentDataSchema> AdaptSchema(AnalyzeResult source)
         {

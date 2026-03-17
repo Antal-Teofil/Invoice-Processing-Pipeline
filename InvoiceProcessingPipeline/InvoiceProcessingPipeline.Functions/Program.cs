@@ -1,3 +1,4 @@
+using Azure.AI.DocumentIntelligence;
 using Azure.Core;
 using Azure.Identity;
 using InvoiceProcessingPipeline.Application.MapperConfigurations;
@@ -45,6 +46,8 @@ builder.Services.AddSingleton<IDocumentEventOrchestrator, DocumentEventOrchestra
 builder.Services.AddSingleton<IDocumentExtractor, AzureDocumentIntelligenceExtractor>();
 
 builder.Services.AddSingleton<IDocumentDataStore, CosmosDocumentSchemaStore>();
+
+builder.Services.AddSingleton<IExtractionResultAdapter<AnalyzeResult>, AzureDocumentIntelligenceExtractedSchemaAdapter>();
 
 
 builder.Build().Run();

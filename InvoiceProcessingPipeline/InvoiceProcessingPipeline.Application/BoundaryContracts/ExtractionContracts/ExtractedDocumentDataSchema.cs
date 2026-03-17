@@ -7,6 +7,7 @@ namespace InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionCont
 {
     public sealed record ExtractedDocumentDataSchema()
     {
+        public required Guid Id {  get; set; }
         public ExtractedField<AnalyzerInformation>? AnalyzerInformation { get; set; }
     }
 }

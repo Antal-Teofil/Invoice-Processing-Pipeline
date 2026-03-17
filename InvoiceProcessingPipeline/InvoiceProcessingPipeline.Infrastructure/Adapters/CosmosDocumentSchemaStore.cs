@@ -13,12 +13,12 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
     // itt majd teszek egy `IOption<DocumentSchemaStoreOptions>`-t, hogy jol lehessen konfiguralni mit hova mentunk ha netan valami valtozik architektura szintjen, s szebb is
     public sealed class CosmosDocumentSchemaStore(ILogger<CosmosDocumentSchemaStore> logger, [FromKeyedServices("invoice-data")] Container storage) : IDocumentDataStore
     {
-        public Task<DocumentDataSchema?> RetrieveCanonizedDocumentSchema(DocumentIdentifier id)
+        public Task<DocumentDataSchema?> RetrieveCanonizedDocumentSchema(string id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<ExtractedDocumentDataSchema?> RetrieveExtractedDocumentSchema(DocumentIdentifier id)
+        public Task<ExtractedDocumentDataSchema?> RetrieveExtractedDocumentSchema(string id)
         {
             throw new NotImplementedException();
         }
@@ -31,7 +31,7 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
             };
 
             // itt is majd szepitunk es kitalalunk valami normalis partition key-t
-            var response = await storage.CreateItemAsync(schema, new PartitionKey(schema.DocumentIdentifier.Id), options);
+            var response = await storage.CreateItemAsync(schema, new PartitionKey(schema.Id.ToString()), options);
             var status = response.StatusCode;
             return status;
         }
@@ -45,7 +45,7 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
                 EnableContentResponseOnWrite = false
             };
             // itt majd kicserelem a data.Id.Id-t valami egyebre, mert igy nem szep.
-            var response = await storage.CreateItemAsync(data, new PartitionKey(data.Id.Id), options);
+            var response = await storage.CreateItemAsync(data, new PartitionKey(data.Id.ToString()), options);
             var status = response.StatusCode;
             return status;
         }

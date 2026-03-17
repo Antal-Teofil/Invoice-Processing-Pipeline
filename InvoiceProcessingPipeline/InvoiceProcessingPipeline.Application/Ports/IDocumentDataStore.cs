@@ -11,7 +11,7 @@ namespace InvoiceProcessingPipeline.Application.Ports
         // itt is Result<> lesz nem csunya HttpStatusCode
         public Task<HttpStatusCode> StoreExtractedDocumentSchema(ExtractedDocumentDataSchema data);
         public Task<HttpStatusCode> StoreCanonizedDocumentSchema(DocumentDataSchema schema);
-        public Task<DocumentDataSchema?> RetrieveCanonizedDocumentSchema(DocumentIdentifier id);
-        public Task<ExtractedDocumentDataSchema?> RetrieveExtractedDocumentSchema(DocumentIdentifier id);
+        public Task<DocumentDataSchema?> RetrieveCanonizedDocumentSchema(string id);
+        public Task<ExtractedDocumentDataSchema?> RetrieveExtractedDocumentSchema(string id);
     }
 }
