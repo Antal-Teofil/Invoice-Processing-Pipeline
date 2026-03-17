@@ -13,5 +13,10 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
         {
             throw new NotImplementedException();
         }
+
+        public Task<ExtractedDocumentDataSchema> AdaptSchema(AnalyzeResult source)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

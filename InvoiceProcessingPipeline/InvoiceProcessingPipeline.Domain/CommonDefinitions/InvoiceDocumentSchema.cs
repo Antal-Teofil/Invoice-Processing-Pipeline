@@ -11,7 +11,7 @@ namespace InvoiceProcessingPipeline.Domain.CommonDefinitions
     public abstract class InvoiceDocumentSchema : DocumentDataSchema
     {
         // 1..1
-        public required InvoiceID Id { get; set; }
+        public required InvoiceId Id { get; set; }
         // 1..1
         /// <summary>
         /// a group of business terms providing information about the SELLER.

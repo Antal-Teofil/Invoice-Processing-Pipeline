@@ -9,5 +9,5 @@ namespace InvoiceProcessingPipeline.Domain.ValueObjects
     /// </summary>
     /// <param name="Value"></param>
     /// <param name="SchemeID"></param>
-    public sealed record EndpointID(string Value, string SchemeID);
+    public sealed record EndpointId(string Value, string SchemeID);
 }

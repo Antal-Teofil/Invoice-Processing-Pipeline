@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace InvoiceProcessingPipeline.Domain.ValueObjects
+﻿namespace InvoiceProcessingPipeline.Domain.ValueObjects
 {
-    public sealed record InvoiceLine(string ID, Note? LineNote, InvoicedQuantity Quantity, LineExtensionAmount LEAmount, Item Kind, Price ItemPrice);
+    public sealed record InvoiceLine(string LineId, Note? LineNote, InvoicedQuantity Quantity, LineExtensionAmount LEAmount, Item Kind, Price ItemPrice);
 }

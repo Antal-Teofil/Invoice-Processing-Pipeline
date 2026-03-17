@@ -10,7 +10,7 @@ namespace InvoiceProcessingPipeline.Domain.Aggregates.Components
     {
         // seller's electronic address identifier
         // 1..1
-        public required EndpointID EndpointId { get; set; }
+        public required EndpointId EndpointId { get; set; }
 
         // 0..n
         public ICollection<PartyIdentification>? PartyIdentifications { get; set; }
