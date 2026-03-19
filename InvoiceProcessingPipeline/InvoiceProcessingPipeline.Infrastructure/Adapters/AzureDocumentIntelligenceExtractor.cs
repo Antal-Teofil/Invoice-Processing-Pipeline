@@ -11,7 +11,7 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
     {
 
         // fapados megoldas, ez betolti a teljes mindenseget
-        public async Task<ExtractedDocumentResponse> ExtractDocumentAsync(Uri sasUri, CancellationToken token)
+        public async Task<ExtractedDocumentResponse> ExtractDocumentDataAsync(Uri sasUri, CancellationToken token)
         {
             ArgumentNullException.ThrowIfNull(sasUri, nameof(sasUri));
 
