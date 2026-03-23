@@ -28,7 +28,7 @@ namespace InvoiceProcessingPipeline.Functions.Activities
                 return ActivityResult<ExtractedDocumentResponse>.Failure("User Delegation SAS URI must be a non-null value");
             }
 
-            var result = await extractor.ExtractDocumentAsync(userDelegationSasUri, token);
+            var result = await extractor.ExtractDocumentDataAsync(userDelegationSasUri, token);
 
             //await store.StoreExtractedDocumentSchema(result);
 

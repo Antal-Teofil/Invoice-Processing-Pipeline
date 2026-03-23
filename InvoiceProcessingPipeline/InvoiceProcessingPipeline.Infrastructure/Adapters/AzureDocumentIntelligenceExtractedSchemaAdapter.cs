@@ -12,9 +12,8 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
 
         public Task<ExtractedDocumentDataSchema> AdaptSchema(AnalyzeResult source)
         {
-            ExtractedDocumentDataSchema extrcatedSchema = new();
 
-            source.Documents[0].Fields
+            var dic = source.Documents[0].Fields;
             //===================================
             throw new NotImplementedException();
         }
