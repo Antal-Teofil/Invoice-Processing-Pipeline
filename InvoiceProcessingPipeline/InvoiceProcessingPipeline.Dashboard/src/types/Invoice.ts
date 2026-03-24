@@ -1,3 +1,8 @@
+type PartyTaxScheme = {
+
+    companyId: string;
+    taxScheme: string;
+};
 
 type PostalAddress = {
     streetName?: string;
@@ -5,7 +10,7 @@ type PostalAddress = {
     postalZone?: string;
     countrySubEntity?: string;
     country: string;
-    addressLines?: string[];
+    addressLines?: Array<string>;
 };
 type PartyLegalEntity = {
 
@@ -25,7 +30,23 @@ type Party = {
     address: PostalAddress;
     contact: ContactInformation;
     partyEntity: PartyLegalEntity;
+    partyTaxSchemes: Array<PartyTaxScheme>;
 };
 
+type InvoiceLine = {
+
+};
 export default interface Invoice {
+
+    Id: string;
+    accountingCustomerParty: Party;
+    accountingSupplierParty: Party;
+    issueDate: string;
+    dueDate?: string;
+    typeCode: string;
+    note?: string;
+    documentCurrencyCode: string;
+    taxPointDate: string;
+    lineItems: Array<InvoiceLine>;
+    //TO DO: to be extended
 };
