@@ -6,6 +6,7 @@ using System.Text;
 
 namespace InvoiceProcessingPipeline.Functions.Triggers
 {
+    // retrieves invoices under processing
     public sealed class RetrievePagedInvoicesTrigger
     {
         [Function(nameof(RetrievePagedInvoicesTrigger))]
