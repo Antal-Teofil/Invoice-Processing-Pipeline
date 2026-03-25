@@ -10,7 +10,7 @@ namespace InvoiceProcessingPipeline.Functions.Triggers
     public sealed class RetrievePagedInvoicesTrigger
     {
         [Function(nameof(RetrievePagedInvoicesTrigger))]
-        public async Task<HttpResponseData> RunAsync([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "invoices")] HttpRequestData request)
+        public async Task<HttpResponseData> RunAsync([HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "invoices")] HttpRequestData request)
         {
             return request.CreateResponse(System.Net.HttpStatusCode.OK);
         }

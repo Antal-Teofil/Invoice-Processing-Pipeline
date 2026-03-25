@@ -12,7 +12,7 @@ namespace InvoiceProcessingPipeline.Functions.Triggers
     public sealed class RequestStatusTrigger(ILogger<RequestStatusTrigger> logger)
     {
         [Function(nameof(RequestStatusTrigger))]
-        public async Task<HttpResponseData> RunAsync([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "orchestrations/{instanceId}")] HttpRequestData request)
+        public async Task<HttpResponseData> RunAsync([HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "orchestrations/{instanceId}")] HttpRequestData request)
         {
             logger.LogInformation("Requesting workflow status");
             // lekerem a folyamat allapotat vagyis a statuszt illetve a hozza tartozo szamla allapotot
