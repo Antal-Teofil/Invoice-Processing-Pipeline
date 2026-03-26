@@ -6,7 +6,7 @@ using System.Text;
 
 namespace InvoiceProcessingPipeline.Domain.Aggregates.Components
 {
-    public sealed class Party
+    public sealed record Party : DocumentField
     {
         // seller's electronic address identifier
         // 1..1

@@ -1,17 +1,18 @@
-﻿using Azure;
+﻿
+
+using Azure;
 using Azure.AI.DocumentIntelligence;
-using InvoiceProcessingPipeline.Application.BoundaryContracts;
 using InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionContracts;
-using InvoiceProcessingPipeline.Application.Ports;
+using InvoiceProcessingPipeline.Domain.Aggregates.Components;
 
 namespace InvoiceProcessingPipeline.Infrastructure.Adapters
 {
     public sealed class AzureDocumentIntelligenceExtractor(
-        DocumentIntelligenceClient client, IExtractionResultAdapter<AnalyzeResult> extractionAdapter) : IDocumentExtractor
+        DocumentIntelligenceClient client) : IDocumentDataExtractor
     {
 
         // fapados megoldas, ez betolti a teljes mindenseget
-        public async Task<ExtractedDocumentResponse> ExtractDocumentDataAsync(Uri sasUri, CancellationToken token)
+        public async Task<ExtractedDocumentData> ExtractDocumentDataAsync(Uri sasUri, CancellationToken token)
         {
             ArgumentNullException.ThrowIfNull(sasUri, nameof(sasUri));
 
@@ -23,9 +24,16 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
 
             AnalyzeResult analyzedResult = result.Value;
 
-            ExtractedDocumentDataSchema schema =  await extractionAdapter.AdaptSchema(analyzedResult);
+            var extractorBuilder = new ExtractedDocumentDataBuilder<AnalyzeResult>(analyzedResult)
+                .ExtractField("accounting-customer-party", (analyzedResult) =>
+                {
+                    return new ExtractedDocumentField<Party>();
+                })
+                .Build();
             return null!;
         }
+
+
 
     }
 }

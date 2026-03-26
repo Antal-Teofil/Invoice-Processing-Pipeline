@@ -43,11 +43,11 @@ builder.Services.AddQueueClient();
 
 builder.Services.AddSingleton<IDocumentEventOrchestrator, DocumentEventOrchestratorService>();
 
-builder.Services.AddSingleton<IDocumentExtractor, AzureDocumentIntelligenceExtractor>();
+builder.Services.AddSingleton<IDocumentDataExtractor, AzureDocumentIntelligenceExtractor>();
 
 builder.Services.AddSingleton<IDocumentDataStore, CosmosDocumentSchemaStore>();
 
-builder.Services.AddSingleton<IExtractionResultAdapter<AnalyzeResult>, AzureDocumentIntelligenceExtractedSchemaAdapter>();
+builder.Services.AddSingleton<IExtractionResultAdapter<AnalyzeResult>, AzureDocumentIntelligenceExtractedDataAdapter>();
 
 
 builder.Build().Run();

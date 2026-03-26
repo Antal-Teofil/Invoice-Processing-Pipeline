@@ -1,14 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using InvoiceProcessingPipeline.Domain.ValueObjects;
 
 namespace InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionContracts
 {
-    public sealed record ExtractedDocumentField<TSource> where TSource : class
+    public sealed record ExtractedDocumentField<TSource> where TSource : DocumentField
     {
-        public required string FieldName { get; set; }
-        public required string FieldValue { get; set; }
-        public required TSource? Field { get; set; }
-        public required float ConfidenceScore { get; set; }
+        public string? FieldName { get; init; }
+
+        public object? FieldOriginalContent { get; init; }
+
+        public double? ConfidenceScore { get; init; }
+
+        public TSource? ExtractedDocument { get; init; }
+
     }
 }

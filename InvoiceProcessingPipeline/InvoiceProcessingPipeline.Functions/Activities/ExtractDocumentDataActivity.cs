@@ -16,7 +16,7 @@ namespace InvoiceProcessingPipeline.Functions.Activities
      */
 
     // itt majd nem csak user delegation sas urit fogok atadni hanem korrelacio kulcsot is csak most egyelore meg nem bonyolitjuk
-    public class ExtractDocumentDataActivity(ILogger<ExtractDocumentDataActivity> logger, IDocumentExtractor extractor, IDocumentDataStore store)
+    public class ExtractDocumentDataActivity(ILogger<ExtractDocumentDataActivity> logger, IDocumentDataExtractor extractor)
     {
         [Function(nameof(ExtractDocumentDataActivity))]
         public async Task<ActivityResult<ExtractedDocumentResponse>> RunAsync([ActivityTrigger] DocumentUserDelegationSasUri sasUri, CancellationToken token)
@@ -28,9 +28,7 @@ namespace InvoiceProcessingPipeline.Functions.Activities
                 return ActivityResult<ExtractedDocumentResponse>.Failure("User Delegation SAS URI must be a non-null value");
             }
 
-            var result = await extractor.ExtractDocumentDataAsync(userDelegationSasUri, token);
-
-            //await store.StoreExtractedDocumentSchema(result);
+            await extractor.ExtractDocumentDataAsync(userDelegationSasUri, token);
 
             return ActivityResult<ExtractedDocumentResponse>.Success(new ExtractedDocumentResponse()); // ide nem result jon csak idegesit ha piros
         }

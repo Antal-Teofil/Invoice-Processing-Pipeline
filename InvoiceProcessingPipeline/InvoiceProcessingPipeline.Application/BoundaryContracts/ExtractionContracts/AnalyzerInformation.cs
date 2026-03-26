@@ -6,6 +6,10 @@ namespace InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionCont
 {
     public sealed class AnalyzerInformation
     {
-        public required string ApiInfo { get; set; }
+        public required string ApiVersion { get; init; }
+
+        public required string ModelId { get; init; }
+
+        public IReadOnlyCollection<AnalyzerWarning>? Warnings { get; init; }
     }
 }
