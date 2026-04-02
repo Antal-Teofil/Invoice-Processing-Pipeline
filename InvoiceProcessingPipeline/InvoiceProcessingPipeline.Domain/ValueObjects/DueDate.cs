@@ -5,5 +5,5 @@ using System.Text;
 namespace InvoiceProcessingPipeline.Domain.ValueObjects
 {
     // DueDate
-    public sealed record DueDate(DateOnly Date);
+    public sealed record DueDate(DateOnly Date): DocumentField;
 }

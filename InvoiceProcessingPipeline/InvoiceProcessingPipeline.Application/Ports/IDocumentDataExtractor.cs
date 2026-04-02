@@ -1,8 +1,6 @@
-﻿using InvoiceProcessingPipeline.Application.BoundaryContracts;
-using InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionContracts;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionContracts;
+using InvoiceProcessingPipeline.Domain.Aggregates.Components;
+using InvoiceProcessingPipeline.Domain.ValueObjects;
 
 namespace InvoiceProcessingPipeline.Application.Ports
 {
@@ -10,6 +8,5 @@ namespace InvoiceProcessingPipeline.Application.Ports
     {
         public Task<ExtractedDocumentData> ExtractDocumentDataAsync(Uri sasUri, CancellationToken token);
 
-        
     }
 }

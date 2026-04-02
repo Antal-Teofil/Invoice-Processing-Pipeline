@@ -1,29 +1,49 @@
-﻿
+﻿using InvoiceProcessingPipeline.Domain.ValueObjects;
 
-using InvoiceProcessingPipeline.Domain.ValueObjects;
+namespace InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionContracts;
 
-namespace InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionContracts
+public sealed class ExtractedDocumentDataBuilder
 {
-    public class ExtractedDocumentDataBuilder<TSource>(TSource dataSource) where TSource : class
+    private AnalyzerInformation? _analyzerInformation;
+    private readonly ExtractedDocumentFieldDictionary _fieldDictionary = new();
+
+    public ExtractedDocumentDataBuilder WithAnalyzerInformation(
+        AnalyzerInformation analyzerInformation)
     {
+        ArgumentNullException.ThrowIfNull(analyzerInformation);
 
-        public TSource DataSource { get; init; } = dataSource;
-        public ExtractedDocumentData DocumentData { get; init; } = new();
-
-        public ExtractedDocumentData Build()
-        {
-            return DocumentData;
-        }
-
-        public ExtractedDocumentDataBuilder<TSource> ExtractField(string internalFieldName, Func<TSource, ExtractedDocumentField<DocumentField>> extractor)
-        {
-            ArgumentException.ThrowIfNullOrWhiteSpace(internalFieldName, nameof(internalFieldName));
-            ArgumentNullException.ThrowIfNull(extractor, nameof(extractor));
-
-            var extractedField = extractor(DataSource);
-
-            DocumentData.FieldDictionary.Add(internalFieldName, extractedField);
-            return this;
-        }
+        _analyzerInformation = analyzerInformation;
+        return this;
     }
+
+    public ExtractedDocumentDataBuilder ExtractFieldAs<TField>(
+        string givenFieldName,
+        Func<ExtractedDocumentField<TField>> extractor)
+        where TField : DocumentField
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(givenFieldName);
+        ArgumentNullException.ThrowIfNull(extractor);
+
+        var extractedField = extractor()
+            ?? throw new InvalidOperationException(
+                $"Az extractor null értéket adott vissza a(z) '{givenFieldName}' mezőhöz.");
+
+        var normalizedField = extractedField with
+        {
+            FieldName = extractedField.FieldName ?? givenFieldName
+        };
+
+        _fieldDictionary.Add(givenFieldName, normalizedField);
+
+        return this;
+    }
+
+    public ExtractedDocumentDataBuilder AddField<TField>(
+        string givenFieldName,
+        ExtractedDocumentField<TField> field)
+        where TField : DocumentField =>
+        ExtractFieldAs(givenFieldName, () => field);
+
+    public ExtractedDocumentData Build() =>
+        new(_analyzerInformation, _fieldDictionary);
 }

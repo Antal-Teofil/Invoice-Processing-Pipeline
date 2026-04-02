@@ -4,5 +4,5 @@ using System.Text;
 
 namespace InvoiceProcessingPipeline.Domain.ValueObjects
 {
-    public sealed record TaxInclusiveAmount(decimal Amount, string CurrencyID);
+    public sealed record TaxInclusiveAmount(decimal Amount, string CurrencyID): DocumentField;
 }

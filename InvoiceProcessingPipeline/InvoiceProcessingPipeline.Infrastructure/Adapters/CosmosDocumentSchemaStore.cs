@@ -18,7 +18,7 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
             throw new NotImplementedException();
         }
 
-        public Task<ExtractedDocumentDataSchema?> RetrieveExtractedDocumentSchema(string id)
+        public Task<ExtractedDocumentData?> RetrieveExtractedDocumentSchema(string id)
         {
             throw new NotImplementedException();
         }
@@ -36,7 +36,7 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
             return status;
         }
 
-        public async Task<HttpStatusCode> StoreExtractedDocumentSchema(ExtractedDocumentDataSchema data)
+        public async Task<HttpStatusCode> StoreExtractedDocumentSchema(ExtractedDocumentData data)
         {
             // egyelore nem kell semmi plusz info a mentett objektumrol, ezert nem kerem vissza az objektumot a memoriaba
             // majd meglatjuk mit kezdunk az ETag-el.
@@ -45,7 +45,7 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
                 EnableContentResponseOnWrite = false
             };
             // itt majd kicserelem a data.Id.Id-t valami egyebre, mert igy nem szep.
-            var response = await storage.CreateItemAsync(data, new PartitionKey(data.Id.ToString()), options);
+            var response = await storage.CreateItemAsync(data, new PartitionKey(data.AnalyzerInformation.ModelId.ToString()), options);
             var status = response.StatusCode;
             return status;
         }

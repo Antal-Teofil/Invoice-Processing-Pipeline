@@ -9,9 +9,9 @@ namespace InvoiceProcessingPipeline.Application.Ports
     public interface IDocumentDataStore
     {
         // itt is Result<> lesz nem csunya HttpStatusCode
-        public Task<HttpStatusCode> StoreExtractedDocumentSchema(ExtractedDocumentDataSchema data);
+        public Task<HttpStatusCode> StoreExtractedDocumentSchema(ExtractedDocumentData data);
         public Task<HttpStatusCode> StoreCanonizedDocumentSchema(DocumentDataSchema schema);
         public Task<DocumentDataSchema?> RetrieveCanonizedDocumentSchema(string id);
-        public Task<ExtractedDocumentDataSchema?> RetrieveExtractedDocumentSchema(string id);
+        public Task<ExtractedDocumentData?> RetrieveExtractedDocumentSchema(string id);
     }
 }

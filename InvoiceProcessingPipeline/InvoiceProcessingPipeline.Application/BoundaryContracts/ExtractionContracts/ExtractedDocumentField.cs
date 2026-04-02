@@ -2,15 +2,16 @@
 
 namespace InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionContracts
 {
-    public sealed record ExtractedDocumentField<TSource> where TSource : DocumentField
+    public sealed record ExtractedDocumentField<TField>(
+    TField Extraction,
+    string? FieldName = null,
+    object? FieldOriginalContent = null,
+    double? ConfidenceScore = null)
+    : IExtractedDocumentField
+    where TField : DocumentField
     {
-        public string? FieldName { get; init; }
+        DocumentField IExtractedDocumentField.Extraction => Extraction;
 
-        public object? FieldOriginalContent { get; init; }
-
-        public double? ConfidenceScore { get; init; }
-
-        public TSource? ExtractedDocument { get; init; }
-
+        public Type ExtractionType => typeof(TField);
     }
 }
