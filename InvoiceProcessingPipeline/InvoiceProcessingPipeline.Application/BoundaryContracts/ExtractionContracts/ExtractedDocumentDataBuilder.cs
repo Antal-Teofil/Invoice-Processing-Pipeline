@@ -2,9 +2,19 @@
 
 namespace InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionContracts;
 
+/// <summary>
+/// this builder class is for extracting arbitrary amount of field from a given source
+/// </summary>
 public sealed class ExtractedDocumentDataBuilder
 {
+    /// <summary>
+    /// information about the api used for extracting data
+    /// </summary>
     private AnalyzerInformation? _analyzerInformation;
+
+    /// <summary>
+    /// a dictionary which contains the canonicalized extracted fields
+    /// </summary>
     private readonly ExtractedDocumentFieldDictionary _fieldDictionary = new();
 
     public ExtractedDocumentDataBuilder WithAnalyzerInformation(
@@ -16,6 +26,14 @@ public sealed class ExtractedDocumentDataBuilder
         return this;
     }
 
+    /// <summary>
+    /// it is a higher-order function which takes a string and a function as inputs and must return a canonicalized extrcated field
+    /// </summary>
+    /// <typeparam name="TField"></typeparam>
+    /// <param name="givenFieldName"></param>
+    /// <param name="extractor"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
     public ExtractedDocumentDataBuilder ExtractFieldAs<TField>(
         string givenFieldName,
         Func<ExtractedDocumentField<TField>> extractor)

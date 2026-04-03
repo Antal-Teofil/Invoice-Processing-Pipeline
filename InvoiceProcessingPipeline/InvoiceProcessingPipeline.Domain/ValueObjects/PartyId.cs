@@ -4,6 +4,5 @@ using System.Text;
 
 namespace InvoiceProcessingPipeline.Domain.ValueObjects
 {
-    // DueDate
-    public sealed record DueDate(DateTimeOffset Date): DocumentField;
+    public sealed record PartyId(string CompanyId) : DocumentField;
 }

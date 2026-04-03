@@ -6,5 +6,11 @@ namespace InvoiceProcessingPipeline.Domain.ValueObjects
 {
     // RegistrationName -> CustomerName/VendorName (AADI)
     //
-    public sealed record PartyLegalEntity(string RegistrationName, string? CompanyID, string CompanyLegalForm) : DocumentField;
+    /// <summary>
+    /// the legal representation of a party
+    /// </summary>
+    /// <param name="RegistrationName"></param>
+    /// <param name="CompanyID"></param>
+    /// <param name="CompanyLegalForm"></param>
+    public sealed record PartyLegalEntity(PartyRegistrationName RegistrationName, PartyId? CompanyID, string CompanyLegalForm) : DocumentField;
 }
