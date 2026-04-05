@@ -48,4 +48,5 @@ builder.Services.AddSingleton<IDocumentDataExtractor, AzureDocumentIntelligenceE
 builder.Services.AddSingleton<IDocumentDataStore, CosmosDocumentSchemaStore>();
 
 
+
 builder.Build().Run();

@@ -1,7 +1,7 @@
 ﻿using Azure;
 using Azure.AI.DocumentIntelligence;
 using InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionContracts;
-using InvoiceProcessingPipeline.Application.Ports;  
+using InvoiceProcessingPipeline.Application.Ports;
 using InvoiceProcessingPipeline.Domain.ValueObjects;
 
 
@@ -39,161 +39,173 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
             var builder = new ExtractedDocumentDataBuilder()
                 .ExtractFieldAs("customerPartyRegistrationName", () =>
                 {
-                    if (!document.Fields.TryGetValue("CustomerName", out var field))
+                    if (!document.Fields.TryGetValue("CustomerName", out var field) ||
+                        field.FieldType != DocumentFieldType.String ||
+                        string.IsNullOrWhiteSpace(field.ValueString))
                     {
-                        // később ezt lehet warning mechanizmusra cserélni, nem akarunk exceptiont dobni ebben a fazisban
-                        throw new InvalidOperationException("Missing CustomerName");
-                    }
-
-                    if (field.FieldType != DocumentFieldType.String || string.IsNullOrWhiteSpace(field.ValueString))
-                    {
-                        throw new InvalidOperationException("CustomerName is not a valid string field");
+                        return new ExtractedDocumentField<PartyRegistrationName>(
+                            Extraction: new PartyRegistrationName(string.Empty),
+                            FieldName: "customerPartyRegistrationName",
+                            FieldOriginalContent: string.Empty,
+                            ConfidenceScore: 0
+                        );
                     }
 
                     return new ExtractedDocumentField<PartyRegistrationName>(
                         Extraction: new PartyRegistrationName(field.ValueString),
                         FieldName: "customerPartyRegistrationName",
-                        FieldOriginalContent: field.Content,
+                        FieldOriginalContent: field.Content ?? string.Empty,
                         ConfidenceScore: field.Confidence
                     );
                 })
                 .ExtractFieldAs("customerPartyName", () =>
                 {
-
-                    if (!document.Fields.TryGetValue("CustomerName", out var field))
+                    if (!document.Fields.TryGetValue("CustomerName", out var field) ||
+                        field.FieldType != DocumentFieldType.String ||
+                        string.IsNullOrWhiteSpace(field.ValueString))
                     {
-                        // később ezt lehet warning mechanizmusra cserélni
-                        throw new InvalidOperationException("Missing CustomerName");
-                    }
-
-                    if (field.FieldType != DocumentFieldType.String || string.IsNullOrWhiteSpace(field.ValueString))
-                    {
-                        throw new InvalidOperationException("CustomerName is not a valid string field");
+                        return new ExtractedDocumentField<PartyName>(
+                            Extraction: new PartyName(string.Empty),
+                            FieldName: "customerPartyName",
+                            FieldOriginalContent: string.Empty,
+                            ConfidenceScore: 0
+                        );
                     }
 
                     return new ExtractedDocumentField<PartyName>(
                         Extraction: new PartyName(field.ValueString),
-                        FieldName: "customerPartyRegistrationName",
-                        FieldOriginalContent: field.Content,
+                        FieldName: "customerPartyName",
+                        FieldOriginalContent: field.Content ?? string.Empty,
                         ConfidenceScore: field.Confidence
                     );
                 })
                 .ExtractFieldAs("customerPartyId", () =>
                 {
-                    if (!document.Fields.TryGetValue("CustomerId", out var field))
+                    if (!document.Fields.TryGetValue("CustomerTaxId", out var field) ||
+                        field.FieldType != DocumentFieldType.String ||
+                        string.IsNullOrWhiteSpace(field.ValueString))
                     {
-                        throw new InvalidOperationException("Missing CustomerName");
-                    }
-
-                    if (field.FieldType != DocumentFieldType.String || string.IsNullOrWhiteSpace(field.ValueString))
-                    {
-                        throw new InvalidOperationException("CustomerId is not a valid string field");
+                        return new ExtractedDocumentField<PartyId>(
+                            Extraction: new PartyId(string.Empty),
+                            FieldName: "customerPartyId",
+                            FieldOriginalContent: string.Empty,
+                            ConfidenceScore: 0
+                        );
                     }
 
                     return new ExtractedDocumentField<PartyId>(
                         Extraction: new PartyId(field.ValueString),
                         FieldName: "customerPartyId",
-                        FieldOriginalContent: field.Content,
+                        FieldOriginalContent: field.Content ?? string.Empty,
                         ConfidenceScore: field.Confidence
                     );
                 })
                 .ExtractFieldAs("invoiceId", () =>
                 {
-                    if (!document.Fields.TryGetValue("InvoiceId", out var field))
+                    if (!document.Fields.TryGetValue("InvoiceId", out var field) ||
+                        field.FieldType != DocumentFieldType.String ||
+                        string.IsNullOrWhiteSpace(field.ValueString))
                     {
-                        throw new InvalidOperationException("Missing invoice id");
-                    }
-
-                    if (field.FieldType != DocumentFieldType.String || string.IsNullOrWhiteSpace(field.ValueString))
-                    {
-                        throw new InvalidOperationException("InvoiceId is not a valid string field");
+                        return new ExtractedDocumentField<InvoiceId>(
+                            Extraction: new InvoiceId(string.Empty),
+                            FieldName: "invoiceId",
+                            FieldOriginalContent: string.Empty,
+                            ConfidenceScore: 0
+                        );
                     }
 
                     return new ExtractedDocumentField<InvoiceId>(
                         Extraction: new InvoiceId(field.ValueString),
-                        FieldName: "customerPartyId",
-                        FieldOriginalContent: field.Content,
+                        FieldName: "invoiceId",
+                        FieldOriginalContent: field.Content ?? string.Empty,
                         ConfidenceScore: field.Confidence
                     );
                 })
                 .ExtractFieldAs("issueDate", () =>
                 {
-                    if (!document.Fields.TryGetValue("InvoiceDate", out var field))
+                    if (!document.Fields.TryGetValue("InvoiceDate", out var field) ||
+                        field.FieldType != DocumentFieldType.Date ||
+                        field.ValueDate is null)
                     {
-                        throw new InvalidOperationException("Missing InvoiceDate");
-                    }
-
-                    if (field.FieldType != DocumentFieldType.Date || field.ValueDate is null)
-                    {
-                        throw new InvalidOperationException("InvoiceDate is not a valid date field");
+                        return new ExtractedDocumentField<IssueDate>(
+                            Extraction: new IssueDate(DateTimeOffset.MinValue),
+                            FieldName: "issueDate",
+                            FieldOriginalContent: string.Empty,
+                            ConfidenceScore: 0
+                        );
                     }
 
                     return new ExtractedDocumentField<IssueDate>(
                         Extraction: new IssueDate(field.ValueDate.Value),
                         FieldName: "issueDate",
-                        FieldOriginalContent: field.Content,
+                        FieldOriginalContent: field.Content ?? string.Empty,
                         ConfidenceScore: field.Confidence
                     );
                 })
                 .ExtractFieldAs("dueDate", () =>
                 {
-                    if (!document.Fields.TryGetValue("DueDate", out var field))
+                    if (!document.Fields.TryGetValue("DueDate", out var field) ||
+                        field.FieldType != DocumentFieldType.Date ||
+                        field.ValueDate is null)
                     {
-                        throw new InvalidOperationException("Missing DueDate");
-                    }
-
-                    if (field.FieldType != DocumentFieldType.Date || field.ValueDate is null)
-                    {
-                        throw new InvalidOperationException("DueDate is not a valid date field");
+                        return new ExtractedDocumentField<DueDate>(
+                            Extraction: new DueDate(DateTimeOffset.MinValue),
+                            FieldName: "dueDate",
+                            FieldOriginalContent: string.Empty,
+                            ConfidenceScore: 0
+                        );
                     }
 
                     return new ExtractedDocumentField<DueDate>(
                         Extraction: new DueDate(field.ValueDate.Value),
                         FieldName: "dueDate",
-                        FieldOriginalContent: field.Content,
+                        FieldOriginalContent: field.Content ?? string.Empty,
                         ConfidenceScore: field.Confidence
                     );
                 })
                 .ExtractFieldAs("vendorPartyName", () =>
                 {
-                    if (!document.Fields.TryGetValue("VendorName", out var field))
+                    if (!document.Fields.TryGetValue("VendorName", out var field) ||
+                        field.FieldType != DocumentFieldType.String ||
+                        string.IsNullOrWhiteSpace(field.ValueString))
                     {
-                        // később ezt lehet warning mechanizmusra cserélni
-                        throw new InvalidOperationException("Missing VendorName");
-                    }
-
-                    if (field.FieldType != DocumentFieldType.String || string.IsNullOrWhiteSpace(field.ValueString))
-                    {
-                        throw new InvalidOperationException("VendorName is not a valid string field");
+                        return new ExtractedDocumentField<PartyName>(
+                            Extraction: new PartyName(string.Empty),
+                            FieldName: "vendorPartyName",
+                            FieldOriginalContent: string.Empty,
+                            ConfidenceScore: 0
+                        );
                     }
 
                     return new ExtractedDocumentField<PartyName>(
                         Extraction: new PartyName(field.ValueString),
                         FieldName: "vendorPartyName",
-                        FieldOriginalContent: field.Content,
+                        FieldOriginalContent: field.Content ?? string.Empty,
                         ConfidenceScore: field.Confidence
                     );
                 })
                 .ExtractFieldAs("vendorPartyRegistrationName", () =>
                 {
-                    if (!document.Fields.TryGetValue("VendorName", out var field))
+                    if (!document.Fields.TryGetValue("VendorName", out var field) ||
+                        field.FieldType != DocumentFieldType.String ||
+                        string.IsNullOrWhiteSpace(field.ValueString))
                     {
-                        // később ezt lehet warning mechanizmusra cserélni
-                        throw new InvalidOperationException("Missing VendorName");
-                    }
-
-                    if (field.FieldType != DocumentFieldType.String || string.IsNullOrWhiteSpace(field.ValueString))
-                    {
-                        throw new InvalidOperationException("VendorName is not a valid string field");
+                        return new ExtractedDocumentField<PartyRegistrationName>(
+                            Extraction: new PartyRegistrationName(string.Empty),
+                            FieldName: "vendorPartyRegistrationName",
+                            FieldOriginalContent: string.Empty,
+                            ConfidenceScore: 0
+                        );
                     }
 
                     return new ExtractedDocumentField<PartyRegistrationName>(
                         Extraction: new PartyRegistrationName(field.ValueString),
                         FieldName: "vendorPartyRegistrationName",
-                        FieldOriginalContent: field.Content,
+                        FieldOriginalContent: field.Content ?? string.Empty,
                         ConfidenceScore: field.Confidence
                     );
-                })
+                });
+            /*
                 .ExtractFieldAs<PostalAddress>("vendorPostalAddress", () =>
                 {
                     throw new NotImplementedException();
@@ -221,10 +233,10 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
                 .ExtractFieldAs<PayableAmount>("legalMonetaryTotal.payableAmount", () =>
                 {
                     throw new NotImplementedException();
-                }).Build();
-
-                // folytatjuk a a VendorTaxId-nal....
-            return null!;
+                });
+            */
+            // folytatjuk a a VendorTaxId-nal....
+            return builder.Build();
         }
 
 

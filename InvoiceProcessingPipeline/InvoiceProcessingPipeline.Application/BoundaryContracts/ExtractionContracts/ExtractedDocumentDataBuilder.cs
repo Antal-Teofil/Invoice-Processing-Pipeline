@@ -42,16 +42,12 @@ public sealed class ExtractedDocumentDataBuilder
         ArgumentException.ThrowIfNullOrWhiteSpace(givenFieldName);
         ArgumentNullException.ThrowIfNull(extractor);
 
-        var extractedField = extractor()
-            ?? throw new InvalidOperationException(
-                $"Az extractor null értéket adott vissza a(z) '{givenFieldName}' mezőhöz.");
-
-        var normalizedField = extractedField with
+        var extractedField = extractor();
+        
+        if(extractedField is not null)
         {
-            FieldName = extractedField.FieldName ?? givenFieldName
-        };
-
-        _fieldDictionary.Add(givenFieldName, normalizedField);
+            _fieldDictionary.Add(givenFieldName, extractedField);
+        }
 
         return this;
     }
