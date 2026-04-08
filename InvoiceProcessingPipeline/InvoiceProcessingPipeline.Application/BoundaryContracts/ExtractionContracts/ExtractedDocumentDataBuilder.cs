@@ -12,6 +12,7 @@ public sealed class ExtractedDocumentDataBuilder
     /// </summary>
     private AnalyzerInformation? _analyzerInformation;
 
+    private string _documentId;
     /// <summary>
     /// a dictionary which contains the canonicalized extracted fields
     /// </summary>
@@ -59,5 +60,5 @@ public sealed class ExtractedDocumentDataBuilder
         ExtractFieldAs(givenFieldName, () => field);
 
     public ExtractedDocumentData Build() =>
-        new(_analyzerInformation, _fieldDictionary);
+        new(_analyzerInformation, _fieldDictionary, _documentId);
 }
