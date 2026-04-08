@@ -1,61 +1,74 @@
-﻿using System.Text.Json;
-using Azure.Messaging;
+﻿using Azure.Messaging;
+using Azure.Messaging.EventGrid;
 using Azure.Messaging.EventGrid.SystemEvents;
+using Azure.Storage.Queues;
 using InvoiceProcessingPipeline.Application.BoundaryContracts;
-using InvoiceProcessingPipeline.Application.Ports;
-using InvoiceProcessingPipeline.Functions.Orchestrators;
+using MapsterMapper;
 using Microsoft.Azure.Functions.Worker;
-using Microsoft.DurableTask.Client;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
 namespace InvoiceProcessingPipeline.Functions.Events;
 
-public sealed class IncomingDocumentEvent(ILogger<IncomingDocumentEvent> logger, IDocumentEventOrchestrator orchestratorService)
+public sealed class IncomingDocumentEvent(
+    ILogger<IncomingDocumentEvent> logger,
+    IMapper mapper,
+    QueueClient queueClient)
 {
     [Function(nameof(IncomingDocumentEvent))]
-    public async Task RunAsync(
-        [EventGridTrigger] CloudEvent cloudEvent,
-        [DurableClient] DurableTaskClient client,
-        CancellationToken ct)
+    public async Task RunAsync([EventGridTrigger] CloudEvent cloudEvent, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(cloudEvent);
 
         logger.LogInformation(
-            "Received event. Id={EventId}, Type={EventType}, Subject={Subject}",
-            cloudEvent.Id, cloudEvent.Type, cloudEvent.Subject);
+            "Received CloudEvent. Id: {EventId}, Type: {EventType}, Source: {EventSource}",
+            cloudEvent.Id,
+            cloudEvent.Type,
+            cloudEvent.Source);
+
+        if (!string.Equals(cloudEvent.Type, SystemEventNames.StorageBlobCreated, StringComparison.Ordinal))
+        {
+            throw new NotSupportedException(
+                $"Unsupported event type '{cloudEvent.Type}'. Expected '{SystemEventNames.StorageBlobCreated}'.");
+        }
 
         if (cloudEvent.Data is null)
         {
-            logger.LogWarning("CloudEvent.Data is null");
-            return;
+            throw new InvalidOperationException("CloudEvent.Data is null.");
         }
 
-        var data = cloudEvent.Data.ToObjectFromJson<StorageBlobCreatedEventData>();
-
-        logger.LogInformation(
-            "Blob created. Url={Url}, ContentType={ContentType}, Size={Size}",
-            data.Url, data.ContentType, data.Sequencer);
-
-        var ingestionEvent = new IngestionEvent
+        StorageBlobCreatedEventData blobData;
+        try
         {
-            CorrelationId = cloudEvent.Id, 
+            blobData = cloudEvent.Data.ToObjectFromJson<StorageBlobCreatedEventData>()
+                ?? throw new InvalidOperationException(
+                    $"CloudEvent.Data could not be deserialized to {nameof(StorageBlobCreatedEventData)}.");
+        }
+        catch (JsonException ex)
+        {
+            throw new InvalidOperationException(
+                $"CloudEvent.Data is not a valid {nameof(StorageBlobCreatedEventData)} payload.",
+                ex);
+        }
 
-            EventId = cloudEvent.Id,
-            EventType = cloudEvent.Type,
-            Subject = cloudEvent.Subject ?? string.Empty,
+        var storageMetadata = mapper.Map<DocumentStorageMetadata>(blobData);
+        var eventMetadata = mapper.Map<DocumentEventMetadata>(cloudEvent);
 
-            Body = cloudEvent.Data?.ToString() ?? string.Empty,
-
-            EventTime = cloudEvent.Time?.UtcDateTime ?? DateTime.UtcNow,
-            DataVersion = cloudEvent.DataSchema ?? string.Empty,
-
-            Topic = string.Empty,
-            TopicId = string.Empty
+        var documentIngestionEvent = new DocumentIngestionEvent
+        {
+            Id = eventMetadata.EventId,
+            CorrelationId = eventMetadata.EventId,
+            StorageMetadata = storageMetadata,
+            EventMetadata = eventMetadata
         };
 
-        var instanceId = await orchestratorService.StartOrchestrationEventAsync(client, nameof(DocumentIngestionOrchestrator), ingestionEvent, ct);
+        var payload = JsonSerializer.Serialize(documentIngestionEvent);
+
+        await queueClient.SendMessageAsync(payload, cancellationToken);
 
         logger.LogInformation(
-            "Started orchestration. InstanceId={InstanceId}, EventId={EventId}",
-            instanceId, cloudEvent.Id);
+            "Canonical DocumentIngestionEvent enqueued. EventId: {EventId}, DocumentUrl: {DocumentUrl}",
+            documentIngestionEvent.EventMetadata.EventId,
+            documentIngestionEvent.StorageMetadata.DocumentUrl);
     }
 }
