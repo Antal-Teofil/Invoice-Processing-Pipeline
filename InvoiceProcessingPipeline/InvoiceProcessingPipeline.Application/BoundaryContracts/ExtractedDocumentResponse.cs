@@ -6,5 +6,6 @@ namespace InvoiceProcessingPipeline.Application.BoundaryContracts
 {
     public sealed record ExtractedDocumentResponse
     {
+        public required string ExtractedDocumentId { get; set; }
     }
 }

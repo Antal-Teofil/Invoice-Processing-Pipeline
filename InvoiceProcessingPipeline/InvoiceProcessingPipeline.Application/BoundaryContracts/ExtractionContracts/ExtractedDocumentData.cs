@@ -6,6 +6,7 @@ public sealed class ExtractedDocumentData(
     AnalyzerInformation? analyzerInformation,
     ExtractedDocumentFieldDictionary fieldDictionary)
 {
+    public required string DocumentId { get; set; }
     public AnalyzerInformation? AnalyzerInformation { get; } = analyzerInformation;
 
     public ExtractedDocumentFieldDictionary FieldDictionary { get; } = fieldDictionary.Clone();

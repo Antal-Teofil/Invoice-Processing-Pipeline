@@ -1,4 +1,5 @@
 ﻿using InvoiceProcessingPipeline.Application.BoundaryContracts;
+using InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionContracts;
 using InvoiceProcessingPipeline.Application.Ports;
 using InvoiceProcessingPipeline.Application.Shared;
 using Microsoft.Azure.Functions.Worker;
@@ -28,10 +29,11 @@ namespace InvoiceProcessingPipeline.Functions.Activities
                 return ActivityResult<ExtractedDocumentResponse>.Failure("User Delegation SAS URI must be a non-null value");
             }
 
-            var extractedDocumentData = await extractor.ExtractDocumentDataAsync(userDelegationSasUri, token);
+            ExtractedDocumentData extractedDocumentData = await extractor.ExtractDocumentDataAsync(userDelegationSasUri, token);
 
-            Console.WriteLine("Minden fasza");
-            return ActivityResult<ExtractedDocumentResponse>.Success(new ExtractedDocumentResponse()); // ide nem result jon csak idegesit ha piros
+            logger.LogInformation("Document extraction occurred with id: {DocumentId}", extractedDocumentData.DocumentId);
+
+            return ActivityResult<ExtractedDocumentResponse>.Success(new ExtractedDocumentResponse { ExtractedDocumentId = extractedDocumentData.DocumentId});
         }
     }
 }
