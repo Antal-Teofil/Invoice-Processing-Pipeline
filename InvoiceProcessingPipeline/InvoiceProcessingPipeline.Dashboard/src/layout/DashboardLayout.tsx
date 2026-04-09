@@ -10,9 +10,9 @@ export default function DashboardLayout() {
       <div className="bubble bubble-3" />
       <div className="bubble bubble-4" />
 
-      <main className="relative z-10 mx-auto max-w-5xl p-8">
-        <section className="rounded-3xl border border-white/10 bg-white/10 p-8 shadow-2xl backdrop-blur-xl">
-          <h1 className="mb-6 text-3xl font-semibold tracking-tight">Dashboard</h1>
+      <main className="relative z-10 mx-auto max-w-[1450px] px-8 py-10">
+        <section className="rounded-3xl border border-white/10 bg-white/10 p-9 shadow-2xl backdrop-blur-xl">
+          <h1 className="mb-8 text-4xl font-semibold tracking-tight">Dashboard</h1>
           <Outlet />
         </section>
       </main>

@@ -21,8 +21,8 @@ body {
   position: absolute;
   pointer-events: none;
   border-radius: 58% 42% 63% 37% / 42% 38% 62% 58%;
-  filter: blur(30px);
-  opacity: 0.66;
+  filter: blur(40px);
+  opacity: 0.55;
   will-change: transform, border-radius, background-position;
   background-size: 180% 180%;
   animation:
