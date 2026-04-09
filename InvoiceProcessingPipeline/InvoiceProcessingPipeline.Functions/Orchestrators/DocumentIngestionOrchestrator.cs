@@ -38,10 +38,7 @@ public sealed class DocumentIngestionOrchestrator
         ActivityResult<Accumulator<SchemaViolation>> schemaValidationResult =
             await ctx.CallActivityAsync<ActivityResult<Accumulator<SchemaViolation>>>(nameof(Activities.AnalyzeSchemaIntegrityActivity), rawDocData);
 
-        if(schemaValidationResult != null && schemaValidationResult?.Value?.ConstraintViolations?.Count == 0)
-        {
-           
-        }
+
 
         // Ide jönnek a további activity-k.
         // Példa:.
