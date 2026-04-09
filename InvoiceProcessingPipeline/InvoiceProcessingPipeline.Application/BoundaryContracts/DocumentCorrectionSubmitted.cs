@@ -4,7 +4,7 @@ using System.Text;
 
 namespace InvoiceProcessingPipeline.Application.BoundaryContracts
 {
-    public sealed record DocumentSchemaCorrectionSubmitted
+    public sealed record DocumentCorrectionSubmitted
     {
     }
 }
