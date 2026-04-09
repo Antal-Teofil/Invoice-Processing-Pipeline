@@ -7,7 +7,7 @@ public sealed class ExtractedDocumentData(
     ExtractedDocumentFieldDictionary fieldDictionary,
     string documentId)
 {
-    public string DocumentId { get; } = documentId;
+    public string Id { get; } = documentId;
     public AnalyzerInformation? AnalyzerInformation { get; } = analyzerInformation;
 
     public ExtractedDocumentFieldDictionary FieldDictionary { get; } = fieldDictionary.Clone();

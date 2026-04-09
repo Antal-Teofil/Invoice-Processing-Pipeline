@@ -1,4 +1,5 @@
 ﻿using InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionContracts;
+using InvoiceProcessingPipeline.Application.Shared;
 using InvoiceProcessingPipeline.Domain.CommonDefinitions;
 using InvoiceProcessingPipeline.Domain.ValueObjects;
 using System.Net;
@@ -9,9 +10,11 @@ namespace InvoiceProcessingPipeline.Application.Ports
     public interface IDocumentDataStore
     {
         // itt is Result<> lesz nem csunya HttpStatusCode
-        public Task<HttpStatusCode> StoreExtractedDocumentSchema(ExtractedDocumentData data);
-        public Task<HttpStatusCode> StoreCanonizedDocumentSchema(DocumentDataSchema schema);
-        public Task<DocumentDataSchema?> RetrieveCanonizedDocumentSchema(string id);
-        public Task<ExtractedDocumentData?> RetrieveExtractedDocumentSchema(string id);
+        public Task<HttpStatusCode> StoreExtractedDocumentSchemaAsync(ExtractedDocumentData data);
+        public Task<HttpStatusCode> StoreCanonizedDocumentSchemaAsync(DocumentDataSchema schema);
+        public Task<DocumentDataSchema?> RetrieveCanonizedDocumentSchemaAsync(string id);
+        public Task<ExtractedDocumentData?> RetrieveExtractedDocumentSchemaAsync(string id);
+
+        public Task<PagedResult<ExtractedDocumentData>> RetrievePagedExtractedDocumentSchema(int pageSize, string? ContinuationToken, CancellationToken token = default);
     }
 }

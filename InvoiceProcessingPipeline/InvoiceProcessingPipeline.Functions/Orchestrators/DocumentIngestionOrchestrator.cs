@@ -1,6 +1,7 @@
 ﻿using InvoiceProcessingPipeline.Application.BoundaryContracts;
 using InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionContracts;
 using InvoiceProcessingPipeline.Application.Shared;
+using InvoiceProcessingPipeline.Application.Validations;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.DurableTask;
 using Microsoft.Extensions.Logging;
@@ -34,16 +35,16 @@ public sealed class DocumentIngestionOrchestrator
         ActivityResult<ExtractedDocumentResponse> rawDocData =
             await ctx.CallActivityAsync<ActivityResult<ExtractedDocumentResponse>>(nameof(Activities.ExtractDocumentDataActivity), sasResult.Value);
 
+        ActivityResult<Accumulator<SchemaViolation>> schemaValidationResult =
+            await ctx.CallActivityAsync<ActivityResult<Accumulator<SchemaViolation>>>(nameof(Activities.AnalyzeSchemaIntegrityActivity), rawDocData);
 
-        if (!sasResult.IsSuccess || sasResult.Value is null)
+        if(schemaValidationResult != null && schemaValidationResult?.Value?.ConstraintViolations?.Count == 0)
         {
-            throw new InvalidOperationException(
-                sasResult.ErrorMessage ?? "RequestDocumentAccessibilityActivity failed.");
+           
         }
 
-
         // Ide jönnek a további activity-k.
-        // Példa:
+        // Példa:.
         // var extracted = await ctx.CallActivityAsync<...>(
         //     nameof(Activities.ExtractDocumentDataActivity),
         //     input);

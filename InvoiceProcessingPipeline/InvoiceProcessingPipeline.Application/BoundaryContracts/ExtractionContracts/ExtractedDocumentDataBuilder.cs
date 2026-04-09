@@ -12,7 +12,7 @@ public sealed class ExtractedDocumentDataBuilder
     /// </summary>
     private AnalyzerInformation? _analyzerInformation;
 
-    private string _documentId;
+    private string _documentId = Guid.NewGuid().ToString();
     /// <summary>
     /// a dictionary which contains the canonicalized extracted fields
     /// </summary>

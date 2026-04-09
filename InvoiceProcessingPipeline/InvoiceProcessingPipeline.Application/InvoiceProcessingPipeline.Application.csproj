@@ -22,4 +22,9 @@
     <ProjectReference Include="..\InvoiceProcessingPipeline.Domain\InvoiceProcessingPipeline.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Validations\ConstraintsValidation\" />
+    <Folder Include="Validations\SchemaIntegrityValidation\" />
+  </ItemGroup>
+
 </Project>
