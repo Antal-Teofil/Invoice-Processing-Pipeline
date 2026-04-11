@@ -2,6 +2,7 @@
 using InvoiceProcessingPipeline.Application.Shared;
 using InvoiceProcessingPipeline.Domain.CommonDefinitions;
 using InvoiceProcessingPipeline.Domain.ValueObjects;
+using Microsoft.Azure.Functions.Worker.Core.Invocation;
 using System.Net;
 
 namespace InvoiceProcessingPipeline.Application.Ports
@@ -14,7 +15,6 @@ namespace InvoiceProcessingPipeline.Application.Ports
         public Task<HttpStatusCode> StoreCanonizedDocumentSchemaAsync(DocumentDataSchema schema);
         public Task<DocumentDataSchema?> RetrieveCanonizedDocumentSchemaAsync(string id);
         public Task<ExtractedDocumentData?> RetrieveExtractedDocumentSchemaAsync(string id);
-
         public Task<PagedResult<ExtractedDocumentData>> RetrievePagedExtractedDocumentSchema(int pageSize, string? ContinuationToken, CancellationToken token = default);
     }
 }

@@ -23,7 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Status\" />
     <Folder Include="Validations\ConstraintsValidation\" />
     <Folder Include="Validations\SchemaIntegrityValidation\" />
   </ItemGroup>
