@@ -13,7 +13,7 @@ namespace InvoiceProcessingPipeline.Functions.Triggers
     public sealed class ApplyConstraintIntegrityCorrectionTrigger
     {
         [Function(nameof(ApplyConstraintIntegrityCorrectionTrigger))]
-        public async Task<HttpResponseData> RunAsync([HttpTrigger(AuthorizationLevel.Anonymous, "PATCH", Route = "invoices/{instanceId}")] HttpRequestData request, [DurableClient] DurableTaskClient durableClient , string instanceId)
+        public async Task<HttpResponseData> RunAsync([HttpTrigger(AuthorizationLevel.Anonymous, "PATCH", Route = "invoice/validation/{instanceId}")] HttpRequestData request, [DurableClient] DurableTaskClient durableClient , string instanceId)
         {
             var payload = request.ReadFromJsonAsync<DocumentCorrectionSubmitted>();
 

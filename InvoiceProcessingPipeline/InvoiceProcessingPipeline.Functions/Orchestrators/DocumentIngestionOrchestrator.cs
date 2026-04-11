@@ -35,10 +35,12 @@ public sealed class DocumentIngestionOrchestrator
         ActivityResult<ExtractedDocumentResponse> rawDocData =
             await ctx.CallActivityAsync<ActivityResult<ExtractedDocumentResponse>>(nameof(Activities.ExtractDocumentDataActivity), sasResult.Value);
 
-        ActivityResult<Accumulator<SchemaViolation>> schemaValidationResult =
-            await ctx.CallActivityAsync<ActivityResult<Accumulator<SchemaViolation>>>(nameof(Activities.AnalyzeSchemaIntegrityActivity), rawDocData);
+        // itt most feltetelezzuk hogy az extrcation tokeletesen lefutott hibatlanul (naivan)
 
 
+        ActivityResult<string> s = await ctx.CallActivityAsync<ActivityResult<string>>(nameof(Activities.ExtractDocumentDataActivity), rawDocData?.Value?.ExtractedDocumentId);
+        // feltetelezzuk hogy `s` tartalmazza a hibauzeneteket
+        // amennyiben van hibauzenet kuldjuk a felhasznalonak
 
         // Ide jönnek a további activity-k.
         // Példa:.
