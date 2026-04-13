@@ -1,6 +1,4 @@
-﻿using InvoiceProcessingPipeline.Application.Auditing;
-using InvoiceProcessingPipeline.Application.Auditing.Models;
-using InvoiceProcessingPipeline.Application.Auditing.Ports;
+﻿using InvoiceProcessingPipeline.Application.BoundaryContracts;
 using InvoiceProcessingPipeline.Infrastructure.Configurations;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Options;
@@ -11,7 +9,7 @@ using System.Text;
 
 namespace InvoiceProcessingPipeline.Infrastructure.Adapters
 {
-    public sealed class CosmosDocumentAuditStore(CosmosClient client, IOptions<CosmosAuditOptions> option) : IDocumentAuditStore
+    public sealed class CosmosDocumentAuditStore(CosmosClient client, IOptions<CosmosAuditOptions> option)
     {
         public async Task EnsureExistance()
         {

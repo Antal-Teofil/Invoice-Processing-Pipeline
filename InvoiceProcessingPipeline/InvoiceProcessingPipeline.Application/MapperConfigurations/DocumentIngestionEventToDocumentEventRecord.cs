@@ -1,5 +1,4 @@
-﻿using InvoiceProcessingPipeline.Application.Auditing.Models;
-using InvoiceProcessingPipeline.Application.BoundaryContracts;
+﻿using InvoiceProcessingPipeline.Application.BoundaryContracts;
 using Mapster;
 
 namespace InvoiceProcessingPipeline.Application.MapperConfigurations;

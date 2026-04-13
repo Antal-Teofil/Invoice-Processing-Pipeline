@@ -6,6 +6,7 @@ using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Net;
+using System.Runtime.CompilerServices;
 
 
 namespace InvoiceProcessingPipeline.Infrastructure.Adapters
@@ -14,7 +15,7 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
 
     public sealed class CosmosDocumentSchemaStore(ILogger<CosmosDocumentSchemaStore> logger, [FromKeyedServices("invoice-data")] Container storage) : IDocumentDataStore
     {
-        public Task<DocumentDataSchema?> RetrieveCanonizedDocumentSchemaAsync(string id)
+        public Task<DocumentDataSchema?> RetrieveCanonicalDocumentSchemaAsync(string id)
         {
             throw new NotImplementedException();
         }
@@ -25,38 +26,42 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
             return response.Resource;
         }
 
-        public async Task<PagedResult<ExtractedDocumentData>> RetrievePagedExtractedDocumentSchema(int pageSize, string? continuationToken, CancellationToken token = default)
+        public sealed record PagedResult<T>(IReadOnlyList<T> Items, string? ContinuationToken);
+
+        public async Task<PagedResult<ExtractedDocumentData>> RetrievePagedExtractedDocumentSchema(
+            int pageSize,
+            string? continuationToken,
+            CancellationToken token = default)
         {
-            var query = new QueryDefinition(@"SELECT * FROM c ORDER BY c.id ASC");
+            QueryDefinition queryDefinition = new("SELECT * FROM c");
 
-            var iterator = storage.GetItemQueryIterator<ExtractedDocumentData>(
-                queryDefinition: query, 
-                continuationToken: continuationToken,
-                requestOptions: new QueryRequestOptions
-                {
-                    MaxItemCount = pageSize
-                }
-            );
-
-            if(!iterator.HasMoreResults)
+            QueryRequestOptions queryRequestOptions = new()
             {
-                return new PagedResult<ExtractedDocumentData>
-                {
-                    Items= [],
-                    ContinuationToken = null,
-                };
+                MaxItemCount = pageSize,
+            };
+
+            using FeedIterator<ExtractedDocumentData> iterator =
+                storage.GetItemQueryIterator<ExtractedDocumentData>(
+                    queryDefinition: queryDefinition,
+                    continuationToken: continuationToken,
+                    requestOptions: queryRequestOptions);
+
+            if (!iterator.HasMoreResults)
+            {
+                return new PagedResult<ExtractedDocumentData>(
+                    [],
+                    null);
             }
 
-            var page = await iterator.ReadNextAsync(token);
+            FeedResponse<ExtractedDocumentData> response =
+                await iterator.ReadNextAsync(token);
 
-            return new PagedResult<ExtractedDocumentData>
-            {
-                Items = page.Resource.ToList(),
-                ContinuationToken = page.ContinuationToken
-            };
+            return new PagedResult<ExtractedDocumentData>(
+                [.. response],
+                response.ContinuationToken);
         }
 
-        public async Task<HttpStatusCode> StoreCanonizedDocumentSchemaAsync(DocumentDataSchema schema)
+        public async Task<HttpStatusCode> StoreCanonicalDocumentSchemaAsync(DocumentDataSchema schema)
         {
             var options = new ItemRequestOptions
             {

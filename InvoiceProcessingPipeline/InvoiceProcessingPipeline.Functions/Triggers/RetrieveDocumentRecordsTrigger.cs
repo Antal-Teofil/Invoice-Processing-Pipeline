@@ -1,4 +1,5 @@
 ﻿using InvoiceProcessingPipeline.Application.DocumentAudit;
+using InvoiceProcessingPipeline.Application.DTOs;
 using InvoiceProcessingPipeline.Application.Ports;
 using MapsterMapper;
 using Microsoft.Azure.Functions.Worker;
@@ -6,55 +7,101 @@ using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.DurableTask.Client;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System.Net;
 
 namespace InvoiceProcessingPipeline.Functions.Triggers
 {
     // retrieves invoices under processing
-    public sealed class RetrieveDocumentRecordsTrigger(ILogger<RetrieveDocumentRecordsTrigger> logger, IDocumentDataStore docStore, IMapper mapper)
+    public sealed class RetrieveDocumentRecordsTrigger(
+        ILogger<RetrieveDocumentRecordsTrigger> logger,
+        IDocumentDataStore storage,
+        IMapper mapper)
     {
         [Function(nameof(RetrieveDocumentRecordsTrigger))]
-        public async Task<HttpResponseData> RunAsync([HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "audit/records")] HttpRequestData request, [DurableClient] DurableTaskClient client)
+        public async Task<HttpResponseData> RunAsync(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "audit/records")] HttpRequestData request,
+            [DurableClient] DurableTaskClient client)
         {
-
             var query = new OrchestrationQuery
             {
-                Statuses = [OrchestrationRuntimeStatus.Pending, OrchestrationRuntimeStatus.Running],
+                Statuses =
+                [
+                    OrchestrationRuntimeStatus.Pending,
+                    OrchestrationRuntimeStatus.Running
+                ],
                 FetchInputsAndOutputs = true,
                 PageSize = 100
             };
 
-            var matchesCustomStatus = new List<DocumentAuditSnapshot>();
+            // processId -> audit status
+            var activeProcesses = new Dictionary<string, AuditStatus>(StringComparer.Ordinal);
+
             await foreach (var instance in client.GetAllInstancesAsync(query))
             {
                 try
                 {
-                    var customDeserializedStatus = instance.ReadCustomStatusAs<DocumentAuditSnapshot>();
+                    var customStatus = instance.ReadCustomStatusAs<DocumentAuditSnapshot>();
 
-                    if(customDeserializedStatus is null)
+                    if (customStatus is null)
                     {
-                        logger.LogInformation("Deserialization returned with null value!");
+                        logger.LogInformation("Custom status deserialization returned null for orchestration {InstanceId}.", instance.InstanceId);
                         continue;
                     }
-                    var status = customDeserializedStatus.AuditStatus;
 
-                    if (status is AuditStatus.CONSTRAINT_VIOLATION or AuditStatus.EXTRACTED or AuditStatus.UNDER_REVIEW)
+                    var status = customStatus.AuditStatus;
+
+                    if (status is AuditStatus.CONSTRAINT_VIOLATION
+                        or AuditStatus.EXTRACTED
+                        or AuditStatus.UNDER_REVIEW)
                     {
-                        matchesCustomStatus.Add(customDeserializedStatus);
+                        activeProcesses[instance.InstanceId] = status;
                     }
                 }
-                catch(JsonSerializationException exception)
+                catch (JsonSerializationException exception)
                 {
-                    logger.LogInformation(exception, "Custom audit snapshot deserialization failed");
-                    
-                    continue;
+                    logger.LogInformation(exception, "Custom audit snapshot deserialization failed for orchestration {InstanceId}.", instance.InstanceId);
                 }
-                
             }
 
+            var results = new List<DocumentRecordInformation>();
 
+            string? continuationToken = null;
 
-            logger.LogInformation("Information retrieved");
-            var response = request.CreateResponse(System.Net.HttpStatusCode.OK);
+            do
+            {
+                var page = await storage.RetrievePagedExtractedDocumentSchema(
+                    pageSize: 100,
+                    continuationToken: continuationToken);
+
+                foreach (var document in page.Items)
+                {
+                    if (string.IsNullOrWhiteSpace(document.ProcessId))
+                    {
+                        continue;
+                    }
+
+                    if (!activeProcesses.TryGetValue(document.ProcessId, out var auditStatus))
+                    {
+                        continue;
+                    }
+
+                    var dto = mapper.Map<DocumentRecordInformation>(document);
+
+                    // A workflow státusz és a process ID az orchestrationból jön
+                    dto.AuditStatus = auditStatus;
+                    dto.ProcessId = document.ProcessId;
+
+                    results.Add(dto);
+                }
+
+                continuationToken = page.ContinuationToken;
+            }
+            while (!string.IsNullOrEmpty(continuationToken));
+
+            logger.LogInformation("Retrieved {Count} document records.", results.Count);
+
+            var response = request.CreateResponse(HttpStatusCode.OK);
+            await response.WriteAsJsonAsync(results);
             return response;
         }
     }

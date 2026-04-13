@@ -5,9 +5,12 @@ namespace InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionCont
 public sealed class ExtractedDocumentData(
     AnalyzerInformation? analyzerInformation,
     ExtractedDocumentFieldDictionary fieldDictionary,
-    string documentId)
+    string documentId,
+    string processId)
 {
-    public string Id { get; } = documentId;
+    public string DocumentId { get; } = documentId;
+
+    public string ProcessId { get; } = processId;
     public AnalyzerInformation? AnalyzerInformation { get; } = analyzerInformation;
 
     public ExtractedDocumentFieldDictionary FieldDictionary { get; } = fieldDictionary.Clone();
