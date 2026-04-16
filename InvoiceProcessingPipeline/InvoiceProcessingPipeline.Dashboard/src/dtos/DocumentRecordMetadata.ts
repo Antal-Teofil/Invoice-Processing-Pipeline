@@ -26,4 +26,4 @@ export const DocumentRecordMetadataSchema = z.object({
     currencyCode: z.string({error: (issue) => `Invalid currency code: ${JSON.stringify(issue.input)}`})
 });
 
-export type DocumentRecodMetadata = z.infer<typeof DocumentRecordMetadataSchema>;
+export type DocumentRecordMetadata = z.infer<typeof DocumentRecordMetadataSchema>;
