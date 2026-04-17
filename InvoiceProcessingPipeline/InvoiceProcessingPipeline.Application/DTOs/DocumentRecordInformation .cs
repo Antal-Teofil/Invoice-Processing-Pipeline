@@ -13,7 +13,7 @@ namespace InvoiceProcessingPipeline.Application.DTOs
         public string? VendorName { get; set; }
         public string? PhoneNumber { get; set; }
         public string? VendorEmailAddress { get; set; }
-        public int? TotalAmount { get; set; }
-        public char? CurrencyCode { get; set; }
+        public decimal? TotalAmount { get; set; } = 1000;
+        public char? CurrencyCode { get; set; } = '$';
     }
 }

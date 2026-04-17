@@ -31,13 +31,13 @@ namespace InvoiceProcessingPipeline.Functions.Activities
 
             ExtractedDocumentData extractedDocumentData = await extractor.ExtractDocumentDataAsync(userDelegationSasUri, token);
 
-            logger.LogInformation("Document extraction occurred with id: {Id}", extractedDocumentData.Id);
+            logger.LogInformation("Document extraction occurred with id: {Id}", extractedDocumentData.DocumentId);
 
             await documentDataStore.StoreExtractedDocumentSchemaAsync(extractedDocumentData);
 
-            logger.LogInformation("Extrcated document with id: {Id} was saved successfully", extractedDocumentData.Id);
+            logger.LogInformation("Extrcated document with id: {Id} was saved successfully", extractedDocumentData.DocumentId);
 
-            return ActivityResult<ExtractedDocumentResponse>.Success(new ExtractedDocumentResponse { ExtractedDocumentId = extractedDocumentData.Id});
+            return ActivityResult<ExtractedDocumentResponse>.Success(new ExtractedDocumentResponse { ExtractedDocumentId = extractedDocumentData.DocumentId});
         }
     }
 }

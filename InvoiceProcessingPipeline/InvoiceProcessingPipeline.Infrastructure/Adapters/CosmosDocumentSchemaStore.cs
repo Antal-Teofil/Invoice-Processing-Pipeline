@@ -26,8 +26,6 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
             return response.Resource;
         }
 
-        public sealed record PagedResult<T>(IReadOnlyList<T> Items, string? ContinuationToken);
-
         public async Task<PagedResult<ExtractedDocumentData>> RetrievePagedExtractedDocumentSchema(
             int pageSize,
             string? continuationToken,
@@ -83,7 +81,7 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
                 EnableContentResponseOnWrite = false
             };
             // itt majd kicserelem a data.Id.Id-t valami egyebre, mert igy nem szep.
-            var response = await storage.CreateItemAsync(data, new PartitionKey(data.Id), options);
+            var response = await storage.CreateItemAsync(data, new PartitionKey(data.DocumentId), options);
             var status = response.StatusCode;
             return status;
         }

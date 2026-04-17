@@ -13,6 +13,8 @@ public sealed class ExtractedDocumentDataBuilder
     private AnalyzerInformation? _analyzerInformation;
 
     private string _documentId = Guid.NewGuid().ToString();
+
+    private string? _processId; 
     /// <summary>
     /// a dictionary which contains the canonicalized extracted fields
     /// </summary>
@@ -60,5 +62,5 @@ public sealed class ExtractedDocumentDataBuilder
         ExtractFieldAs(givenFieldName, () => field);
 
     public ExtractedDocumentData Build() =>
-        new(_analyzerInformation, _fieldDictionary, _documentId);
+        new(_analyzerInformation, _fieldDictionary, _documentId, _processId);
 }

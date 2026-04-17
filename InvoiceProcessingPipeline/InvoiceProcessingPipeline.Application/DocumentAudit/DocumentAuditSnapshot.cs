@@ -4,10 +4,10 @@ using System.Text;
 
 namespace InvoiceProcessingPipeline.Application.DocumentAudit
 {
-    public record DocumentAuditSnapshot
+    public record DocumentAuditSnapshot()
     {
-        public required string DocumentId { get; set; }
-        public required string OrchestrationId { get; set; }
+        public string? DocumentId { get; set; }
+        public string? OrchestrationId { get; set; }
         public string? CorrelationId { get; set; }
         public required AuditStatus AuditStatus { get; set; }
     }

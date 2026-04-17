@@ -85,11 +85,7 @@ namespace InvoiceProcessingPipeline.Functions.Triggers
                         continue;
                     }
 
-                    var dto = mapper.Map<DocumentRecordInformation>(document);
-
-                    // A workflow státusz és a process ID az orchestrationból jön
-                    dto.AuditStatus = auditStatus;
-                    dto.ProcessId = document.ProcessId;
+                    var dto = mapper.Map<DocumentRecordInformation>((Document: document, AuditStatus: auditStatus));
 
                     results.Add(dto);
                 }

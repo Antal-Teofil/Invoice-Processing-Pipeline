@@ -1,5 +1,6 @@
 ﻿using InvoiceProcessingPipeline.Application.BoundaryContracts;
 using InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionContracts;
+using InvoiceProcessingPipeline.Application.DocumentAudit;
 using InvoiceProcessingPipeline.Application.Shared;
 using InvoiceProcessingPipeline.Application.Validations;
 using Microsoft.Azure.Functions.Worker;
@@ -34,6 +35,17 @@ public sealed class DocumentIngestionOrchestrator
         // ez dolgozza fel a beerkezo BLOB-ot
         ActivityResult<ExtractedDocumentResponse> rawDocData =
             await ctx.CallActivityAsync<ActivityResult<ExtractedDocumentResponse>>(nameof(Activities.ExtractDocumentDataActivity), sasResult.Value);
+
+        // ha valami hiba lesz kezeljuk majd
+        DocumentAuditSnapshot extractionSnapshot = new()
+        {
+            DocumentId = rawDocData?.Value?.ExtractedDocumentId,
+            OrchestrationId = ctx.InstanceId,
+            AuditStatus = AuditStatus.EXTRACTED,
+        };
+        ctx.SetCustomStatus(extractionSnapshot);
+
+        var extractionCorrection = ctx.WaitForExternalEvent<ExtractionCorrectionSubmitted>(nameof(ExtractionCorrectionSubmitted));
 
         // itt most feltetelezzuk hogy az extrcation tokeletesen lefutott hibatlanul (naivan)
 
