@@ -7,5 +7,6 @@ export function useInvoiceSummaryRecords() {
     return useQuery<Array<InvoiceSummaryRecord>, Error>({
         queryKey: ["invoice-summary-records"],
         queryFn: fetchInvoiceRecords,
+        refetchInterval: 5000
     });
 }

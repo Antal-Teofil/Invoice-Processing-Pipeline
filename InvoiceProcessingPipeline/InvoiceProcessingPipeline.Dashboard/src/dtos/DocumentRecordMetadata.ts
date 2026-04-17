@@ -14,7 +14,7 @@ export const DocumentRecordMetadataSchema = z.object({
   auditStatus: z.enum(AUDIT_STATUSES, {
     error: (issue) => `Unknown audit status: ${JSON.stringify(issue.input)}`,
   }),
-  processId: z.guid({
+  processId: z.string({
     error: (issue) => `Invalid process identifier format: ${JSON.stringify(issue.input)}`,
   }),
   invoiceId: z.string(),

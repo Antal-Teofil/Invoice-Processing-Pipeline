@@ -6,7 +6,7 @@ import { z } from "zod";
 
 
 export async function fetchInvoiceRecords(): Promise<InvoiceSummaryRecord[]> {
-  const { data } = await axiosClient.get<unknown>("/api/audit/records");
+  const { data } = await axiosClient.get<unknown>("/audit/records");
 
   const DocumentRecordMetadataArraySchema = z.array(DocumentRecordMetadataSchema);
   const result = await DocumentRecordMetadataArraySchema.safeParseAsync(data);

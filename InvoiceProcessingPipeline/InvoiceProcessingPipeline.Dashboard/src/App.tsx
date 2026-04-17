@@ -5,7 +5,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/invoices" element={<InvoiceSummaryTable/>}></Route>
+        <Route path="/" element={<InvoiceSummaryTable/>}></Route>
       </Routes>
     </BrowserRouter>
   );

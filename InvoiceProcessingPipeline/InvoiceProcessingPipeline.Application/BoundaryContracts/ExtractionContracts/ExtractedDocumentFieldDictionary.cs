@@ -1,40 +1,28 @@
-﻿using InvoiceProcessingPipeline.Domain.ValueObjects;
-using System.Collections;
+﻿using InvoiceProcessingPipeline.Application.MapperConfigurations;
+using InvoiceProcessingPipeline.Domain.ValueObjects;
+using Newtonsoft.Json;
 
 namespace InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionContracts;
 
+[JsonDictionary(ItemConverterType = typeof(ExtractedDocumentFieldJsonConverter))]
 public sealed class ExtractedDocumentFieldDictionary
-    : IReadOnlyDictionary<string, IExtractedDocumentField>
+    : Dictionary<string, IExtractedDocumentField>
 {
-    private readonly Dictionary<string, IExtractedDocumentField> _items;
-
     public ExtractedDocumentFieldDictionary()
+        : base(StringComparer.OrdinalIgnoreCase)
     {
-        _items = new(StringComparer.OrdinalIgnoreCase);
     }
 
-    private ExtractedDocumentFieldDictionary(Dictionary<string, IExtractedDocumentField> items)
+    public ExtractedDocumentFieldDictionary(
+        IDictionary<string, IExtractedDocumentField> items)
+        : base(items, StringComparer.OrdinalIgnoreCase)
     {
-        _items = items;
     }
-
-    public IExtractedDocumentField this[string key] => _items[key];
-
-    public IEnumerable<string> Keys => _items.Keys;
-
-    public IEnumerable<IExtractedDocumentField> Values => _items.Values;
-
-    public int Count => _items.Count;
-
-    public bool ContainsKey(string key) => _items.ContainsKey(key);
-
-    public bool TryGetValue(string key, out IExtractedDocumentField value) =>
-        _items.TryGetValue(key, out value!);
 
     public bool TryGet<TField>(string key, out ExtractedDocumentField<TField>? value)
         where TField : DocumentField
     {
-        if (_items.TryGetValue(key, out var raw) &&
+        if (TryGetValue(key, out var raw) &&
             raw is ExtractedDocumentField<TField> typed)
         {
             value = typed;
@@ -45,23 +33,17 @@ public sealed class ExtractedDocumentFieldDictionary
         return false;
     }
 
-    internal void Add(string key, IExtractedDocumentField value)
+    public void AddField(string key, IExtractedDocumentField value)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(key);
         ArgumentNullException.ThrowIfNull(value);
 
-        if (!_items.TryAdd(key, value))
+        if (!TryAdd(key, value))
         {
             throw new InvalidOperationException(
                 $"A(z) '{key}' mező már szerepel a dokumentumban.");
         }
     }
 
-    internal ExtractedDocumentFieldDictionary Clone() =>
-        new(new Dictionary<string, IExtractedDocumentField>(_items, StringComparer.OrdinalIgnoreCase));
-
-    public IEnumerator<KeyValuePair<string, IExtractedDocumentField>> GetEnumerator() =>
-        _items.GetEnumerator();
-
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    public ExtractedDocumentFieldDictionary Clone() => new(this);
 }

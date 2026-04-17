@@ -19,7 +19,7 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
         /// <returns></returns>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<ExtractedDocumentData> ExtractDocumentDataAsync(Uri sasUri, CancellationToken token)
+        public async Task<ExtractedDocumentData> ExtractDocumentDataAsync(Uri sasUri, string processId ,CancellationToken token)
         {
             ArgumentNullException.ThrowIfNull(sasUri, nameof(sasUri));
 
@@ -204,7 +204,8 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
                         FieldOriginalContent: field.Content ?? string.Empty,
                         ConfidenceScore: field.Confidence
                     );
-                });
+                })
+                .WithProcessId(processId);
             /*
                 .ExtractFieldAs<PostalAddress>("vendorPostalAddress", () =>
                 {

@@ -1,6 +1,7 @@
 ﻿using InvoiceProcessingPipeline.Application.DocumentAudit;
 using InvoiceProcessingPipeline.Application.DTOs;
 using InvoiceProcessingPipeline.Application.Ports;
+using InvoiceProcessingPipeline.Domain.ValueObjects;
 using MapsterMapper;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
@@ -75,6 +76,12 @@ namespace InvoiceProcessingPipeline.Functions.Triggers
 
                 foreach (var document in page.Items)
                 {
+                    Console.WriteLine(document.Id);
+                    Console.WriteLine(document.DocumentId);
+                    Console.WriteLine(document.ProcessId);
+                    Console.WriteLine(document.FieldDictionary.Count);
+                    Console.WriteLine(document.FieldDictionary["vendorPartyName"].FieldOriginalContent?.ToString());
+                
                     if (string.IsNullOrWhiteSpace(document.ProcessId))
                     {
                         continue;
@@ -85,9 +92,25 @@ namespace InvoiceProcessingPipeline.Functions.Triggers
                         continue;
                     }
 
-                    var dto = mapper.Map<DocumentRecordInformation>((Document: document, AuditStatus: auditStatus));
+                    document.TryGetField<PartyName>("vendorPartyName", out var vendorName);
+                    document.TryGetField<PhoneNumber>("vendorPhoneNumber", out var vendorPhoneNumber);
+                    document.TryGetField<EmailAddress>("vendorEmailAddress", out var vendorEmailAddress);
+                    document.TryGetField<TaxAmount>("totalAmount", out var totalAmount);
+                    document.TryGetField<CurrencyCode>("correncyCode", out var currencyCode);
 
-                    results.Add(dto);
+                    DocumentRecordInformation info = new()
+                    {
+                        AuditStatus = auditStatus,
+                        ProcessId = document.ProcessId,
+                        InvoiceId = document.DocumentId,
+                        VendorName = vendorName?.Extraction.Name,
+                        PhoneNumber = vendorPhoneNumber?.Extraction.Number,
+                        VendorEmailAddress = vendorEmailAddress?.Extraction.MailAddress,
+                        TotalAmount = totalAmount?.Extraction.Amount,
+                        CurrencyCode = currencyCode?.Extraction.Code,
+                    };
+
+                    results.Add(info);
                 }
 
                 continuationToken = page.ContinuationToken;

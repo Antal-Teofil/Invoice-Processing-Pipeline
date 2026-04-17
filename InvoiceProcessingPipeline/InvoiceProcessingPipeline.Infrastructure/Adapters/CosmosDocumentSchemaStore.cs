@@ -81,7 +81,7 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
                 EnableContentResponseOnWrite = false
             };
             // itt majd kicserelem a data.Id.Id-t valami egyebre, mert igy nem szep.
-            var response = await storage.CreateItemAsync(data, new PartitionKey(data.DocumentId), options);
+            var response = await storage.CreateItemAsync(data, new PartitionKey(data.Id), options);
             var status = response.StatusCode;
             return status;
         }

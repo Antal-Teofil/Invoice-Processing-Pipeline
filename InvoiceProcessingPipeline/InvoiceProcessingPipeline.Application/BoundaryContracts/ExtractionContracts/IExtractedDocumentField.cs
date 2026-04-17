@@ -1,7 +1,10 @@
-﻿using InvoiceProcessingPipeline.Domain.ValueObjects;
+﻿using InvoiceProcessingPipeline.Application.MapperConfigurations;
+using InvoiceProcessingPipeline.Domain.ValueObjects;
+using Newtonsoft.Json;
 
 namespace InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionContracts
 {
+    [JsonConverter(typeof(ExtractedDocumentFieldJsonConverter))]
     public interface IExtractedDocumentField
     {
         string? FieldName { get; }

@@ -32,9 +32,14 @@ public sealed class DocumentIngestionOrchestrator
                 nameof(Activities.RequestDocumentAccessibilityActivity),
                 input);
 
+        ActivityInput acInput = new()
+        {
+            SasUri = sasResult?.Value,
+            ProcessId = ctx.InstanceId,
+        };
         // ez dolgozza fel a beerkezo BLOB-ot
         ActivityResult<ExtractedDocumentResponse> rawDocData =
-            await ctx.CallActivityAsync<ActivityResult<ExtractedDocumentResponse>>(nameof(Activities.ExtractDocumentDataActivity), sasResult.Value);
+            await ctx.CallActivityAsync<ActivityResult<ExtractedDocumentResponse>>(nameof(Activities.ExtractDocumentDataActivity), acInput);
 
         // ha valami hiba lesz kezeljuk majd
         DocumentAuditSnapshot extractionSnapshot = new()
@@ -45,10 +50,10 @@ public sealed class DocumentIngestionOrchestrator
         };
         ctx.SetCustomStatus(extractionSnapshot);
 
-        var extractionCorrection = ctx.WaitForExternalEvent<ExtractionCorrectionSubmitted>(nameof(ExtractionCorrectionSubmitted));
+        var extractionCorrection = await ctx.WaitForExternalEvent<ExtractionCorrectionSubmitted>(nameof(ExtractionCorrectionSubmitted));
 
         // itt most feltetelezzuk hogy az extrcation tokeletesen lefutott hibatlanul (naivan)
-
+        Console.WriteLine("Idozzunk");
 
         ActivityResult<string> s = await ctx.CallActivityAsync<ActivityResult<string>>(nameof(Activities.ExtractDocumentDataActivity), rawDocData?.Value?.ExtractedDocumentId);
         // feltetelezzuk hogy `s` tartalmazza a hibauzeneteket

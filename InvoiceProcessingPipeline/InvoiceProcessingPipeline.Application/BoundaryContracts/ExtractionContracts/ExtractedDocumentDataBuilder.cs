@@ -14,7 +14,8 @@ public sealed class ExtractedDocumentDataBuilder
 
     private string _documentId = Guid.NewGuid().ToString();
 
-    private string? _processId; 
+    private string? _processId;
+
     /// <summary>
     /// a dictionary which contains the canonicalized extracted fields
     /// </summary>
@@ -29,14 +30,25 @@ public sealed class ExtractedDocumentDataBuilder
         return this;
     }
 
+    public ExtractedDocumentDataBuilder WithProcessId(string processId)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(processId);
+
+        _processId = processId;
+        return this;
+    }
+
+    public ExtractedDocumentDataBuilder WithDocumentId(string documentId)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(documentId);
+
+        _documentId = documentId;
+        return this;
+    }
+
     /// <summary>
-    /// it is a higher-order function which takes a string and a function as inputs and must return a canonicalized extrcated field
+    /// it is a higher-order function which takes a string and a function as inputs and must return a canonicalized extracted field
     /// </summary>
-    /// <typeparam name="TField"></typeparam>
-    /// <param name="givenFieldName"></param>
-    /// <param name="extractor"></param>
-    /// <returns></returns>
-    /// <exception cref="InvalidOperationException"></exception>
     public ExtractedDocumentDataBuilder ExtractFieldAs<TField>(
         string givenFieldName,
         Func<ExtractedDocumentField<TField>> extractor)
@@ -46,10 +58,10 @@ public sealed class ExtractedDocumentDataBuilder
         ArgumentNullException.ThrowIfNull(extractor);
 
         var extractedField = extractor();
-        
-        if(extractedField is not null)
+
+        if (extractedField is not null)
         {
-            _fieldDictionary.Add(givenFieldName, extractedField);
+            _fieldDictionary.AddField(givenFieldName, extractedField);
         }
 
         return this;
@@ -61,6 +73,17 @@ public sealed class ExtractedDocumentDataBuilder
         where TField : DocumentField =>
         ExtractFieldAs(givenFieldName, () => field);
 
-    public ExtractedDocumentData Build() =>
-        new(_analyzerInformation, _fieldDictionary, _documentId, _processId);
+    public ExtractedDocumentData Build()
+    {
+        if (string.IsNullOrWhiteSpace(_processId))
+        {
+            throw new InvalidOperationException("ProcessId must be set before building.");
+        }
+
+        return new ExtractedDocumentData(
+            _analyzerInformation,
+            _fieldDictionary,
+            _documentId,
+            _processId);
+    }
 }
