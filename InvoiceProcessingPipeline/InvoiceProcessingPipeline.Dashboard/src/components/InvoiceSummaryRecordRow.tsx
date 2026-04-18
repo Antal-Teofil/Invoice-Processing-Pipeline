@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import type { InvoiceSummaryRecord } from "../types/InvoiceSummaryRecord";
 
 function getStatusClasses(status: string) {
@@ -28,8 +29,17 @@ export default function InvoiceSummaryRecordRow({
   currencyCode,
   status,
 }: InvoiceSummaryRecord) {
+
+  const navigate = useNavigate();
+
+  const handleRowClick = () => {
+    navigate(`/invoices/${invoiceId}`);
+  };
+
   return (
-    <tr className="transition-colors odd:bg-white even:bg-slate-50/40 hover:bg-sky-50/40">
+    <tr 
+    onClick={handleRowClick}
+    className="transition-colors odd:bg-white even:bg-slate-50/40 hover:bg-sky-50/40">
       <td className="border-b border-slate-100 px-6 py-5 text-left text-sm font-semibold text-slate-900">
         {invoiceId}
       </td>
