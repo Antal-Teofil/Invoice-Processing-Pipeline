@@ -50,7 +50,7 @@ public sealed class DocumentIngestionOrchestrator
         };
         ctx.SetCustomStatus(extractionSnapshot);
 
-        var extractionCorrection = await ctx.WaitForExternalEvent<ExtractionCorrectionSubmitted>(nameof(ExtractionCorrectionSubmitted));
+        //var extractionCorrection = await ctx.WaitForExternalEvent<ExtractionCorrectionSubmitted>(nameof(ExtractionCorrectionSubmitted));
 
         // itt most feltetelezzuk hogy az extrcation tokeletesen lefutott hibatlanul (naivan)
         Console.WriteLine("Idozzunk");
