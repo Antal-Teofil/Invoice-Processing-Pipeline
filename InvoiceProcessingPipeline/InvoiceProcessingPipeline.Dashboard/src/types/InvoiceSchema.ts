@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 type PartyTaxScheme = {
 
     companyId: string;
@@ -24,29 +26,30 @@ type ContactInformation = {
     telephoneNumber?: string;
     electronicMail?: string;
 };
-type Party = {
+export const PartySchema = z.object({
 
     name: string;
     address: PostalAddress;
     contact: ContactInformation;
     partyEntity: PartyLegalEntity;
     partyTaxSchemes: Array<PartyTaxScheme>;
-};
+});
 
 type InvoiceLine = {
 
 };
-export default interface Invoice {
+export const InvoiceSchema  = z.object({
 
-    Id: string;
+    invoiceId: z.string().nullable().default("invoice id"),
     accountingCustomerParty: Party;
     accountingSupplierParty: Party;
-    issueDate: string;
-    dueDate?: string;
-    typeCode: string;
-    note?: string;
-    documentCurrencyCode: string;
-    taxPointDate: string;
+    issueDate: z.iso.date().nullable().default('0000-00-00'),
+    dueDate: z.iso.date().nullable().default('0000-00-00'),
+    typeCode: z.string().nullable().default('380'),
+    note: z.string().nullable().default('textual note'),
+    documentCurrencyCode: z.string().nullable().default('EUR'),
+    taxCurrencyCode: z.string().nullable().default('EUR'),
+    taxPointDate: z.iso.date().nullable().default('0000-00-00'),
     lineItems: Array<InvoiceLine>;
     //TO DO: to be extended
-};
+});
