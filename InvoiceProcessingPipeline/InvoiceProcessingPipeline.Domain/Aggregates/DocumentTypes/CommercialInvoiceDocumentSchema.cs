@@ -5,7 +5,7 @@ using System.Text;
 
 namespace InvoiceProcessingPipeline.Domain.Aggregates.DocumentTypes
 {
-    public sealed class CommercialInvoiceDocumentSchema : InvoiceDocumentSchema
+    public sealed class CommercialInvoiceDocumentSchema : InvoiceDocumentScheme
     {
     }
 }

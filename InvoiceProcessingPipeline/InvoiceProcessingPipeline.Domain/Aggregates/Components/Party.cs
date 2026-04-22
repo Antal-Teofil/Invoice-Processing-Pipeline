@@ -8,13 +8,6 @@ namespace InvoiceProcessingPipeline.Domain.Aggregates.Components
 {
     public sealed record Party : DocumentField
     {
-        // seller's electronic address identifier
-        // 1..1
-        public required EndpointId EndpointId { get; set; }
-
-        // 0..n
-        public ICollection<PartyIdentification>? PartyIdentifications { get; set; }
-
         // 0..1
         public PartyName? Name { get; set; }
 

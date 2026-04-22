@@ -37,27 +37,6 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
 
 
             var builder = new ExtractedDocumentDataBuilder()
-                .ExtractFieldAs("customerPartyRegistrationName", () =>
-                {
-                    if (!document.Fields.TryGetValue("CustomerName", out var field) ||
-                        field.FieldType != DocumentFieldType.String ||
-                        string.IsNullOrWhiteSpace(field.ValueString))
-                    {
-                        return new ExtractedDocumentField<PartyRegistrationName>(
-                            Extraction: new PartyRegistrationName(string.Empty),
-                            FieldName: "customerPartyRegistrationName",
-                            FieldOriginalContent: string.Empty,
-                            ConfidenceScore: 0
-                        );
-                    }
-
-                    return new ExtractedDocumentField<PartyRegistrationName>(
-                        Extraction: new PartyRegistrationName(field.ValueString),
-                        FieldName: "customerPartyRegistrationName",
-                        FieldOriginalContent: field.Content ?? string.Empty,
-                        ConfidenceScore: field.Confidence
-                    );
-                })
                 .ExtractFieldAs("customerPartyName", () =>
                 {
                     if (!document.Fields.TryGetValue("CustomerName", out var field) ||
@@ -106,16 +85,16 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
                         field.FieldType != DocumentFieldType.String ||
                         string.IsNullOrWhiteSpace(field.ValueString))
                     {
-                        return new ExtractedDocumentField<InvoiceId>(
-                            Extraction: new InvoiceId(string.Empty),
+                        return new ExtractedDocumentField<InvoiceNumber>(
+                            Extraction: new InvoiceNumber(string.Empty),
                             FieldName: "invoiceId",
                             FieldOriginalContent: string.Empty,
                             ConfidenceScore: 0
                         );
                     }
 
-                    return new ExtractedDocumentField<InvoiceId>(
-                        Extraction: new InvoiceId(field.ValueString),
+                    return new ExtractedDocumentField<InvoiceNumber>(
+                        Extraction: new InvoiceNumber(field.ValueString),
                         FieldName: "invoiceId",
                         FieldOriginalContent: field.Content ?? string.Empty,
                         ConfidenceScore: field.Confidence
@@ -128,7 +107,7 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
                         field.ValueDate is null)
                     {
                         return new ExtractedDocumentField<IssueDate>(
-                            Extraction: new IssueDate(DateTimeOffset.MinValue),
+                            Extraction: new IssueDate(DateOnly.MinValue),
                             FieldName: "issueDate",
                             FieldOriginalContent: string.Empty,
                             ConfidenceScore: 0
@@ -136,7 +115,7 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
                     }
 
                     return new ExtractedDocumentField<IssueDate>(
-                        Extraction: new IssueDate(field.ValueDate.Value),
+                        Extraction: new IssueDate(DateOnly.FromDateTime(field.ValueDate.Value.DateTime)),
                         FieldName: "issueDate",
                         FieldOriginalContent: field.Content ?? string.Empty,
                         ConfidenceScore: field.Confidence
@@ -149,7 +128,7 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
                         field.ValueDate is null)
                     {
                         return new ExtractedDocumentField<DueDate>(
-                            Extraction: new DueDate(DateTimeOffset.MinValue),
+                            Extraction: new DueDate(DateOnly.MinValue),
                             FieldName: "dueDate",
                             FieldOriginalContent: string.Empty,
                             ConfidenceScore: 0
@@ -157,7 +136,7 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
                     }
 
                     return new ExtractedDocumentField<DueDate>(
-                        Extraction: new DueDate(field.ValueDate.Value),
+                        Extraction: new DueDate(DateOnly.FromDateTime(field.ValueDate.Value.DateTime)),
                         FieldName: "dueDate",
                         FieldOriginalContent: field.Content ?? string.Empty,
                         ConfidenceScore: field.Confidence
@@ -180,27 +159,6 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
                     return new ExtractedDocumentField<PartyName>(
                         Extraction: new PartyName(field.ValueString),
                         FieldName: "vendorPartyName",
-                        FieldOriginalContent: field.Content ?? string.Empty,
-                        ConfidenceScore: field.Confidence
-                    );
-                })
-                .ExtractFieldAs("vendorPartyRegistrationName", () =>
-                {
-                    if (!document.Fields.TryGetValue("VendorName", out var field) ||
-                        field.FieldType != DocumentFieldType.String ||
-                        string.IsNullOrWhiteSpace(field.ValueString))
-                    {
-                        return new ExtractedDocumentField<PartyRegistrationName>(
-                            Extraction: new PartyRegistrationName(string.Empty),
-                            FieldName: "vendorPartyRegistrationName",
-                            FieldOriginalContent: string.Empty,
-                            ConfidenceScore: 0
-                        );
-                    }
-
-                    return new ExtractedDocumentField<PartyRegistrationName>(
-                        Extraction: new PartyRegistrationName(field.ValueString),
-                        FieldName: "vendorPartyRegistrationName",
                         FieldOriginalContent: field.Content ?? string.Empty,
                         ConfidenceScore: field.Confidence
                     );

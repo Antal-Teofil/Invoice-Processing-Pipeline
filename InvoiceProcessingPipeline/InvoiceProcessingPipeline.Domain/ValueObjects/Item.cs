@@ -4,5 +4,5 @@ using System.Text;
 
 namespace InvoiceProcessingPipeline.Domain.ValueObjects
 {
-    public sealed record Item(string? Description, string Name, string? BuyersItemIdentification, string? SellersItemIdentification, string? StandardItemIdentification, OriginCountry OCountry, ClassifiedTaxCategory CTCategory, ICollection<AdditionalItemProperty>? AIProperty);
+    public sealed record Item(string? Description, string Name, string? BuyersItemIdentification, string? SellersItemIdentification, string? StandardItemIdentification, string? OriginCountryCode, ClassifiedTaxCategory ClassifiedTaxCategory, ICollection<AdditionalItemProperty>? AIProperty) : DocumentField;
 }

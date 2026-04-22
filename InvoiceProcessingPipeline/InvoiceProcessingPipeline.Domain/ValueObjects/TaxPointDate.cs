@@ -4,5 +4,5 @@ using System.Text;
 
 namespace InvoiceProcessingPipeline.Domain.ValueObjects
 {
-    public sealed record TaxPointDate(DateOnly Date);
+    public sealed record TaxPointDate(DateOnly Value) : DocumentField;
 }

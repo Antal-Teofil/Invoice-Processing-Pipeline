@@ -15,7 +15,7 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
 
     public sealed class CosmosDocumentSchemaStore(ILogger<CosmosDocumentSchemaStore> logger, [FromKeyedServices("invoice-data")] Container storage) : IDocumentDataStore
     {
-        public Task<DocumentDataSchema?> RetrieveCanonicalDocumentSchemaAsync(string id)
+        public Task<DocumentDataScheme?> RetrieveCanonicalDocumentSchemaAsync(string id)
         {
             throw new NotImplementedException();
         }
@@ -59,7 +59,7 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
                 response.ContinuationToken);
         }
 
-        public async Task<HttpStatusCode> StoreCanonicalDocumentSchemaAsync(DocumentDataSchema schema)
+        public async Task<HttpStatusCode> StoreCanonicalDocumentSchemaAsync(DocumentDataScheme schema)
         {
             var options = new ItemRequestOptions
             {
@@ -67,7 +67,7 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
             };
 
             // itt is majd szepitunk es kitalalunk valami normalis partition key-t
-            var response = await storage.CreateItemAsync(schema, new PartitionKey(schema.Id.ToString()), options);
+            var response = await storage.CreateItemAsync(schema, new PartitionKey(schema.DocumentId.ToString()), options);
             var status = response.StatusCode;
             return status;
         }

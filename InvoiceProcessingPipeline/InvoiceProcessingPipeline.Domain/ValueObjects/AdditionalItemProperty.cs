@@ -4,5 +4,5 @@ using System.Text;
 
 namespace InvoiceProcessingPipeline.Domain.ValueObjects
 {
-    public sealed record AdditionalItemProperty(string Name, string Value);
+    public sealed record AdditionalItemProperty(string Name, string Value) : DocumentField;
 }

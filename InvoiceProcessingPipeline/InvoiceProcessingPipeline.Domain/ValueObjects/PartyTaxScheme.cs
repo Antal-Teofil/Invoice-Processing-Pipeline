@@ -7,5 +7,5 @@ namespace InvoiceProcessingPipeline.Domain.ValueObjects
     /// <summary>
     /// Party VAT/TAX identifiers
     /// </summary>
-    public sealed record PartyTaxScheme(string CompanyID, TaxScheme TaxScheme);
+    public sealed record PartyTaxScheme(string CompanyID, string TaxScheme);
 }

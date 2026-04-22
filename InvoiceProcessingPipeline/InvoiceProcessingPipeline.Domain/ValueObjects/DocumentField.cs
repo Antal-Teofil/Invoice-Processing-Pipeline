@@ -1,4 +1,7 @@
 ﻿namespace InvoiceProcessingPipeline.Domain.ValueObjects
 {
-    public abstract record DocumentField;
+    public abstract record DocumentField
+    {
+
+    }
 }

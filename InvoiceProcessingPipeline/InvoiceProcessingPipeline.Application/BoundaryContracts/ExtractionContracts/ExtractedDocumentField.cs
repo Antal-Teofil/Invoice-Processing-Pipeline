@@ -1,5 +1,6 @@
 ﻿using InvoiceProcessingPipeline.Domain.ValueObjects;
 using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionContracts;
 

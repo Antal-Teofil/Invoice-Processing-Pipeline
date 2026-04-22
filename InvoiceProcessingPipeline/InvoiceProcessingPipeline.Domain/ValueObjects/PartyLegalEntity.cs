@@ -12,5 +12,5 @@ namespace InvoiceProcessingPipeline.Domain.ValueObjects
     /// <param name="RegistrationName"></param>
     /// <param name="CompanyID"></param>
     /// <param name="CompanyLegalForm"></param>
-    public sealed record PartyLegalEntity(PartyRegistrationName RegistrationName, PartyId? CompanyID, string CompanyLegalForm) : DocumentField;
+    public sealed record PartyLegalEntity(string PartyRegistrationName, string? CompanyId, string CompanyLegalForm) : DocumentField;
 }

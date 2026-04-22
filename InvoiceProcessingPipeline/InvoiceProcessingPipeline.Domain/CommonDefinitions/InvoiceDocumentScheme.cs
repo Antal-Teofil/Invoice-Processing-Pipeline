@@ -2,16 +2,16 @@
 using InvoiceProcessingPipeline.Domain.Aggregates.Components;
 using InvoiceProcessingPipeline.Domain.EnumTypes;
 using InvoiceProcessingPipeline.Domain.ValueObjects;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace InvoiceProcessingPipeline.Domain.CommonDefinitions
 {
-    public abstract class InvoiceDocumentSchema : DocumentDataSchema
+    public abstract class InvoiceDocumentScheme : DocumentDataScheme
     {
         // 1..1
-        public required InvoiceId InvoiceId { get; set; }
+        /// <summary>
+        /// a unique identification of the Invoice
+        /// </summary>
+        public required InvoiceNumber InvoiceId { get; set; }
         // 1..1
         /// <summary>
         /// a group of business terms providing information about the SELLER.
@@ -54,6 +54,7 @@ namespace InvoiceProcessingPipeline.Domain.CommonDefinitions
         // 0..1
         public TaxCurrencyCode? TaxCurrencyCode { get; set; }
 
+        public InvoicePeriod? InvoicePeriod { get; set; }
         // 1..2
         public required ICollection<TaxTotal> TaxTotals { get; set; }
 

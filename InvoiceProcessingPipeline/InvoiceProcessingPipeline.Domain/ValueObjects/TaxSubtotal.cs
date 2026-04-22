@@ -4,5 +4,5 @@ using System.Text;
 
 namespace InvoiceProcessingPipeline.Domain.ValueObjects
 {
-    public sealed record TaxSubtotal(TaxableAmount TbleAmount, TaxAmount Amount, TaxCategory Category);
+    public sealed record TaxSubtotal(TaxableAmount TaxableAmount, TaxAmount Amount, TaxCategory Category) : DocumentField;
 }

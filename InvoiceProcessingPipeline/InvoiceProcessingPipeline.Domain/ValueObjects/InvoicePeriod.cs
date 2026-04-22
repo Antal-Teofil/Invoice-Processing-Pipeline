@@ -4,5 +4,5 @@ using System.Text;
 
 namespace InvoiceProcessingPipeline.Domain.ValueObjects
 {
-    public sealed record TaxScheme(string ID);
+    public sealed record InvoicePeriod(DateOnly? StartDate, DateOnly? EndDate, string? DescriptionCode) : DocumentField;
 }

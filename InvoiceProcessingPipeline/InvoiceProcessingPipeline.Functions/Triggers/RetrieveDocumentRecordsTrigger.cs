@@ -103,7 +103,7 @@ namespace InvoiceProcessingPipeline.Functions.Triggers
                         AuditStatus = auditStatus,
                         ProcessId = document.ProcessId,
                         InvoiceId = document.DocumentId,
-                        VendorName = vendorName?.Extraction.Name,
+                        VendorName = vendorName?.Extraction.Value,
                         PhoneNumber = vendorPhoneNumber?.Extraction.Number,
                         VendorEmailAddress = vendorEmailAddress?.Extraction.MailAddress,
                         TotalAmount = totalAmount?.Extraction.Amount,
