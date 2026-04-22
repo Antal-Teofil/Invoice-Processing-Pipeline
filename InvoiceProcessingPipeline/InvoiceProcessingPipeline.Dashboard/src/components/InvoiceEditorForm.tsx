@@ -1,5 +1,5 @@
 import { useForm } from "@tanstack/react-form"
-import type Invoice from "../types/InvoiceSchema";
+import type Invoice from "../types/InvoiceScheme";
 
 export default function InvoiceEditorForm( {} : Invoice) {
 
@@ -11,9 +11,6 @@ export default function InvoiceEditorForm( {} : Invoice) {
         <div>
             <h1>INVOICE</h1>
             <form>
-                <invoiceForm.Field name="">
-
-                </invoiceForm.Field>
             </form>
         </div>
     );

@@ -2,7 +2,7 @@ import { axiosClient } from "../clients/AxiosClient";
 import { DocumentRecordMetadataSchema, type DocumentRecordMetadata } from "../dtos/DocumentRecordMetadata";
 import type { InvoiceSummaryRecord } from "../types/InvoiceSummaryRecord";
 import { z } from "zod";
-
+import { InvoiceScheme } from "../types/InvoiceScheme";
 
 
 export async function fetchInvoiceRecords(): Promise<InvoiceSummaryRecord[]> {
