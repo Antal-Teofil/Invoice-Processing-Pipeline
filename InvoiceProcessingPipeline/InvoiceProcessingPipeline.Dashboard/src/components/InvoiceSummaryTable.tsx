@@ -86,7 +86,7 @@ export default function InvoiceSummaryTable() {
               ) : (
                 records.map((record) => (
                   <InvoiceSummaryRecordRow
-                    key={record.invoiceId}
+                    key={record.documentId}
                     {...record}
                   />
                 ))

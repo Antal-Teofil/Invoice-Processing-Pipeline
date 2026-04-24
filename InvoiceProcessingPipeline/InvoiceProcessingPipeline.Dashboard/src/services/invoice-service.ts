@@ -1,36 +1,27 @@
 import { axiosClient } from "../clients/AxiosClient";
-import { DocumentRecordMetadataSchema, type DocumentRecordMetadata } from "../dtos/DocumentRecordMetadata";
-import type { InvoiceSummaryRecord } from "../types/InvoiceSummaryRecord";
-import { z } from "zod";
-import { InvoiceScheme } from "../types/InvoiceScheme";
+import { DocumentMetadataDTOArrayScheme } from "../scheme/invoice-schemes";
+import type { Invoice, InvoiceSummaryRecord } from "../types/invoice-types";
 
-
-export async function fetchInvoiceRecords(): Promise<InvoiceSummaryRecord[]> {
+export async function fetchInvoiceSummaryRecordsAsync(): Promise<InvoiceSummaryRecord[]> {
   const { data } = await axiosClient.get<unknown>("/audit/records");
 
-  const DocumentRecordMetadataArraySchema = z.array(DocumentRecordMetadataSchema);
-  const result = await DocumentRecordMetadataArraySchema.safeParseAsync(data);
+  const parsedData = await DocumentMetadataDTOArrayScheme.safeParseAsync(data);
 
-  if (!result.success) {
-    console.error(result.error.issues);
-    throw new Error("Nem sikerült parsolni a DocumentRecordMetadata objektumokat.");
+  if (!parsedData.success) {
+    console.log(
+      "Error at parsing record data:",
+      parsedData.error.issues.map((issue) => issue.message)
+    );
+
+    return [];
   }
 
-  const records: DocumentRecordMetadata[] = result.data;
-
-  return records.map((record) => convertToInvoiceSummaryCard(record));
+  return parsedData.data.map(({ processId: _processId, ...summary }) => summary);
 }
 
-export function convertToInvoiceSummaryCard(
-  record: DocumentRecordMetadata
-): InvoiceSummaryRecord {
-  return {
-    invoiceId: record.invoiceId,
-    vendor: record.vendorName,
-    phoneNumber: record.phoneNumber,
-    vendorEmailAddress: record.vendorEmailAddress,
-    totalAmount: record.totalAmount,
-    currencyCode: record.currencyCode,
-    status: record.auditStatus,
-  };
-}
+export async function fetchInvoiceDataAsync( invoiceId: string ) : Promise<Invoice> {
+
+  const { data } = await axiosClient.get<unknown>(`verify/${invoiceId}`);
+
+  return data as Invoice;
+};

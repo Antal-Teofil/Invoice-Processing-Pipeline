@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import type { InvoiceSummaryRecord } from "../types/InvoiceSummaryRecord";
+import type { InvoiceSummaryRecord } from "../types/invoice-types";
 
 function getStatusClasses(status: string) {
   switch (status.toLowerCase()) {
@@ -21,19 +21,19 @@ function getStatusClasses(status: string) {
 }
 
 export default function InvoiceSummaryRecordRow({
-  invoiceId,
-  vendor,
+  documentId,
+  vendorName,
   vendorEmailAddress,
-  phoneNumber,
+  vendorPhoneNumber,
   totalAmount,
   currencyCode,
-  status,
+  auditStatus,
 }: InvoiceSummaryRecord) {
 
   const navigate = useNavigate();
 
   const handleRowClick = () => {
-    navigate(`/invoices/${invoiceId}`);
+    navigate(`/invoices/${documentId}`);
   };
 
   return (
@@ -41,11 +41,11 @@ export default function InvoiceSummaryRecordRow({
     onClick={handleRowClick}
     className="transition-colors odd:bg-white even:bg-slate-50/40 hover:bg-sky-50/40">
       <td className="border-b border-slate-100 px-6 py-5 text-left text-sm font-semibold text-slate-900">
-        {invoiceId}
+        {documentId}
       </td>
 
       <td className="border-b border-slate-100 px-6 py-5 text-left text-sm text-slate-700">
-        {vendor ?? "-"}
+        {vendorName ?? "-"}
       </td>
 
       <td className="border-b border-slate-100 px-6 py-5 text-center text-sm text-slate-600">
@@ -53,7 +53,7 @@ export default function InvoiceSummaryRecordRow({
       </td>
 
       <td className="border-b border-slate-100 px-6 py-5 text-center text-sm text-slate-600">
-        {phoneNumber ?? "-"}
+        {vendorPhoneNumber ?? "-"}
       </td>
 
       <td className="border-b border-slate-100 px-6 py-5 text-center text-sm font-medium text-slate-800">
@@ -67,10 +67,10 @@ export default function InvoiceSummaryRecordRow({
       <td className="border-b border-slate-100 px-6 py-5 text-center text-sm">
         <span
           className={`inline-flex min-w-[92px] items-center justify-center rounded-full px-3 py-1.5 text-xs font-semibold ring-1 ring-inset ${getStatusClasses(
-            status
+            auditStatus
           )}`}
         >
-          {status}
+          {auditStatus}
         </span>
       </td>
     </tr>
