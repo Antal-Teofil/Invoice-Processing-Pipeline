@@ -15,7 +15,7 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
 
     public sealed class CosmosDocumentSchemaStore(ILogger<CosmosDocumentSchemaStore> logger, [FromKeyedServices("invoice-data")] Container storage) : IDocumentDataStore
     {
-        public Task<DocumentDataScheme?> RetrieveCanonicalDocumentSchemaAsync(string id)
+        public Task<DocumentScheme?> RetrieveCanonicalDocumentSchemaAsync(string id)
         {
             throw new NotImplementedException();
         }
@@ -59,7 +59,7 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
                 response.ContinuationToken);
         }
 
-        public async Task<HttpStatusCode> StoreCanonicalDocumentSchemaAsync(DocumentDataScheme schema)
+        public async Task<HttpStatusCode> StoreCanonicalDocumentSchemaAsync(DocumentScheme schema)
         {
             var options = new ItemRequestOptions
             {

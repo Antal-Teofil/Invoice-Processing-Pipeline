@@ -10,8 +10,8 @@ namespace InvoiceProcessingPipeline.Application.Ports
     {
         // itt is Result<> lesz nem csunya HttpStatusCode
         public Task<HttpStatusCode> StoreExtractedDocumentSchemaAsync(ExtractedDocumentData data);
-        public Task<HttpStatusCode> StoreCanonicalDocumentSchemaAsync(DocumentDataScheme schema);
-        public Task<DocumentDataScheme?> RetrieveCanonicalDocumentSchemaAsync(string id);
+        public Task<HttpStatusCode> StoreCanonicalDocumentSchemaAsync(DocumentScheme schema);
+        public Task<DocumentScheme?> RetrieveCanonicalDocumentSchemaAsync(string id);
         public Task<ExtractedDocumentData?> RetrieveExtractedDocumentSchemaAsync(string id);
         public Task<PagedResult<ExtractedDocumentData>> RetrievePagedExtractedDocumentSchema(int pageSize, string? continuationToken, CancellationToken token = default);
     }
