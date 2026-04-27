@@ -6,7 +6,6 @@ using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Net;
-using System.Runtime.CompilerServices;
 
 
 namespace InvoiceProcessingPipeline.Infrastructure.Adapters

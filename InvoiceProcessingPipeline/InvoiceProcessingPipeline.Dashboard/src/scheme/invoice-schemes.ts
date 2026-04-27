@@ -23,22 +23,23 @@ const invalidInputFormatter =
     `[${fieldName} (${formatInvalidValue(issue.input)})] ${message}`;
 
 export const DocumentMetadataScheme = z.object({
-  documentId: z.guid({error: invalidInputFormatter('DOCUMENT ID', 'Invalid GUID!')}),
-  processId: z.guid({error: invalidInputFormatter('PROCESS ID', 'Invalid GUID!')}),
+  invoiceId: z.string({error: invalidInputFormatter('DOCUMENT ID', 'Invalid GUID!')}),
+  processId: z.string({error: invalidInputFormatter('PROCESS ID', 'Invalid GUID!')}),
   auditStatus: z.enum(AUDIT_STATUSES, {error: invalidInputFormatter('STATUS', 'Invalid audit status!')})
 });
 
 export const DocumentSummaryScheme = z.object({
   vendorName: z.string({error: invalidInputFormatter('VENDOR NAME', 'Unrecognized input!')}).default('unknown'),
-  vendorPhoneNumber: z.e164({error: invalidInputFormatter('PHONE NUMBER', 'Unrecognized input!')}).default('unknown'),
-  vendorEmailAddress: z.email({error: invalidInputFormatter('VENDOR EMAIL ADDRESS', 'Unrecognized input!')}).default('unknown'),
+  phoneNumber: z.e164({error: invalidInputFormatter('PHONE NUMBER', 'Unrecognized input!')}).nullable().default('unknown'),
+  vendorEmailAddress: z.email({error: invalidInputFormatter('VENDOR EMAIL ADDRESS', 'Unrecognized input!')}).nullable().default('unknown'),
   totalAmount: z.coerce.number({
     error: invalidInputFormatter('TOTAL AMOUNT', 'Unrecognized input')})
       .pipe(z.float32({
         error: invalidInputFormatter('TOTAL AMOUNT', 'Out of range value')})
       .min(0.0, {error: invalidInputFormatter('TOTAL AMOUNT', 'Negative input')}))
+      .nullable()
       .default(0),
-  currencyCode: z.string({error: invalidInputFormatter('CURRENCY CODE', 'Unrecognized input!')}).regex(/^[A-Z]{3}$/)
+  currencyCode: z.string({error: invalidInputFormatter('CURRENCY CODE', 'Unrecognized input!')}).regex(/^[A-Z]{3}$/).nullable().default('unknown')
 });
 
 export const DocumentMetadataDTOScheme = z.object({

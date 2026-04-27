@@ -1,16 +1,13 @@
 ﻿using InvoiceProcessingPipeline.Domain.Aggregates.Components;
 using InvoiceProcessingPipeline.Domain.CommonDefinitions;
+using InvoiceProcessingPipeline.Domain.EnumTypes;
 using InvoiceProcessingPipeline.Domain.ValueObjects;
 
 namespace InvoiceProcessingPipeline.Domain.Aggregates.DocumentTypes
 {
     public sealed class CommercialInvoiceDocumentScheme : InvoiceDocumentScheme
     {
-        // 1..1
-        public required string CustomizationId { get; set; } = default!;
 
-        // 1..1
-        public required string ProfileId { get; set; } = default!;
         // 1..1
         /// <summary>
         /// a unique identification of the Invoice
@@ -64,10 +61,6 @@ namespace InvoiceProcessingPipeline.Domain.Aggregates.DocumentTypes
 
         // 1..n
         public required ICollection<InvoiceLine> InvoiceLines { get; set; }
-
-        public override void ConvertToUblXml()
-        {
-            throw new NotImplementedException();
-        }
+        public override InvoiceTypeCode TypeCode { get => throw new NotImplementedException(); protected set => throw new NotImplementedException(); }
     }
 }
