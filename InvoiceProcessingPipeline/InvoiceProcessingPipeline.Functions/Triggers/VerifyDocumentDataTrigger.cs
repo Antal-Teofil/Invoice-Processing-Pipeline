@@ -34,9 +34,7 @@ namespace InvoiceProcessingPipeline.Functions.Triggers
                 return notFoundResponse;
             }
 
-            var document = DocumentScheme
-                .From(data)
-                .As<CommercialInvoice>()
+            var document = DocumentScheme.From(data).As<CommercialInvoice>()
                 .Build();
 
             string json = JsonConvert.SerializeObject(
