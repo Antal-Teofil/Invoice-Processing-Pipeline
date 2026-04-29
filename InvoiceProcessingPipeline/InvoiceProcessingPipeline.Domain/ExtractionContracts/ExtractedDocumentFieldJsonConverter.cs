@@ -1,9 +1,8 @@
-﻿using InvoiceProcessingPipeline.Domain.ExtractionContracts;
-using InvoiceProcessingPipeline.Domain.ValueObjects;
+﻿using InvoiceProcessingPipeline.Domain.ValueObjects;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace InvoiceProcessingPipeline.Application.MapperConfigurations;
+namespace InvoiceProcessingPipeline.Domain.ExtractionContracts;
 
 public sealed class ExtractedDocumentFieldJsonConverter : JsonConverter<IExtractedDocumentField>
 {

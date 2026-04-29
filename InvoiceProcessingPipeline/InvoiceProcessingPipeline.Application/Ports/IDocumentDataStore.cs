@@ -1,6 +1,6 @@
-﻿using InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionContracts;
-using InvoiceProcessingPipeline.Application.Shared;
+﻿using InvoiceProcessingPipeline.Application.Shared;
 using InvoiceProcessingPipeline.Domain.CommonDefinitions;
+using InvoiceProcessingPipeline.Domain.ExtractionContracts;
 using System.Net;
 
 namespace InvoiceProcessingPipeline.Application.Ports

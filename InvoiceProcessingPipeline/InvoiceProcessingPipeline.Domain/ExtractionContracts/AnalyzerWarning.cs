@@ -1,4 +1,4 @@
-﻿namespace InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionContracts
+﻿namespace InvoiceProcessingPipeline.Domain.ExtractionContracts
 {
     public sealed record AnalyzerWarning
     {

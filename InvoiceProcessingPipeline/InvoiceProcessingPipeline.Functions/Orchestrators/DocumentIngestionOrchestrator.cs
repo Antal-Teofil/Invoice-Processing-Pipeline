@@ -1,8 +1,6 @@
 ﻿using InvoiceProcessingPipeline.Application.BoundaryContracts;
-using InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionContracts;
 using InvoiceProcessingPipeline.Application.DocumentAudit;
 using InvoiceProcessingPipeline.Application.Shared;
-using InvoiceProcessingPipeline.Application.Validations;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.DurableTask;
 using Microsoft.Extensions.Logging;

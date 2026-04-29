@@ -1,8 +1,7 @@
-﻿using InvoiceProcessingPipeline.Application.MapperConfigurations;
-using InvoiceProcessingPipeline.Domain.ValueObjects;
+﻿using InvoiceProcessingPipeline.Domain.ValueObjects;
 using Newtonsoft.Json;
 
-namespace InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionContracts;
+namespace InvoiceProcessingPipeline.Domain.ExtractionContracts;
 
 [JsonObject(MemberSerialization.OptIn)]
 public sealed class ExtractedDocumentData(
@@ -31,4 +30,6 @@ public sealed class ExtractedDocumentData(
         out ExtractedDocumentField<TField>? field)
         where TField : DocumentField =>
         FieldDictionary.TryGet(fieldName, out field);
+
+
 }

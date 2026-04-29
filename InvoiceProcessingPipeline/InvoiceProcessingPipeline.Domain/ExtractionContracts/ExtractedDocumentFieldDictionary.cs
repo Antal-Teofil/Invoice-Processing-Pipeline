@@ -1,8 +1,7 @@
-﻿using InvoiceProcessingPipeline.Application.MapperConfigurations;
-using InvoiceProcessingPipeline.Domain.ValueObjects;
+﻿using InvoiceProcessingPipeline.Domain.ValueObjects;
 using Newtonsoft.Json;
 
-namespace InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionContracts;
+namespace InvoiceProcessingPipeline.Domain.ExtractionContracts;
 
 [JsonDictionary(ItemConverterType = typeof(ExtractedDocumentFieldJsonConverter))]
 public sealed class ExtractedDocumentFieldDictionary

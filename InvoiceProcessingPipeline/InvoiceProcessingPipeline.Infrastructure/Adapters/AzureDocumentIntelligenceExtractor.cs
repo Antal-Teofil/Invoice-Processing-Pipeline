@@ -1,7 +1,7 @@
 ﻿using Azure;
 using Azure.AI.DocumentIntelligence;
-using InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionContracts;
 using InvoiceProcessingPipeline.Application.Ports;
+using InvoiceProcessingPipeline.Domain.ExtractionContracts;
 using InvoiceProcessingPipeline.Domain.ValueObjects;
 
 

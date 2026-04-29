@@ -1,6 +1,6 @@
 ﻿using InvoiceProcessingPipeline.Domain.ValueObjects;
 
-namespace InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionContracts;
+namespace InvoiceProcessingPipeline.Domain.ExtractionContracts;
 
 /// <summary>
 /// this builder class is for extracting arbitrary amount of field from a given source

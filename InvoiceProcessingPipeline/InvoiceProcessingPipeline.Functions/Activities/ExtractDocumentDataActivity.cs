@@ -1,7 +1,7 @@
 ﻿using InvoiceProcessingPipeline.Application.BoundaryContracts;
-using InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionContracts;
 using InvoiceProcessingPipeline.Application.Ports;
 using InvoiceProcessingPipeline.Application.Shared;
+using InvoiceProcessingPipeline.Domain.ExtractionContracts;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 

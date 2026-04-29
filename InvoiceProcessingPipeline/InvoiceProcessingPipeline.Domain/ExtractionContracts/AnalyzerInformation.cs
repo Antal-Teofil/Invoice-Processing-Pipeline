@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionContracts
+﻿namespace InvoiceProcessingPipeline.Domain.ExtractionContracts
 {
     public sealed class AnalyzerInformation
     {

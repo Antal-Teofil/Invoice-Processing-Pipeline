@@ -1,7 +1,7 @@
-﻿using InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionContracts;
-using InvoiceProcessingPipeline.Application.Ports;
+﻿using InvoiceProcessingPipeline.Application.Ports;
 using InvoiceProcessingPipeline.Application.Shared;
 using InvoiceProcessingPipeline.Domain.CommonDefinitions;
+using InvoiceProcessingPipeline.Domain.ExtractionContracts;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

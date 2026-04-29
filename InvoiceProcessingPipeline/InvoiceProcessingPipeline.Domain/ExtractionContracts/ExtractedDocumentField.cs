@@ -1,8 +1,7 @@
 ﻿using InvoiceProcessingPipeline.Domain.ValueObjects;
 using Newtonsoft.Json;
-using System.Text.Json.Serialization;
 
-namespace InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionContracts;
+namespace InvoiceProcessingPipeline.Domain.ExtractionContracts;
 
 [JsonObject(MemberSerialization.OptIn)]
 public sealed record ExtractedDocumentField<TField>(
