@@ -5,9 +5,16 @@ using System.Text;
 
 namespace InvoiceProcessingPipeline.Domain.CommonDefinitions
 {
-    public abstract class DocumentSchemeBuilder<TDocument>(ExtractedDocumentData extraction) where TDocument : DocumentScheme
+    public abstract class DocumentSchemeBuilder<TDocument>
+        where TDocument : DocumentScheme
     {
-        public ExtractedDocumentData Extraction { get; protected set; } = extraction;
+        protected DocumentSchemeBuilder(ExtractedDocumentData extraction)
+        {
+            ArgumentNullException.ThrowIfNull(extraction);
+            Extraction = extraction;
+        }
+
+        public ExtractedDocumentData Extraction { get; }
 
         public abstract TDocument Build();
     }

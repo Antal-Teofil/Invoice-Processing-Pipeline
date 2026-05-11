@@ -14,9 +14,11 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
 
     public sealed class CosmosDocumentSchemaStore(ILogger<CosmosDocumentSchemaStore> logger, [FromKeyedServices("invoice-data")] Container storage) : IDocumentDataStore
     {
-        public Task<DocumentScheme?> RetrieveCanonicalDocumentSchemaAsync(string id)
+        public async Task<TDocumentType> RetrieveCanonicalizedDocumentSchemeAsync<TDocumentType>(string documentId) where TDocumentType : DocumentScheme
         {
-            throw new NotImplementedException();
+            var response = await storage.ReadItemAsync<TDocumentType>(documentId, new PartitionKey(documentId));
+            var resource = response.Resource;
+            return resource;
         }
 
         public async Task<ExtractedDocumentData?> RetrieveExtractedDocumentSchemaAsync(string id)
@@ -25,7 +27,7 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
             return response.Resource;
         }
 
-        public async Task<PagedResult<ExtractedDocumentData>> RetrievePagedExtractedDocumentSchema(
+        public async Task<PagedResult<ExtractedDocumentData>> RetrievePagedExtractedDocumentSchemaAsync(
             int pageSize,
             string? continuationToken,
             CancellationToken token = default)
@@ -58,17 +60,10 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
                 response.ContinuationToken);
         }
 
-        public async Task<HttpStatusCode> StoreCanonicalDocumentSchemaAsync(DocumentScheme schema)
+        public async Task<HttpStatusCode> StoreCanonicalizedDocumentSchemeAsync<TDocumentType>(TDocumentType documentScheme) where TDocumentType : DocumentScheme
         {
-            var options = new ItemRequestOptions
-            {
-                EnableContentResponseOnWrite = false
-            };
-
-            // itt is majd szepitunk es kitalalunk valami normalis partition key-t
-            var response = await storage.CreateItemAsync(schema, new PartitionKey(schema.DocumentId.ToString()), options);
-            var status = response.StatusCode;
-            return status;
+            var response = await storage.CreateItemAsync(documentScheme, new PartitionKey(documentScheme.DocumentId.ToString()));
+            return response.StatusCode;
         }
 
         public async Task<HttpStatusCode> StoreExtractedDocumentSchemaAsync(ExtractedDocumentData data)

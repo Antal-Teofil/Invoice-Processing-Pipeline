@@ -15,38 +15,35 @@ namespace InvoiceProcessingPipeline.Functions.Triggers
         IDocumentDataStore store)
     {
         [Function(nameof(VerifyDocumentDataTrigger))]
-        public async Task<HttpResponseData> RunAsync([HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "verify/{invoiceId}")] HttpRequestData req, string invoiceId)
+        public async Task<HttpResponseData> RunAsync(
+    [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "verify/{documentId}")]
+    HttpRequestData req,
+    string documentId)
         {
-            logger.LogInformation(
-                "Verifying extracted document data for invoice {InvoiceId}.",
-                invoiceId);
+            var invoice = await store.RetrieveCanonicalizedDocumentSchemeAsync<CommercialInvoice>(
+                documentId);
 
-            ExtractedDocumentData? data =
-                await store.RetrieveExtractedDocumentSchemaAsync(invoiceId);
-
-            if (data is null)
+            if (invoice is null)
             {
                 var notFoundResponse = req.CreateResponse(HttpStatusCode.NotFound);
 
-                await notFoundResponse.WriteStringAsync(
-                    $"No extracted document data found for invoice '{invoiceId}'.");
+                await notFoundResponse.WriteAsJsonAsync(new
+                {
+                    message = $"Document with id {documentId} was not found."
+                });
 
                 return notFoundResponse;
             }
 
-            var document = DocumentScheme.From(data).As<CommercialInvoice>()
-                .Build();
+            var okResponse = req.CreateResponse(HttpStatusCode.OK);
 
-            string json = JsonConvert.SerializeObject(
-                document,
-                Formatting.Indented);
+            await okResponse.WriteAsJsonAsync(new
+            {
+                message = $"Document with id {documentId} was successfully retrieved.",
+                data = invoice
+            });
 
-            var response = req.CreateResponse(HttpStatusCode.OK);
-            response.Headers.Add("Content-Type", "application/json");
-
-            await response.WriteStringAsync(json);
-
-            return response;
+            return okResponse;
         }
     }
 }

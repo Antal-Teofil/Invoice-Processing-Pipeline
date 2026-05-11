@@ -43,12 +43,7 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
                         field.FieldType != DocumentFieldType.String ||
                         string.IsNullOrWhiteSpace(field.ValueString))
                     {
-                        return new ExtractedDocumentField<PartyName>(
-                            Extraction: new PartyName(string.Empty),
-                            FieldName: "customerPartyName",
-                            FieldOriginalContent: string.Empty,
-                            ConfidenceScore: 0
-                        );
+                        return default!;
                     }
 
                     return new ExtractedDocumentField<PartyName>(
@@ -163,36 +158,19 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
                         ConfidenceScore: field.Confidence
                     );
                 })
+                .ExtractFieldAs("lineExtensionAmount", () =>
+                {
+                    if(!document.Fields.TryGetValue("SubTotal", out var field) || 
+                    field.FieldType != DocumentFieldType.Currency)
+                    {
+                        return new ExtractedDocumentField<LegalMonetaryTotal>(
+                            Extraction: null,
+                            FieldName: "lineExtensionAmount",
+
+                        );
+                    }
+                })
                 .WithProcessId(processId);
-            /*
-                .ExtractFieldAs<PostalAddress>("vendorPostalAddress", () =>
-                {
-                    throw new NotImplementedException();
-                })
-                .ExtractFieldAs<PostalAddress>("customerPostalAddress", () =>
-                {
-                    throw new NotImplementedException();
-                })
-                .ExtractFieldAs<LineExtensionAmount>("legalMonetaryTotal.lineExtensionAmount", () => // SubTotal
-                {
-                    throw new NotImplementedException();
-                })
-                .ExtractFieldAs<AllowanceTotalAmount>("legalMonetaryTotal.allowanceTotalAmount", () => // TotalDiscount
-                {
-                    throw new NotImplementedException();
-                })
-                .ExtractFieldAs<TaxTotal>("taxTotal.taxAmount", () =>
-                {
-                    throw new NotImplementedException();
-                })
-                .ExtractFieldAs<TaxInclusiveAmount>("legalMonetaryTotal.taxInclusiveAmount", () =>
-                {
-                    throw new NotImplementedException();
-                })
-                .ExtractFieldAs<PayableAmount>("legalMonetaryTotal.payableAmount", () =>
-                {
-                    throw new NotImplementedException();
-                });
             */
             // folytatjuk a a VendorTaxId-nal....
             return builder.Build();

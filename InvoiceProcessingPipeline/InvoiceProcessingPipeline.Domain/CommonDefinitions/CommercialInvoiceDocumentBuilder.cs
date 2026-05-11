@@ -17,10 +17,6 @@ namespace InvoiceProcessingPipeline.Domain.CommonDefinitions
 
         public CommercialInvoiceDocumentBuilder AddAccountingCustomerParty()
         {
-            if(Extraction.TryGetField("accountingCustomerParty", out ExtractedDocumentField<Party>? field))
-            {
-
-            }
             return this;
         }
 
@@ -54,7 +50,7 @@ namespace InvoiceProcessingPipeline.Domain.CommonDefinitions
             return this;
         }
 
-        public CommercialInvoiceDocumentBuilder AddInvoiceLine()
+        public CommercialInvoiceDocumentBuilder AddInvoiceLines()
         {
             return this;
         }

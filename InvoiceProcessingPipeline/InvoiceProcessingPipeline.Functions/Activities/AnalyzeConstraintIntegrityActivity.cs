@@ -10,7 +10,7 @@ namespace InvoiceProcessingPipeline.Functions.Activities
     public sealed class AnalyzeConstraintIntegrityActivity(ILogger<AnalyzeConstraintIntegrityActivity> loigger, IDocumentDataStore docStore)
     {
         [Function(nameof(AnalyzeConstraintIntegrityActivity))]
-        public async Task<ActivityResult<string>> RunAsync([ActivityTrigger] ExtractedDocumentResponse docResponse)
+        public async Task<ActivityResult<string>> RunAsync([ActivityTrigger] string documentId)
         {
             ExtractedDocumentData? exDoc = await docStore.RetrieveExtractedDocumentSchemaAsync(docResponse.ExtractedDocumentId);
             // I. beallitjuk a statuszt: Under Validation vagy valami hasonlora

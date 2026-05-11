@@ -1,19 +1,20 @@
-﻿using InvoiceProcessingPipeline.Domain.CommonDefinitions;
-using InvoiceProcessingPipeline.Domain.ExtractionContracts;
+﻿using InvoiceProcessingPipeline.Domain.ExtractionContracts;
 
-public sealed class DocumentSchemeBuilderContext
+namespace InvoiceProcessingPipeline.Domain.CommonDefinitions
 {
-    public ExtractedDocumentData Extraction { get; }
-
-    internal DocumentSchemeBuilderContext(ExtractedDocumentData extraction)
+    public sealed class DocumentSchemeBuilderContext
     {
-        ArgumentNullException.ThrowIfNull(extraction);
-        Extraction = extraction;
-    }
+        public ExtractedDocumentData Extraction { get; }
 
-    public DocumentSchemeBuilder<TDocument> As<TDocument>()
-        where TDocument : DocumentScheme, IDocumentScheme<TDocument>
-    {
-        return TDocument.Create(Extraction);
+        internal DocumentSchemeBuilderContext(ExtractedDocumentData extraction)
+        {
+            ArgumentNullException.ThrowIfNull(extraction);
+            Extraction = extraction;
+        }
+
+        public CommercialInvoiceDocumentBuilder AsCommercialInvoice()
+        {
+            return new CommercialInvoiceDocumentBuilder(Extraction);
+        }
     }
 }

@@ -7,7 +7,7 @@ namespace InvoiceProcessingPipeline.Domain.CommonDefinitions
 {
     public abstract class InvoiceDocumentSchemeBuilder<TDocument>(ExtractedDocumentData extraction)
         : DocumentSchemeBuilder<TDocument>(extraction)
-        where TDocument: InvoiceDocumentScheme
+        where TDocument : InvoiceDocumentScheme
     {
     }
 }

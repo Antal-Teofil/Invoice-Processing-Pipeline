@@ -4,6 +4,7 @@ using InvoiceProcessingPipeline.Application.Shared;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.DurableTask;
 using Microsoft.Extensions.Logging;
+using System.Xml.Schema;
 
 namespace InvoiceProcessingPipeline.Functions.Orchestrators;
 
@@ -48,11 +49,22 @@ public sealed class DocumentIngestionOrchestrator
         };
         ctx.SetCustomStatus(extractionSnapshot);
 
-        //var extractionCorrection = await ctx.WaitForExternalEvent<ExtractionCorrectionSubmitted>(nameof(ExtractionCorrectionSubmitted));
-        await ctx.WaitForExternalEvent<ExtractionCorrectionSubmitted>(nameof(ExtractionCorrectionSubmitted));
-        // itt most feltetelezzuk hogy az extrcation tokeletesen lefutott hibatlanul (naivan)
-        Console.WriteLine("Idozzunk");
+        ActivityResult<string> documentId =
+            await ctx.CallActivityAsync<ActivityResult<string>>(nameof(Activities.DocumentSchemeCanonicalizerActivity), rawDocData?.Value?.ExtractedDocumentId);
 
+        DocumentAuditSnapshot canonicalization = new()
+        {
+            DocumentId = rawDocData?.Value?.ExtractedDocumentId,
+            OrchestrationId = ctx.InstanceId,
+            AuditStatus = AuditStatus.UNDER_REVIEW
+        };
+
+        ctx.SetCustomStatus(canonicalization);
+
+
+        var
+
+        
         // Ide jönnek a további activity-k.
         // Példa:.
         // var extracted = await ctx.CallActivityAsync<...>(
