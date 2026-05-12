@@ -6,7 +6,7 @@ using InvoiceProcessingPipeline.Domain.ValueObjects;
 
 namespace InvoiceProcessingPipeline.Domain.Aggregates.DocumentTypes
 {
-    public sealed class CommercialInvoice : InvoiceDocumentScheme, IDocumentScheme<CommercialInvoice>
+    public sealed class CommercialInvoice : InvoiceDocumentScheme
     {
 
         // 1..1

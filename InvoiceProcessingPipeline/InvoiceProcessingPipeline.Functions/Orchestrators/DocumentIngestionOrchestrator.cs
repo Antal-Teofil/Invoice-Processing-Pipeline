@@ -62,9 +62,10 @@ public sealed class DocumentIngestionOrchestrator
         ctx.SetCustomStatus(canonicalization);
 
 
-        var
+        ActivityResult<string> docId =
+            await ctx.CallActivityAsync<ActivityResult<string>>(nameof(Activities.AnalyzeConstraintIntegrityActivity), rawDocData?.Value?.ExtractedDocumentId);
 
-        
+
         // Ide jönnek a további activity-k.
         // Példa:.
         // var extracted = await ctx.CallActivityAsync<...>(
