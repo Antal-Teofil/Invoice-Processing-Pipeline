@@ -62,10 +62,20 @@ public sealed class DocumentIngestionOrchestrator
         ctx.SetCustomStatus(canonicalization);
 
 
-        ActivityResult<string> docId =
-            await ctx.CallActivityAsync<ActivityResult<string>>(nameof(Activities.AnalyzeConstraintIntegrityActivity), rawDocData?.Value?.ExtractedDocumentId);
+        ActivityResult<bool> anyIssue =
+            await ctx.CallActivityAsync<ActivityResult<bool>>(nameof(Activities.AnalyzeConstraintIntegrityActivity), rawDocData?.Value?.ExtractedDocumentId);
 
+        DocumentAuditSnapshot integrityCheck = new()
+        {
+            DocumentId = rawDocData?.Value?.ExtractedDocumentId,
+            OrchestrationId = ctx.InstanceId,
+            AuditStatus = AuditStatus.UNDER_REVIEW
+        };
 
+        if(anyIssue.Value)
+        {
+
+        }
         // Ide jönnek a további activity-k.
         // Példa:.
         // var extracted = await ctx.CallActivityAsync<...>(
