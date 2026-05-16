@@ -1,4 +1,3 @@
-using Azure.AI.DocumentIntelligence;
 using Azure.Core;
 using Azure.Identity;
 using InvoiceProcessingPipeline.Application.MapperConfigurations;

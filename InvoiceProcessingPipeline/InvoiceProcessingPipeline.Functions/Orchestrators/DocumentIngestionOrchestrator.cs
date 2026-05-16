@@ -4,7 +4,6 @@ using InvoiceProcessingPipeline.Application.Shared;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.DurableTask;
 using Microsoft.Extensions.Logging;
-using System.Xml.Schema;
 
 namespace InvoiceProcessingPipeline.Functions.Orchestrators;
 
@@ -17,7 +16,7 @@ public sealed class DocumentIngestionOrchestrator
     {
         ArgumentNullException.ThrowIfNull(ctx);
         ArgumentNullException.ThrowIfNull(input);
-
+        //=======================================================================================================
         var logger = ctx.CreateReplaySafeLogger(nameof(DocumentIngestionOrchestrator));
 
         logger.LogInformation(
@@ -25,7 +24,7 @@ public sealed class DocumentIngestionOrchestrator
             input.CorrelationId,
             input.EventMetadata.EventId);
 
-        // itt hivodik meg az activity ami eloallitja a user delegation sas uri-t
+        // requests a user delegation SAS URI for the document to be ingested
         ActivityResult<DocumentUserDelegationSasUri> sasResult =
             await ctx.CallActivityAsync<ActivityResult<DocumentUserDelegationSasUri>>(
                 nameof(Activities.RequestDocumentAccessibilityActivity),
@@ -36,11 +35,10 @@ public sealed class DocumentIngestionOrchestrator
             SasUri = sasResult?.Value,
             ProcessId = ctx.InstanceId,
         };
-        // ez dolgozza fel a beerkezo BLOB-ot
+        // calls the activity responsible for extracting data from the document
         ActivityResult<ExtractedDocumentResponse> rawDocData =
             await ctx.CallActivityAsync<ActivityResult<ExtractedDocumentResponse>>(nameof(Activities.ExtractDocumentDataActivity), acInput);
 
-        // ha valami hiba lesz kezeljuk majd
         DocumentAuditSnapshot extractionSnapshot = new()
         {
             DocumentId = rawDocData?.Value?.ExtractedDocumentId,
@@ -49,6 +47,7 @@ public sealed class DocumentIngestionOrchestrator
         };
         ctx.SetCustomStatus(extractionSnapshot);
 
+        // calls the activity responsible for canonicalizing the extracted data
         ActivityResult<string> documentId =
             await ctx.CallActivityAsync<ActivityResult<string>>(nameof(Activities.DocumentSchemeCanonicalizerActivity), rawDocData?.Value?.ExtractedDocumentId);
 
@@ -61,25 +60,40 @@ public sealed class DocumentIngestionOrchestrator
 
         ctx.SetCustomStatus(canonicalization);
 
+        // calls the activity responsible for analyzing the integrity of the extracted data by applying a set of constraints
+        string extractedDocumentId = rawDocData?.Value?.ExtractedDocumentId ?? string.Empty;
 
-        ActivityResult<bool> anyIssue =
-            await ctx.CallActivityAsync<ActivityResult<bool>>(nameof(Activities.AnalyzeConstraintIntegrityActivity), rawDocData?.Value?.ExtractedDocumentId);
-
-        DocumentAuditSnapshot integrityCheck = new()
+        do
         {
-            DocumentId = rawDocData?.Value?.ExtractedDocumentId,
-            OrchestrationId = ctx.InstanceId,
-            AuditStatus = AuditStatus.UNDER_REVIEW
-        };
+            ActivityResult<bool> anyIssue =
+                await ctx.CallActivityAsync<ActivityResult<bool>>(nameof(Activities.AnalyzeConstraintIntegrityActivity), extractedDocumentId);
 
-        if(anyIssue.Value)
-        {
+            if (anyIssue.Value)
+            {
+                DocumentAuditSnapshot constrainViolation = new()
+                {
+                    DocumentId = rawDocData?.Value?.ExtractedDocumentId,
+                    OrchestrationId = ctx.InstanceId,
+                    AuditStatus = AuditStatus.CONSTRAINT_VIOLATION
+                };
 
-        }
-        // Ide jönnek a további activity-k.
-        // Példa:.
-        // var extracted = await ctx.CallActivityAsync<...>(
-        //     nameof(Activities.ExtractDocumentDataActivity),
-        //     input);
+                ctx.SetCustomStatus(constrainViolation);
+
+                string correctedDocumentId = await ctx.WaitForExternalEvent<string>(nameof(ExtractionCorrectionSubmitted));
+            } else
+            {
+                DocumentAuditSnapshot extractionSuccess = new()
+                {
+                    DocumentId = rawDocData?.Value?.ExtractedDocumentId,
+                    OrchestrationId = ctx.InstanceId,
+                    AuditStatus = AuditStatus.APPROVED
+                };
+
+                ctx.SetCustomStatus(extractionSuccess);
+                break;
+            }
+        } while(true);
+
+
     }
 }

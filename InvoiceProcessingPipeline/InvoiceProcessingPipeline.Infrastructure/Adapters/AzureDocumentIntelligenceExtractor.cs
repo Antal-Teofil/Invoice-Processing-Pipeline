@@ -157,21 +157,7 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
                         FieldOriginalContent: field.Content ?? string.Empty,
                         ConfidenceScore: field.Confidence
                     );
-                })
-                .ExtractFieldAs("lineExtensionAmount", () =>
-                {
-                    if(!document.Fields.TryGetValue("SubTotal", out var field) || 
-                    field.FieldType != DocumentFieldType.Currency)
-                    {
-                        return new ExtractedDocumentField<LegalMonetaryTotal>(
-                            Extraction: null,
-                            FieldName: "lineExtensionAmount",
-
-                        );
-                    }
-                })
-                .WithProcessId(processId);
-            */
+                });
             // folytatjuk a a VendorTaxId-nal....
             return builder.Build();
         }

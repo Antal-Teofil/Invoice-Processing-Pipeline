@@ -14,5 +14,6 @@ namespace InvoiceProcessingPipeline.Application.Ports
         public Task<PagedResult<ExtractedDocumentData>> RetrievePagedExtractedDocumentSchemaAsync(int pageSize, string? continuationToken, CancellationToken token = default);
         public Task<HttpStatusCode> StoreCanonicalizedDocumentSchemeAsync<TDocumentType>(TDocumentType documentScheme) where TDocumentType: DocumentScheme;
         public Task<TDocumentType> RetrieveCanonicalizedDocumentSchemeAsync<TDocumentType>(string documentId) where TDocumentType : DocumentScheme;
+        public Task ReplaceCanonicalizedDocumentSchemeAsync<TDocumentType>(TDocumentType correctedDocument) where TDocumentType : DocumentScheme; 
     }
 }

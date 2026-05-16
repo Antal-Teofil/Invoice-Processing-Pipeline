@@ -14,6 +14,14 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
 
     public sealed class CosmosDocumentSchemaStore(ILogger<CosmosDocumentSchemaStore> logger, [FromKeyedServices("invoice-data")] Container storage) : IDocumentDataStore
     {
+        public async Task ReplaceCanonicalizedDocumentSchemeAsync<TDocumentType>(TDocumentType correctedDocument) where TDocumentType : DocumentScheme
+        {
+            await storage.ReplaceItemAsync(
+                correctedDocument,
+                correctedDocument.DocumentId.ToString(),
+                new PartitionKey(correctedDocument.DocumentId.ToString())
+            );
+        }
         public async Task<TDocumentType> RetrieveCanonicalizedDocumentSchemeAsync<TDocumentType>(string documentId) where TDocumentType : DocumentScheme
         {
             var response = await storage.ReadItemAsync<TDocumentType>(documentId, new PartitionKey(documentId));
