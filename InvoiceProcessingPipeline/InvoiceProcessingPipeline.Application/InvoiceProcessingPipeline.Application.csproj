@@ -23,9 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Status\" />
-    <Folder Include="Validations\ConstraintsValidation\" />
-    <Folder Include="Validations\SchemaIntegrityValidation\" />
+    <Folder Include="ExportTypes\Peppol\" />
   </ItemGroup>
 
 </Project>

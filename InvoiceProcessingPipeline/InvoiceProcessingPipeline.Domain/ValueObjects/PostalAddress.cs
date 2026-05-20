@@ -8,5 +8,5 @@ namespace InvoiceProcessingPipeline.Domain.ValueObjects
     /// Party's postal address
     /// </summary>
     /// // Vendor-/CustomerAddress
-    public sealed record PostalAddress(string? StreetName, string? AdditionalStreetName, string? CityName, string? PostalZone, string? CountrySubentity, ICollection<AddressLine>? AddressLines, Country CountryID) : DocumentField;
+    public sealed record PostalAddress(string? StreetName, string? AdditionalStreetName, string? CityName, string? PostalZone, string? CountrySubentity, string? AddressLine, string CountryIdentificationCode) : DocumentField;
 }

@@ -1,25 +1,44 @@
-﻿using Castle.Core.Logging;
-using InvoiceProcessingPipeline.Application.BoundaryContracts;
-using InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionContracts;
+﻿using InvoiceProcessingPipeline.Application.Extensions;
+using static InvoiceProcessingPipeline.Application.Extensions.DocumentSchemeExtensions;
 using InvoiceProcessingPipeline.Application.Ports;
 using InvoiceProcessingPipeline.Application.Shared;
-using InvoiceProcessingPipeline.Application.Validations;
+using InvoiceProcessingPipeline.Domain.Aggregates.DocumentTypes;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 
 namespace InvoiceProcessingPipeline.Functions.Activities
 {
-    public sealed class AnalyzeConstraintIntegrityActivity(ILogger<AnalyzeConstraintIntegrityActivity> loigger, IDocumentDataStore docStore)
+    public sealed class AnalyzeConstraintIntegrityActivity(ILogger<AnalyzeConstraintIntegrityActivity> logger, IDocumentDataStore documentStore, IDocumentAuditStore auditStore)
     {
         [Function(nameof(AnalyzeConstraintIntegrityActivity))]
-        public async Task<ActivityResult<string>> RunAsync([ActivityTrigger] ExtractedDocumentResponse docResponse)
+        public async Task<ActivityResult<bool>> RunAsync([ActivityTrigger] string documentId)
         {
-            ExtractedDocumentData? exDoc = await docStore.RetrieveExtractedDocumentSchemaAsync(docResponse.ExtractedDocumentId);
-            // I. beallitjuk a statuszt: Under Validation vagy valami hasonlora
-            // II. validacios szakasz -> osszegyujtjuk az esetleges hibakat, vagy fast-fail bizonyos esetekben -> implementalasra var
-            // III. amennyiben hiba lepett fel kuldjuk frontendre, ellenkezo esetben megy tovabb a validacios szakaszban.
+            
+            var document = await documentStore.RetrieveCanonicalizedDocumentSchemeAsync<CommercialInvoice>(documentId);
 
-            return ActivityResult<string>.Failure("Schema Violation");
+            if (document is null)
+            {
+                return ActivityResult<bool>.Failure("Document Not Found");
+            }
+
+            var result = document.Register(
+                HasInvoiceNumber,
+                HasCustomerParty,
+                HasSupplierParty,
+                HasIssueDate,
+                HasDocumentCurrencyCode,
+                HasInvoiceLines,
+                HasLegalMonetaryTotal
+                );
+
+
+            var recordId = await auditStore.StoreIssueRecord(result, document.DocumentId.ToString());
+
+            if(result.Issues.Count == 0)
+            {
+                return ActivityResult<bool>.Success(false);
+            }
+            return ActivityResult<bool>.Failure("Some issue has happened!");
         }
     }
 }

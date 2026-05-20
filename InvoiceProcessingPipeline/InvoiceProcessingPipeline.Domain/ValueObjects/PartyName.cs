@@ -5,5 +5,5 @@ using System.Text;
 namespace InvoiceProcessingPipeline.Domain.ValueObjects
 {
 
-    public sealed record PartyName(string Name) : DocumentField;
+    public sealed record PartyName(string Value) : DocumentField;
 }

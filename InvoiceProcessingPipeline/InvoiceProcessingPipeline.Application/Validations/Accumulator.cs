@@ -4,8 +4,13 @@ using System.Text;
 
 namespace InvoiceProcessingPipeline.Application.Validations
 {
-    public sealed record Accumulator<TSource> where TSource : class
+    public class Accumulator
     {
-        public IReadOnlyList<TSource>? ConstraintViolations { get; set; }
+        private readonly List<Issue> _issues = [];
+        public IReadOnlyList<Issue> Issues { get { return _issues; } }
+
+        public void Append(Issue issue) => _issues.Add(issue);
+
+        public void Append(IEnumerable<Issue> issues) => _issues.AddRange(issues);
     }
 }

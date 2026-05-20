@@ -1,38 +1,44 @@
-﻿using InvoiceProcessingPipeline.Application.Auditing;
-using InvoiceProcessingPipeline.Application.Auditing.Models;
-using InvoiceProcessingPipeline.Application.Auditing.Ports;
+﻿using InvoiceProcessingPipeline.Application.BoundaryContracts;
+using InvoiceProcessingPipeline.Application.DTOs;
+using InvoiceProcessingPipeline.Application.Ports;
+using InvoiceProcessingPipeline.Application.Validations;
 using InvoiceProcessingPipeline.Infrastructure.Configurations;
 using Microsoft.Azure.Cosmos;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Text;
 
 namespace InvoiceProcessingPipeline.Infrastructure.Adapters
 {
-    public sealed class CosmosDocumentAuditStore(CosmosClient client, IOptions<CosmosAuditOptions> option) : IDocumentAuditStore
+    public sealed class CosmosDocumentAuditStore([FromKeyedServices("invoice-audit")] Container store, IOptions<CosmosAuditOptions> option) : IDocumentAuditStore
     {
-        public async Task EnsureExistance()
-        {
-            var options = option.Value;
 
-            Database database = await client.CreateDatabaseIfNotExistsAsync(options.InvoiceAuditDatabase);
-            
-            await database.CreateContainerIfNotExistsAsync(options.InvoiceAuditContainer, options.PartitionKey);
-            await database.CreateContainerIfNotExistsAsync(options.InvoiceEventContianer, options.PartitionKey);
-            await database.CreateContainerIfNotExistsAsync(options.InvoiceSchemaContainer, options.PartitionKey);
+        public async Task<IssueRecord> RetrieveIssueRecord(string issueRecordId, string documentId)
+        {
+            var response = await store.ReadItemAsync<IssueRecord>(
+                issueRecordId,
+                new PartitionKey(documentId)
+            );
+
+            return response.Resource;
         }
 
-        public async Task<RecordStatus> RecordEvent(DocumentEventRecord record)
+        public async Task<string> StoreIssueRecord(Accumulator issues, string documentId)
         {
-            await EnsureExistance();
+            IssueRecord issueRecord = new()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Issues = issues,
+                RecordDate = DateTime.UtcNow,
+                DocumentId = documentId
+            };
 
-            var itemResposne = await client.GetContainer(option.Value.InvoiceEventContianer, option.Value.PartitionKey).CreateItemAsync(record, new PartitionKey(record.EventId));
-            
-            bool exists = itemResposne.StatusCode == HttpStatusCode.OK;
+            var response = await store.CreateItemAsync(
+                issueRecord,
+                new PartitionKey(issueRecord.Id)
+            );
 
-            return new RecordStatus(exists);
+            return issueRecord.Id;
         }
     }
 }

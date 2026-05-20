@@ -1,7 +1,6 @@
-﻿using InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionContracts;
-using InvoiceProcessingPipeline.Application.Shared;
+﻿using InvoiceProcessingPipeline.Application.Shared;
 using InvoiceProcessingPipeline.Domain.CommonDefinitions;
-using InvoiceProcessingPipeline.Domain.ValueObjects;
+using InvoiceProcessingPipeline.Domain.ExtractionContracts;
 using System.Net;
 
 namespace InvoiceProcessingPipeline.Application.Ports
@@ -11,10 +10,10 @@ namespace InvoiceProcessingPipeline.Application.Ports
     {
         // itt is Result<> lesz nem csunya HttpStatusCode
         public Task<HttpStatusCode> StoreExtractedDocumentSchemaAsync(ExtractedDocumentData data);
-        public Task<HttpStatusCode> StoreCanonizedDocumentSchemaAsync(DocumentDataSchema schema);
-        public Task<DocumentDataSchema?> RetrieveCanonizedDocumentSchemaAsync(string id);
         public Task<ExtractedDocumentData?> RetrieveExtractedDocumentSchemaAsync(string id);
-
-        public Task<PagedResult<ExtractedDocumentData>> RetrievePagedExtractedDocumentSchema(int pageSize, string? ContinuationToken, CancellationToken token = default);
+        public Task<PagedResult<ExtractedDocumentData>> RetrievePagedExtractedDocumentSchemaAsync(int pageSize, string? continuationToken, CancellationToken token = default);
+        public Task<HttpStatusCode> StoreCanonicalizedDocumentSchemeAsync<TDocumentType>(TDocumentType documentScheme) where TDocumentType: DocumentScheme;
+        public Task<TDocumentType> RetrieveCanonicalizedDocumentSchemeAsync<TDocumentType>(string documentId) where TDocumentType : DocumentScheme;
+        public Task ReplaceCanonicalizedDocumentSchemeAsync<TDocumentType>(TDocumentType correctedDocument) where TDocumentType : DocumentScheme; 
     }
 }

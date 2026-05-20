@@ -1,7 +1,7 @@
-﻿using InvoiceProcessingPipeline.Application.BoundaryContracts.ExtractionContracts;
-using InvoiceProcessingPipeline.Application.Ports;
+﻿using InvoiceProcessingPipeline.Application.Ports;
 using InvoiceProcessingPipeline.Application.Shared;
 using InvoiceProcessingPipeline.Domain.CommonDefinitions;
+using InvoiceProcessingPipeline.Domain.ExtractionContracts;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -14,9 +14,19 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
 
     public sealed class CosmosDocumentSchemaStore(ILogger<CosmosDocumentSchemaStore> logger, [FromKeyedServices("invoice-data")] Container storage) : IDocumentDataStore
     {
-        public Task<DocumentDataSchema?> RetrieveCanonizedDocumentSchemaAsync(string id)
+        public async Task ReplaceCanonicalizedDocumentSchemeAsync<TDocumentType>(TDocumentType correctedDocument) where TDocumentType : DocumentScheme
         {
-            throw new NotImplementedException();
+            await storage.ReplaceItemAsync(
+                correctedDocument,
+                correctedDocument.DocumentId.ToString(),
+                new PartitionKey(correctedDocument.DocumentId.ToString())
+            );
+        }
+        public async Task<TDocumentType> RetrieveCanonicalizedDocumentSchemeAsync<TDocumentType>(string documentId) where TDocumentType : DocumentScheme
+        {
+            var response = await storage.ReadItemAsync<TDocumentType>(documentId, new PartitionKey(documentId));
+            var resource = response.Resource;
+            return resource;
         }
 
         public async Task<ExtractedDocumentData?> RetrieveExtractedDocumentSchemaAsync(string id)
@@ -25,48 +35,43 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
             return response.Resource;
         }
 
-        public async Task<PagedResult<ExtractedDocumentData>> RetrievePagedExtractedDocumentSchema(int pageSize, string? continuationToken, CancellationToken token = default)
+        public async Task<PagedResult<ExtractedDocumentData>> RetrievePagedExtractedDocumentSchemaAsync(
+            int pageSize,
+            string? continuationToken,
+            CancellationToken token = default)
         {
-            var query = new QueryDefinition(@"SELECT * FROM c ORDER BY c.id ASC");
+            QueryDefinition queryDefinition = new("SELECT * FROM c");
 
-            var iterator = storage.GetItemQueryIterator<ExtractedDocumentData>(
-                queryDefinition: query, 
-                continuationToken: continuationToken,
-                requestOptions: new QueryRequestOptions
-                {
-                    MaxItemCount = pageSize
-                }
-            );
-
-            if(!iterator.HasMoreResults)
+            QueryRequestOptions queryRequestOptions = new()
             {
-                return new PagedResult<ExtractedDocumentData>
-                {
-                    Items= [],
-                    ContinuationToken = null,
-                };
+                MaxItemCount = pageSize,
+            };
+
+            using FeedIterator<ExtractedDocumentData> iterator =
+                storage.GetItemQueryIterator<ExtractedDocumentData>(
+                    queryDefinition: queryDefinition,
+                    continuationToken: continuationToken,
+                    requestOptions: queryRequestOptions);
+
+            if (!iterator.HasMoreResults)
+            {
+                return new PagedResult<ExtractedDocumentData>(
+                    [],
+                    null);
             }
 
-            var page = await iterator.ReadNextAsync(token);
+            FeedResponse<ExtractedDocumentData> response =
+                await iterator.ReadNextAsync(token);
 
-            return new PagedResult<ExtractedDocumentData>
-            {
-                Items = page.Resource.ToList(),
-                ContinuationToken = page.ContinuationToken
-            };
+            return new PagedResult<ExtractedDocumentData>(
+                [.. response],
+                response.ContinuationToken);
         }
 
-        public async Task<HttpStatusCode> StoreCanonizedDocumentSchemaAsync(DocumentDataSchema schema)
+        public async Task<HttpStatusCode> StoreCanonicalizedDocumentSchemeAsync<TDocumentType>(TDocumentType documentScheme) where TDocumentType : DocumentScheme
         {
-            var options = new ItemRequestOptions
-            {
-                EnableContentResponseOnWrite = false
-            };
-
-            // itt is majd szepitunk es kitalalunk valami normalis partition key-t
-            var response = await storage.CreateItemAsync(schema, new PartitionKey(schema.Id.ToString()), options);
-            var status = response.StatusCode;
-            return status;
+            var response = await storage.CreateItemAsync(documentScheme, new PartitionKey(documentScheme.DocumentId.ToString()));
+            return response.StatusCode;
         }
 
         public async Task<HttpStatusCode> StoreExtractedDocumentSchemaAsync(ExtractedDocumentData data)
