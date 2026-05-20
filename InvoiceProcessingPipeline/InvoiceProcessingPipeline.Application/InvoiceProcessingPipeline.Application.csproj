@@ -22,4 +22,8 @@
     <ProjectReference Include="..\InvoiceProcessingPipeline.Domain\InvoiceProcessingPipeline.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ExportTypes\Peppol\" />
+  </ItemGroup>
+
 </Project>
