@@ -18,8 +18,6 @@ public sealed class IncomingDocumentEvent(
     [Function(nameof(IncomingDocumentEvent))]
     public async Task RunAsync([EventGridTrigger] CloudEvent cloudEvent, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(cloudEvent);
-
         logger.LogInformation(
             "Received CloudEvent. Id: {EventId}, Type: {EventType}, Source: {EventSource}",
             cloudEvent.Id,
@@ -57,7 +55,7 @@ public sealed class IncomingDocumentEvent(
         var documentIngestionEvent = new DocumentIngestionEvent
         {
             Id = eventMetadata.EventId,
-            CorrelationId = eventMetadata.EventId,
+            CorrelationId = Guid.NewGuid().ToString(),
             StorageMetadata = storageMetadata,
             EventMetadata = eventMetadata
         };

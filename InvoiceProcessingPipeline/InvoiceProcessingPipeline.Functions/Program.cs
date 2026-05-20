@@ -1,4 +1,3 @@
-using Azure.AI.DocumentIntelligence;
 using Azure.Core;
 using Azure.Identity;
 using InvoiceProcessingPipeline.Application.MapperConfigurations;
@@ -11,6 +10,8 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 var builder = FunctionsApplication.CreateBuilder(args);
 
@@ -19,6 +20,13 @@ builder.ConfigureFunctionsWebApplication();
 builder.Services
     .AddApplicationInsightsTelemetryWorkerService()
     .ConfigureFunctionsApplicationInsights();
+
+builder.Services.Configure<JsonSerializerOptions>(options =>
+{
+    options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+    options.DefaultIgnoreCondition = JsonIgnoreCondition.Never;
+    options.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+});
 
 var typeAdapterConfig = TypeAdapterConfig.GlobalSettings;
 
@@ -47,6 +55,6 @@ builder.Services.AddSingleton<IDocumentDataExtractor, AzureDocumentIntelligenceE
 
 builder.Services.AddSingleton<IDocumentDataStore, CosmosDocumentSchemaStore>();
 
-
+//1
 
 builder.Build().Run();

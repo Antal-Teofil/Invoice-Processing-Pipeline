@@ -4,5 +4,5 @@ using System.Text;
 
 namespace InvoiceProcessingPipeline.Domain.ValueObjects
 {
-    public sealed record BaseAmount(decimal Value, string CurrencyID);
+    public sealed record BaseAmount(float Value, string CurrencyId);
 }

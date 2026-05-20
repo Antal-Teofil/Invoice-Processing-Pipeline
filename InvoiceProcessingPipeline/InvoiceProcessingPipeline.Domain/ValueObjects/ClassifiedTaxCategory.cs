@@ -4,5 +4,5 @@ using System.Text;
 
 namespace InvoiceProcessingPipeline.Domain.ValueObjects
 {
-    public sealed record ClassifiedTaxCategory(string VatCategoryCode, float? Percent, TaxScheme Scheme);
+    public sealed record ClassifiedTaxCategory(string VatCategoryCode, float? Percent, string TaxScheme) : DocumentField;
 }
