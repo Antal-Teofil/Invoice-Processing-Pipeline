@@ -23,6 +23,11 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
             return response.Resource;
         }
 
+        public Task<IssueRecord> RetrieveIssueRecord(string issueRecordId)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<string> StoreIssueRecord(Accumulator issues, string documentId)
         {
             IssueRecord issueRecord = new()

@@ -70,7 +70,7 @@ namespace InvoiceProcessingPipeline.Functions.Triggers
 
             do
             {
-                var page = await storage.RetrievePagedExtractedDocumentSchema(
+                var page = await storage.RetrievePagedExtractedDocumentSchemaAsync(
                     pageSize: 100,
                     continuationToken: continuationToken);
 
