@@ -8,24 +8,45 @@ namespace InvoiceProcessingPipeline.Infrastructure.Configurations;
 
 public static class BlobServiceCollectionExtensions
 {
-    public static IServiceCollection AddBlobClient(this IServiceCollection services)
+    public const string DocumentsXmlContainerKey = "documents-xml";
+
+    public static IServiceCollection AddBlobClient(
+        this IServiceCollection services)
     {
         services.AddOptionsWithValidateOnStart<BlobStorageOptions>()
             .BindConfiguration(BlobStorageOptions.SectionName)
             .ValidateDataAnnotations()
             .Validate(
-                options => Uri.TryCreate(options.ServiceUri, UriKind.Absolute, out _),
+                options => Uri.TryCreate(
+                    options.ServiceUri,
+                    UriKind.Absolute,
+                    out _),
                 "ServiceUri must be a valid absolute URI.");
 
         services.AddSingleton(sp =>
         {
-            var options = sp.GetRequiredService<IOptions<BlobStorageOptions>>().Value;
-            var credential = sp.GetRequiredService<TokenCredential>();
+            var options = sp
+                .GetRequiredService<IOptions<BlobStorageOptions>>()
+                .Value;
+
+            var credential =
+                sp.GetRequiredService<TokenCredential>();
 
             return new BlobServiceClient(
                 serviceUri: new Uri(options.ServiceUri),
                 credential: credential);
         });
+
+        services.AddKeyedSingleton<BlobContainerClient>(
+            DocumentsXmlContainerKey,
+            (serviceProvider, _) =>
+            {
+                var blobServiceClient =
+                    serviceProvider.GetRequiredService<BlobServiceClient>();
+
+                return blobServiceClient.GetBlobContainerClient(
+                    DocumentsXmlContainerKey);
+            });
 
         return services;
     }

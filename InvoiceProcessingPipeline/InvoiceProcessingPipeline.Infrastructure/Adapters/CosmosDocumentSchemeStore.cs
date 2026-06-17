@@ -12,7 +12,7 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
 {
     // itt majd teszek egy `IOption<DocumentSchemaStoreOptions>`-t, hogy jol lehessen konfiguralni mit hova mentunk ha netan valami valtozik architektura szintjen, s szebb is
 
-    public sealed class CosmosDocumentSchemaStore(ILogger<CosmosDocumentSchemaStore> logger, [FromKeyedServices("invoice-data")] Container storage) : IDocumentDataStore
+    public sealed class CosmosDocumentSchemeStore(ILogger<CosmosDocumentSchemeStore> logger, [FromKeyedServices("invoice-data")] Container storage) : IDocumentDataStore
     {
         public async Task ReplaceCanonicalizedDocumentSchemeAsync<TDocumentType>(TDocumentType correctedDocument) where TDocumentType : DocumentScheme
         {

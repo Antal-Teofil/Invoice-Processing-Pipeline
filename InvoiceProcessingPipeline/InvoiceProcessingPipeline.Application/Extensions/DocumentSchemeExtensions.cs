@@ -28,7 +28,7 @@ namespace InvoiceProcessingPipeline.Application.Extensions
 
         public static Issue[] HasInvoiceNumber(CommercialInvoice invoice)
         {
-            if (string.IsNullOrWhiteSpace(invoice!.InvoiceId?.value))
+            if (string.IsNullOrWhiteSpace(invoice!.InvoiceId?.Value))
             {
                 return [
                     new Issue {

@@ -1,5 +1,6 @@
-﻿namespace InvoiceProcessingPipeline.Domain.ValueObjects
+﻿using System.Xml.Serialization;
+
+namespace InvoiceProcessingPipeline.Domain.ValueObjects
 {
-    // InvoiceId (AADI)
-    public sealed record InvoiceNumber(string value) : DocumentField;
+    public sealed record InvoiceNumber(string Value) : DocumentField;
 }

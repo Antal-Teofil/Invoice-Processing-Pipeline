@@ -25,36 +25,61 @@ builder.Services.Configure<JsonSerializerOptions>(options =>
 {
     options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
     options.DefaultIgnoreCondition = JsonIgnoreCondition.Never;
-    options.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+
+    options.Converters.Add(
+        new JsonStringEnumConverter(
+            JsonNamingPolicy.CamelCase));
 });
 
 var typeAdapterConfig = TypeAdapterConfig.GlobalSettings;
 
-typeAdapterConfig.Scan(typeof(CloudEventToDocumentEventMetadata).Assembly);
+typeAdapterConfig.Scan(
+    typeof(CloudEventToDocumentEventMetadata).Assembly);
 
 builder.Services.AddSingleton(typeAdapterConfig);
 builder.Services.AddSingleton<IMapper, ServiceMapper>();
 
-builder.Services.AddSingleton<TokenCredential, DefaultAzureCredential>();
+builder.Services.AddSingleton<
+    TokenCredential,
+    DefaultAzureCredential>();
 
-// Cosmos Client configuration
+// Cosmos DB
 builder.Services.AddCosmosClient();
 
-// Blob Client configuration
+// Azure Blob Storage:
+// - BlobServiceClient
+// - keyed "documents-xml" BlobContainerClient
 builder.Services.AddBlobClient();
 
-// Azure Document Intelligence Cleint configuration
+// Azure Document Intelligence
 builder.Services.AddDocumentIntelligenceClient();
 
-// Azure Strorage Queue
+// Azure Storage Queue
 builder.Services.AddQueueClient();
 
-builder.Services.AddSingleton<IDocumentEventOrchestrator, DocumentEventOrchestratorService>();
+// Application services
+builder.Services.AddSingleton<
+    IDocumentEventOrchestrator,
+    DocumentEventOrchestratorService>();
 
-builder.Services.AddSingleton<IDocumentDataExtractor, AzureDocumentIntelligenceExtractor>();
+// Extractors
+builder.Services.AddSingleton<
+    IDocumentDataExtractor,
+    AzureDocumentIntelligenceExtractor>();
 
-builder.Services.AddSingleton<IDocumentDataStore, CosmosDocumentSchemaStore>();
+// Structured document storage in Cosmos DB
+builder.Services.AddSingleton<
+    IDocumentDataStore,
+    CosmosDocumentSchemeStore>();
 
-//1
+// XML document storage in Azure Blob Storage
+builder.Services.AddSingleton<
+    IDocumentXmlStore,
+    AzureBlobDocumentStorage>();
+
+// UBL XML exporter
+builder.Services.AddSingleton<
+    IDocumentSchemeExporter,
+    UblExporter>();
 
 builder.Build().Run();

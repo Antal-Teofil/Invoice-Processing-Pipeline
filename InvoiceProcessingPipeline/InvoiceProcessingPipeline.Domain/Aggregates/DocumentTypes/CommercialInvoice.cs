@@ -3,6 +3,7 @@ using InvoiceProcessingPipeline.Domain.CommonDefinitions;
 using InvoiceProcessingPipeline.Domain.EnumTypes;
 using InvoiceProcessingPipeline.Domain.ExtractionContracts;
 using InvoiceProcessingPipeline.Domain.ValueObjects;
+using System.Xml.Serialization;
 
 namespace InvoiceProcessingPipeline.Domain.Aggregates.DocumentTypes
 {
@@ -13,6 +14,7 @@ namespace InvoiceProcessingPipeline.Domain.Aggregates.DocumentTypes
         /// <summary>
         /// a unique identification of the Invoice
         /// </summary>
+        /// 
         public InvoiceNumber? InvoiceId { get; set; }
         // 1..1
         /// <summary>
