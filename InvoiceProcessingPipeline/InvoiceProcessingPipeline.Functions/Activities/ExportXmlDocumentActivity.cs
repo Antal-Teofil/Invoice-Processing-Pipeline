@@ -1,15 +1,13 @@
-﻿
-using Castle.Core.Logging;
-using InvoiceProcessingPipeline.Application.Ports;
+﻿using InvoiceProcessingPipeline.Application.Ports;
 using InvoiceProcessingPipeline.Domain.Aggregates.DocumentTypes;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 
 namespace InvoiceProcessingPipeline.Functions.Activities
 {
-    public sealed class ConvertToXmlDocumentActivity(ILogger<ConvertToXmlDocumentActivity> logger, IDocumentDataStore store, IDocumentSchemeExporter exporter)
+    public sealed class ExportXmlDocumentActivity(ILogger<ExportXmlDocumentActivity> logger, IDocumentDataStore store, IDocumentSchemeExporter exporter, IDocumentXmlStore xmlStore)
     {
-        [Function(nameof(ConvertToXmlDocumentActivity))]
+        [Function(nameof(ExportXmlDocumentActivity))]
         public async Task RunAsync([ActivityTrigger] string documentId)
         {
 
@@ -21,7 +19,9 @@ namespace InvoiceProcessingPipeline.Functions.Activities
                 return;
             }
 
-            await exporter.Export(document);
+            var exportedXmlDocument = await exporter.ExportAsync(document);
+
+            await xmlStore.StoreXmlDocumentSchemeAsync(exportedXmlDocument);
         }
     }
 }

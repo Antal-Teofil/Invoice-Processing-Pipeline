@@ -23,12 +23,12 @@ namespace InvoiceProcessingPipeline.Tests.Infrastructure.Adapters
         }
 
         [Fact]
-        public void Export_ShouldGenerateInvoiceXmlFile()
+        public async Task Export_ShouldGenerateInvoiceXmlFile()
         {
             var invoice = CreateInvoice();
             var exporter = new UblExporter();
 
-            var exportedDocument = exporter.Export(invoice);
+            var exportedDocument = await exporter.ExportAsync(invoice, TestContext.Current.CancellationToken);
 
             var outputDirectory = Path.Combine(
                 AppContext.BaseDirectory,
@@ -40,9 +40,7 @@ namespace InvoiceProcessingPipeline.Tests.Infrastructure.Adapters
                 outputDirectory,
                 exportedDocument.FileName);
 
-            File.WriteAllBytes(
-                outputPath,
-                exportedDocument.Content);
+            await File.WriteAllBytesAsync(outputPath, exportedDocument.Content, TestContext.Current.CancellationToken);
 
             _output.WriteLine(
                 $"Generated UBL XML invoice: {outputPath}");
@@ -55,7 +53,7 @@ namespace InvoiceProcessingPipeline.Tests.Infrastructure.Adapters
             Assert.Equal("UBL", exportedDocument.Format);
             Assert.Equal("UTF-8", exportedDocument.Encoding);
 
-            var xml = File.ReadAllText(outputPath, Encoding.UTF8);
+            var xml = await File.ReadAllTextAsync(outputPath, Encoding.UTF8, TestContext.Current.CancellationToken);
             var document = XDocument.Parse(xml);
 
             XNamespace invoiceNs =
@@ -297,14 +295,14 @@ namespace InvoiceProcessingPipeline.Tests.Infrastructure.Adapters
         }
 
         [Fact]
-        public void Export_ShouldGenerateXsdValidUbl21InvoiceXmlFile()
+        public async Task Export_ShouldGenerateXsdValidUbl21InvoiceXmlFile()
         {
             // Arrange
             var invoice = CreateInvoice();
             var exporter = new UblExporter();
 
             // Act
-            var exportedDocument = exporter.Export(invoice);
+            var exportedDocument = await exporter.ExportAsync(invoice, TestContext.Current.CancellationToken);
 
             var outputDirectory = Path.Combine(
                 AppContext.BaseDirectory,

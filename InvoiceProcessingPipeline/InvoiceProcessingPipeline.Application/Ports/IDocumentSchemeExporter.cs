@@ -9,6 +9,6 @@ namespace InvoiceProcessingPipeline.Application.Ports
 {
     public interface IDocumentSchemeExporter
     {
-        public ExportedDocument Export(CommercialInvoice invoice);
+        Task<ExportedDocument> ExportAsync(CommercialInvoice invoice, CancellationToken cancellationToken = default);
     }
 }

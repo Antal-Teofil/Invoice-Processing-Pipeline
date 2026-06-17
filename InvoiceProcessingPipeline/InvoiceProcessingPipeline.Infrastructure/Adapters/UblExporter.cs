@@ -5,6 +5,8 @@ using InvoiceProcessingPipeline.Domain.ValueObjects;
 using System.Globalization;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Threading;
+using System.Threading.Tasks;
 using UblSharp;
 using UblSharp.CommonAggregateComponents;
 using UblSharp.UnqualifiedDataTypes;
@@ -34,66 +36,108 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
         private const string ExportFormat = "UBL";
         private const string ExportEncoding = "UTF-8";
 
-        public async ExportedDocument Export(CommercialInvoice invoice)
+        public async Task<ExportedDocument> ExportAsync(
+            CommercialInvoice invoice,
+            CancellationToken cancellationToken = default)
         {
             ArgumentNullException.ThrowIfNull(invoice);
+            cancellationToken.ThrowIfCancellationRequested();
 
-            var ublInvoice = new InvoiceType
+            return await Task.Run(
+                () =>
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    var ublInvoice = new InvoiceType
+                    {
+                        UBLVersionID = "2.1",
+                        CustomizationID = CustomizationId,
+                        ProfileID = ProfileId,
+
+                        ID = invoice.InvoiceId!.Value,
+                        IssueDate = FormatDate(invoice.IssueDate!.Value),
+
+                        InvoiceTypeCode = new CodeType
+                        {
+                            Value = "380"
+                        },
+
+                        DocumentCurrencyCode = new CodeType
+                        {
+                            Value = invoice.DocumentCurrencyCode!.Value
+                        },
+
+                        AccountingSupplierParty = new SupplierPartyType
+                        {
+                            Party = MapParty(
+                                invoice.AccountingSupplierParty!)
+                        },
+
+                        AccountingCustomerParty = new CustomerPartyType
+                        {
+                            Party = MapParty(
+                                invoice.AccountingCustomerParty!)
+                        },
+
+                        TaxTotal = MapWithCancellation(
+                            invoice.TaxTotals!,
+                            MapTaxTotal,
+                            cancellationToken),
+
+                        LegalMonetaryTotal =
+                            MapLegalMonetaryTotal(
+                                invoice.LegalMonetaryTotal!),
+
+                        InvoiceLine = MapWithCancellation(
+                            invoice.InvoiceLines!,
+                            MapInvoiceLine,
+                            cancellationToken)
+                    };
+
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    MapOptionalHeaderFields(invoice, ublInvoice);
+                    SetNamespaces(ublInvoice);
+
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    using var stream = new MemoryStream();
+
+                    // Az UblSharp Save API szinkron. Mivel az egész blokk
+                    // Task.Run alatt fut, nem blokkolja a hívó szálat.
+                    UblDocument.Save(ublInvoice, stream);
+
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    return new ExportedDocument
+                    {
+                        FileName =
+                            $"{SanitizeFileName(invoice.InvoiceId.Value)}.xml",
+
+                        ContentType = XmlContentType,
+                        Format = ExportFormat,
+                        Encoding = ExportEncoding,
+                        Content = stream.ToArray()
+                    };
+                },
+                cancellationToken)
+                .ConfigureAwait(false);
+        }
+
+        private static List<TResult> MapWithCancellation<TSource, TResult>(
+            IEnumerable<TSource> source,
+            Func<TSource, TResult> mapper,
+            CancellationToken cancellationToken)
+        {
+            var result = new List<TResult>();
+
+            foreach (var item in source)
             {
-                UBLVersionID = "2.1",
-                CustomizationID = CustomizationId,
-                ProfileID = ProfileId,
+                cancellationToken.ThrowIfCancellationRequested();
+                result.Add(mapper(item));
+            }
 
-                ID = invoice.InvoiceId!.Value,
-                IssueDate = FormatDate(invoice.IssueDate!.Value),
-
-                InvoiceTypeCode = new CodeType
-                {
-                    Value = "380"
-                },
-
-                DocumentCurrencyCode = new CodeType
-                {
-                    Value = invoice.DocumentCurrencyCode!.Value
-                },
-
-                AccountingSupplierParty = new SupplierPartyType
-                {
-                    Party = MapParty(invoice.AccountingSupplierParty!)
-                },
-
-                AccountingCustomerParty = new CustomerPartyType
-                {
-                    Party = MapParty(invoice.AccountingCustomerParty!)
-                },
-
-                TaxTotal = invoice.TaxTotals!
-                    .Select(MapTaxTotal)
-                    .ToList(),
-
-                LegalMonetaryTotal =
-                    MapLegalMonetaryTotal(invoice.LegalMonetaryTotal!),
-
-                InvoiceLine = invoice.InvoiceLines!
-                    .Select(MapInvoiceLine)
-                    .ToList()
-            };
-
-            MapOptionalHeaderFields(invoice, ublInvoice);
-            SetNamespaces(ublInvoice);
-
-            using var stream = new MemoryStream();
-
-            UblDocument.Save(ublInvoice, stream);
-
-            return new ExportedDocument
-            {
-                FileName = $"{SanitizeFileName(invoice.InvoiceId.Value)}.xml",
-                ContentType = XmlContentType,
-                Format = ExportFormat,
-                Encoding = ExportEncoding,
-                Content = stream.ToArray()
-            };
+            return result;
         }
 
         private static void MapOptionalHeaderFields(
