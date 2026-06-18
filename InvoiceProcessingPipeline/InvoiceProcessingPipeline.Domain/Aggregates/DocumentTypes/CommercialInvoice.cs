@@ -64,6 +64,6 @@ namespace InvoiceProcessingPipeline.Domain.Aggregates.DocumentTypes
 
         // 1..n
         public ICollection<InvoiceLine>? InvoiceLines { get; set; }
-        public override InvoiceTypeCode TypeCode { get => throw new NotImplementedException(); protected set => throw new NotImplementedException(); }
+        public override InvoiceTypeCode TypeCode { get; protected set; } = new("380");
     }
 }

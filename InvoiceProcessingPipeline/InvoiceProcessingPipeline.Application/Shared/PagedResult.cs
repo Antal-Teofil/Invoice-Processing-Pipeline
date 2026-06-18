@@ -1,6 +1,17 @@
-﻿namespace InvoiceProcessingPipeline.Application.Shared
+﻿using System.Text.Json.Serialization;
+
+namespace InvoiceProcessingPipeline.Application.Shared;
+
+public sealed record PagedResult<T>
+    where T : class
 {
-    public sealed record PagedResult<T>(
-    IReadOnlyCollection<T> Items,
-    string? ContinuationToken);
+    [JsonPropertyName("items")]
+    public required IReadOnlyList<T> Data { get; init; }
+
+    [JsonPropertyName("continuationToken")]
+    public string? ContinuationToken { get; init; }
+
+    [JsonPropertyName("hasMore")]
+    public bool HasMore =>
+        !string.IsNullOrWhiteSpace(ContinuationToken);
 }

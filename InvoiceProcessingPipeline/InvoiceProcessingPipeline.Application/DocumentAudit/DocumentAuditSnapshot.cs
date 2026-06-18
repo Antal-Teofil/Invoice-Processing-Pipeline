@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace InvoiceProcessingPipeline.Application.DocumentAudit
 {
-    public record DocumentAuditSnapshot()
+    public sealed record DocumentAuditSnapshot
     {
-        public string? DocumentId { get; set; }
-        public string? OrchestrationId { get; set; }
-        public string? CorrelationId { get; set; }
+        [JsonPropertyName("documentId")]
+        public required string DocumentId { get; set; }
+
+        [JsonPropertyName("workflowId")]
+        public required string OrchestrationId { get; set; }
+
+        [JsonPropertyName("auditStatus")]
         public required AuditStatus AuditStatus { get; set; }
     }
 }

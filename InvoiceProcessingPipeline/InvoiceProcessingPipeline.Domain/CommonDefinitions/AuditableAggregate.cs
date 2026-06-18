@@ -2,6 +2,6 @@
 {
     public abstract class AuditableAggregate
     {
-        public string AuditStatus { get; set; } = default!;
+        public required string AuditStatus { get; set; }
     }
 }

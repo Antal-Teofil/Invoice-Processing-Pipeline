@@ -35,39 +35,57 @@ namespace InvoiceProcessingPipeline.Infrastructure.Adapters
             return response.Resource;
         }
 
-        public async Task<PagedResult<ExtractedDocumentData>> RetrievePagedExtractedDocumentSchemaAsync(
-            int pageSize,
-            string? continuationToken,
-            CancellationToken token = default)
+        public async Task<PagedResult<TDocument>>
+        RetrievePagedDocumentCollectionAsync<TDocument>(
+        int pageSize,
+        string? continuationToken,
+        CancellationToken cancellationToken = default)
+        where TDocument : DocumentScheme
         {
-            QueryDefinition queryDefinition = new("SELECT * FROM c");
-
-            QueryRequestOptions queryRequestOptions = new()
+            if (pageSize <= 0)
             {
-                MaxItemCount = pageSize,
-            };
+                throw new ArgumentOutOfRangeException(
+                    nameof(pageSize),
+                    "Page size must be greater than zero.");
+            }
 
-            using FeedIterator<ExtractedDocumentData> iterator =
-                storage.GetItemQueryIterator<ExtractedDocumentData>(
-                    queryDefinition: queryDefinition,
-                    continuationToken: continuationToken,
-                    requestOptions: queryRequestOptions);
+            var query = new QueryDefinition(
+                """
+            SELECT *
+            FROM c
+            ORDER BY c._ts DESC
+            """);
+
+            using FeedIterator<TDocument> iterator =
+                storage.GetItemQueryIterator<TDocument>(
+                    queryDefinition: query,
+                    continuationToken:
+                        string.IsNullOrWhiteSpace(continuationToken)
+                            ? null
+                            : continuationToken,
+                    requestOptions: new QueryRequestOptions
+                    {
+                        MaxItemCount = pageSize
+                    });
 
             if (!iterator.HasMoreResults)
             {
-                return new PagedResult<ExtractedDocumentData>(
-                    [],
-                    null);
+                return new PagedResult<TDocument>
+                {
+                    Data = [],
+                    ContinuationToken = null
+                };
             }
 
-            FeedResponse<ExtractedDocumentData> response =
-                await iterator.ReadNextAsync(token);
+            FeedResponse<TDocument> page =
+                await iterator.ReadNextAsync(cancellationToken);
 
-            return new PagedResult<ExtractedDocumentData>(
-                [.. response],
-                response.ContinuationToken);
+            return new PagedResult<TDocument>
+            {
+                Data = (IReadOnlyList<TDocument>)page.Resource,
+                ContinuationToken = page.ContinuationToken
+            };
         }
-
         public async Task<HttpStatusCode> StoreCanonicalizedDocumentSchemeAsync<TDocumentType>(TDocumentType documentScheme) where TDocumentType : DocumentScheme
         {
             var response = await storage.CreateItemAsync(documentScheme, new PartitionKey(documentScheme.DocumentId.ToString()));
