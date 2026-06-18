@@ -11,7 +11,7 @@ namespace InvoiceProcessingPipeline.Application.DTOs
         /// <summary>
         /// The status of the document in the invoice processing workflow
         /// </summary>
-        [JsonPropertyName("invoiceStatus")]
+        [JsonPropertyName("auditStatus")]
         [JsonConverter(typeof(JsonStringEnumConverter<AuditStatus>))]
         public required AuditStatus AuditStatus { get; set; }
 
@@ -24,7 +24,7 @@ namespace InvoiceProcessingPipeline.Application.DTOs
         /// <summary>
         /// Unique identifier of the document in the process
         /// </summary>
-        [JsonPropertyName("auditId")]
+        [JsonPropertyName("documentAuditId")]
         public required string DocumentId { get; set; }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace InvoiceProcessingPipeline.Application.DTOs
         /// </summary>
         [JsonPropertyName("currencyCode")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public char? CurrencyCode { get; set; }
+        public string? CurrencyCode { get; set; }
 
         [JsonPropertyName("updatedAt")]
         public required DateTimeOffset UpdatedAt { get; set; }
