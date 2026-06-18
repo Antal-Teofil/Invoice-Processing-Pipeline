@@ -1,24 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import type { InvoiceSummaryRecord } from "../types/invoice-types";
 
-function getStatusClasses(status: string) {
-  switch (status.toLowerCase()) {
-    case "approved":
-      return "bg-emerald-50 text-emerald-700 ring-emerald-200";
-    case "under_review":
-      return "bg-amber-50 text-amber-700 ring-amber-200";
-    case "constraint_violation":
-    case "failed":
-    case "rejected":
-      return "bg-red-50 text-red-700 ring-red-200";
-    case "booked":
-      return "bg-blue-50 text-blue-700 ring-blue-200";
-    case "extracted":
-      return "bg-sky-50 text-sky-700 ring-sky-200";
-    default:
-      return "bg-slate-100 text-slate-700 ring-slate-200";
-  }
-}
+
 
 export default function InvoiceSummaryRecordRow({
   documentId,
