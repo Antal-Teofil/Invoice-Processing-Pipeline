@@ -13,7 +13,7 @@ import {
   createDefaultInvoiceLine,
   type Invoice,
   type InvoiceLine,
-} from "../scheme/InvoiceScheme";
+} from "../schemas/InvoiceScheme";
 
 type CodeLabelOption = {
   readonly code: string;
