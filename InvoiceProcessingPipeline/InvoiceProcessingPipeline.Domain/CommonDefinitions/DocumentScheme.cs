@@ -4,7 +4,7 @@ namespace InvoiceProcessingPipeline.Domain.CommonDefinitions
 {
     public abstract class DocumentScheme : AuditableAggregate
     {
-        public required Guid DocumentId { get; init; } = Guid.NewGuid();
+        public Guid DocumentId { get; set; } = Guid.NewGuid();
 
         public static DocumentSchemeBuilderContext From(ExtractedDocumentData extraction)
         {

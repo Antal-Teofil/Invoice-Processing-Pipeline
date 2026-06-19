@@ -1,12 +1,8 @@
-﻿using InvoiceProcessingPipeline.Application.BoundaryContracts;
-using InvoiceProcessingPipeline.Application.DocumentAudit;
+﻿using InvoiceProcessingPipeline.Application.DocumentAudit;
 using InvoiceProcessingPipeline.Application.DTOs;
 using InvoiceProcessingPipeline.Application.Ports;
 using InvoiceProcessingPipeline.Application.Shared;
 using InvoiceProcessingPipeline.Domain.Aggregates.DocumentTypes;
-using InvoiceProcessingPipeline.Domain.ExtractionContracts;
-using InvoiceProcessingPipeline.Domain.ValueObjects;
-using MapsterMapper;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
@@ -45,34 +41,20 @@ public sealed class RetrieveDocumentRecordsTrigger(
         }
 
         string? continuationToken =
-            NormalizeContinuationToken(
-                request.Query["continuationToken"]);
+            NormalizeContinuationToken(request.Query["continuationToken"]);
 
         logger.LogInformation(
             "Retrieving document records. PageSize: {PageSize}, HasContinuationToken: {HasContinuationToken}",
             pageSize,
             continuationToken is not null);
 
-        PagedResult<CommercialInvoice> page = await storage.RetrievePagedDocumentCollectionAsync<CommercialInvoice>(
-            pageSize,
-            continuationToken,
-            cancellationToken);
+        PagedResult<CommercialInvoice> page =
+            await storage.RetrievePagedDocumentCollectionAsync<CommercialInvoice>(
+                pageSize,
+                continuationToken,
+                cancellationToken);
 
-        IReadOnlyList<DocumentRecordInformation> records = [.. page.Data
-        .Select(document => new DocumentRecordInformation
-        {
-            AuditStatus = Enum.Parse<AuditStatus>(document.AuditStatus),
-            ProcessId = Guid.NewGuid().ToString(), // TODO: to be replaced
-            DocumentId = document.DocumentId.ToString(),
-            InvoiceId = document?.InvoiceId?.Value,
-            VendorName = document?.AccountingSupplierParty?.Name?.Value,
-            PhoneNumber = document?.AccountingSupplierParty?.ContactInfo?.Telephone,
-            VendorEmailAddress = document?.AccountingSupplierParty?.ContactInfo?.ElectronicMail,
-            TotalAmount = document?.LegalMonetaryTotal?.TaxInclusiveAmount.Amount,
-            CurrencyCode = document?.DocumentCurrencyCode?.Value,
-            UpdatedAt = DateTimeOffset.Now,
-            ReviewedBy = "Teofil"
-        })];
+        IReadOnlyList<DocumentRecordInformation> records = [.. page.Data.Select(MapToDocumentRecordInformation)];
 
         PagedResult<DocumentRecordInformation> result = new()
         {
@@ -85,6 +67,37 @@ public sealed class RetrieveDocumentRecordsTrigger(
             .WithRequestId(request.FunctionContext.InvocationId)
             .WithHeader("X-API-Version", "1.0")
             .BuildAsync(cancellationToken);
+    }
+
+    private static DocumentRecordInformation MapToDocumentRecordInformation(
+        CommercialInvoice document)
+    {
+        return new DocumentRecordInformation
+        {
+            Header = new DocumentRecordHeader
+            {
+                DocumentAuditId = document.DocumentId.ToString(),
+
+                // Stable placeholder. Later replace this with the real Durable workflow/process id.
+                WorkflowId = document.DocumentId.ToString(),
+
+                AuditStatus = document.AuditStatus,
+
+                // Replace this later with real document UpdatedAt or Cosmos _ts.
+                UpdatedAt = DateTimeOffset.UtcNow
+            },
+
+            Data = new DocumentRecordData
+            {
+                InvoiceNumber = document.InvoiceId?.Value,
+                AccountingSupplierParty = document.AccountingSupplierParty?.Name?.Value,
+                SupplierPhoneNumber = document.AccountingSupplierParty?.ContactInfo?.Telephone,
+                SupplierEmailAddress = document.AccountingSupplierParty?.ContactInfo?.ElectronicMail,
+                TotalAmount = document.LegalMonetaryTotal?.TaxInclusiveAmount.Amount,
+                CurrencyCode = document.DocumentCurrencyCode?.Value,
+                Auditor = "Teofil"
+            }
+        };
     }
 
     private static bool TryGetPageSize(
