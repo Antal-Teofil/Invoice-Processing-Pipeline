@@ -1,13 +1,15 @@
 import { useFieldContext } from "../../../lib/form-context";
 
-export default function TextField({ label }: { label: string }) {
+export default function DateField({ label }: { label: string }) {
   const field = useFieldContext<string>();
 
   return (
     <label>
       <span>{label}</span>
+
       <input
-        type="text"
+        type="date"
+        name={field.name}
         value={field.state.value}
         onBlur={field.handleBlur}
         onChange={(e) => field.handleChange(e.target.value)}

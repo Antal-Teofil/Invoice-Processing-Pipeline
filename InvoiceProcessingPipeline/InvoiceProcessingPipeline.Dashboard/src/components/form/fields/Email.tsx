@@ -1,16 +1,24 @@
 import { useFieldContext } from "../../../lib/form-context";
 
-export default function TextField({ label }: { label: string }) {
+type EmailFieldProps = {
+  label: string;
+  placeholder?: string;
+};
+
+export function EmailField({ label }: EmailFieldProps) {
   const field = useFieldContext<string>();
 
   return (
     <label>
       <span>{label}</span>
+
       <input
-        type="text"
+        type="email"
         value={field.state.value}
         onBlur={field.handleBlur}
-        onChange={(e) => field.handleChange(e.target.value)}
+        onChange={(event) => {
+          field.handleChange(event.target.value);
+        }}
       />
     </label>
   );

@@ -2,7 +2,7 @@ import z from "zod";
 import AmountSchema from "./amount.schema";
 import TaxCategorySchema from "./tax-category.schema";
 
-const AllowanceChargeSchema = z.object({
+const AllowanceChargeFormSchema = z.object({
     chargeIndicator: z.boolean().nullable().default(null),
     allowanceChargeReasonCode: z.string().nullable().default(null),
     allowanceChargeReason: z.string().nullable().default(null),
@@ -12,4 +12,4 @@ const AllowanceChargeSchema = z.object({
     taxCategory: TaxCategorySchema.nullable().default(null),
 });
 
-export default AllowanceChargeSchema;
+export default AllowanceChargeFormSchema;

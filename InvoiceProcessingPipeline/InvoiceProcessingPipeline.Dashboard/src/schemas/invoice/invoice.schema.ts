@@ -1,12 +1,12 @@
 import z from "zod";
 import { INVOICE_TYPE_CODES } from "../../shared/constants/invoice-type-code.constant";
 import { CURRENCY_TYPE_CODES } from "../../shared/constants/currency-code.constant";
-import InvoicePeriodSchema from "./invoice-period.shema";
-import AccountingPartySchema from "./accounting-party.schema";
-import AllowanceChargeSchema from "./allowance-charge.schema";
-import TaxTotalSchema from "./tax-total.schema";
-import LegalMonetaryTotalSchema from "./legal-monetary-total.schema";
-import InvoiceLineSchema from "./invoice-line.schema";
+import InvoicePeriodFormSchema from "./invoice-period.shema";
+import AccountingPartyFormSchema from "./accounting-party.schema";
+import AllowanceChargeFormSchema from "./allowance-charge.schema";
+import TaxTotalFormSchema from "./tax-total.schema";
+import LegalMonetaryTotalFormSchema from "./legal-monetary-total.schema";
+import InvoiceLineFormSchema from "./invoice-line.schema";
 
 const CommercialInvoiceFormSchema = z.object({
     invoiceNumber: z.string().nullable().default(null),
@@ -17,13 +17,13 @@ const CommercialInvoiceFormSchema = z.object({
     taxPointDate: z.iso.date().nullable().default(null),
     documentCurrencyCode: z.enum(CURRENCY_TYPE_CODES).nullable().default(null),
     taxCurrencyCode: z.enum(CURRENCY_TYPE_CODES).nullable().default(null),
-    invoicePeriod : InvoicePeriodSchema.nullable().default(null),
-    accountingCustomerParty: AccountingPartySchema.nullable().default(null),
-    accountingSupplierParty: AccountingPartySchema.nullable().default(null),
-    allowanceCharge: z.array(AllowanceChargeSchema).nullable().default(null),
-    taxTotal: z.array(TaxTotalSchema).nullable().default(null),
-    legalMonetaryTotal: LegalMonetaryTotalSchema.nullable().default(null),
-    invoiceLine: z.array(InvoiceLineSchema).nullable().default(null),
+    invoicePeriod : InvoicePeriodFormSchema.nullable().default(null),
+    accountingCustomerParty: AccountingPartyFormSchema.nullable().default(null),
+    accountingSupplierParty: AccountingPartyFormSchema.nullable().default(null),
+    allowanceCharge: z.array(AllowanceChargeFormSchema).nullable().default(null),
+    taxTotal: z.array(TaxTotalFormSchema).nullable().default(null),
+    legalMonetaryTotal: LegalMonetaryTotalFormSchema.nullable().default(null),
+    invoiceLine: z.array(InvoiceLineFormSchema).nullable().default(null),
 });
 
 export {

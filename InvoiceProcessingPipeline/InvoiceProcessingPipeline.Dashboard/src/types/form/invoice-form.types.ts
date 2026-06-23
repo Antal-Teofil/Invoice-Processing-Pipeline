@@ -1,0 +1,33 @@
+import z from "zod";
+import AccountingPartyFormSchema from "../../schemas/invoice/accounting-party.schema";
+import type AllowanceChargeFormSchema from "../../schemas/invoice/allowance-charge.schema";
+import type AmountFormSchema from "../../schemas/invoice/amount.schema";
+import type ContactFormSchema from "../../schemas/invoice/contact.schema";
+import type InvoiceLineFormSchema from "../../schemas/invoice/invoice-line.schema";
+import type InvoicePeriodFormSchema from "../../schemas/invoice/invoice-period.shema";
+import type { CommercialInvoiceFormSchema } from "../../schemas/invoice/invoice.schema";
+import type LegalMonetaryTotalFormSchema from "../../schemas/invoice/legal-monetary-total.schema";
+import type PartyIdentificationFormSchema from "../../schemas/invoice/party-identification.schema";
+import type PartyLegalEntityFormSchema from "../../schemas/invoice/party-legal-entity.schema";
+import type PartyTaxSchemeFormSchema from "../../schemas/invoice/party-tax-scheme.schema";
+import type PostalAddressFormSchema from "../../schemas/invoice/postal-address.schema";
+import type TaxCategoryFormSchema from "../../schemas/invoice/tax-category.schema";
+import type TaxSubtotalFormSchema from "../../schemas/invoice/tax-subtotal.schema";
+import type TaxTotalFormSchema from "../../schemas/invoice/tax-total.schema";
+
+export type AccountingPartyType = z.infer<typeof AccountingPartyFormSchema>;
+export type AllowanceChargeType = z.infer<typeof AllowanceChargeFormSchema>;
+export type AmountType = z.infer<typeof AmountFormSchema>;
+export type ContactInformationType = z.infer<typeof ContactFormSchema>;
+export type InvoiceLineType = z.infer<typeof InvoiceLineFormSchema>;
+export type InvoicePeriodType = z.infer<typeof InvoicePeriodFormSchema>;
+export type CommercialInvoiceType = z.infer<typeof CommercialInvoiceFormSchema>;
+export type LegalMonetaryTotalType = z.infer<typeof LegalMonetaryTotalFormSchema>;
+export type PartyIdentificationType = z.infer<typeof PartyIdentificationFormSchema>;
+export type PartyLegalEntityType = z.infer<typeof PartyLegalEntityFormSchema>;
+export type PartyTaxSchemeType = z.infer<typeof PartyTaxSchemeFormSchema>;
+export type PostalAddressType = z.infer<typeof PostalAddressFormSchema>;
+export type TaxCategoryType = z.infer<typeof TaxCategoryFormSchema>;
+export type TaxSubtotalType = z.infer<typeof TaxSubtotalFormSchema>;
+export type TaxTotalType = z.infer<typeof TaxTotalFormSchema>; 
+export type 
