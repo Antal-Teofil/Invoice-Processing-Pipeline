@@ -38,153 +38,187 @@ export function CommercialInvoiceEditorForm({
         form.handleSubmit();
       }}
     >
-      <InvoiceHeader form={form} />
+      <section>
+        <h2>Invoice Details</h2>
 
-      <InvoicePeriodFields
-        form={form}
-        fields="invoicePeriod"
-        title="Invoice Period"
-      />
+        <InvoiceHeader form={form} />
 
-      <AccountingParty
-        form={form}
-        fields="accountingSupplierParty"
-        title="Supplier Party"
-      />
+        <InvoicePeriodFields
+          form={form}
+          fields="invoicePeriod"
+          title="Invoice Period"
+        />
+      </section>
 
-      <AccountingParty
-        form={form}
-        fields="accountingCustomerParty"
-        title="Customer Party"
-      />
+      <section>
+        <h2>Parties</h2>
 
-      <form.AppField name="allowanceCharge" mode="array">
-        {(field) => {
-          const allowanceCharges = field.state.value ?? [];
+        <fieldset>
+          <legend>Supplier Party</legend>
 
-          return (
-            <fieldset>
-              <legend>Allowance / Charges</legend>
+          <AccountingParty
+            form={form}
+            fields="accountingSupplierParty"
+            title="Supplier Party"
+          />
+        </fieldset>
 
-              {allowanceCharges.map((_, index) => (
-                <fieldset key={index}>
-                  <AllowanceCharge
-                    form={form}
-                    fields={`allowanceCharge[${index}]`}
-                    title={`Allowance / Charge ${index + 1}`}
-                  />
+        <fieldset>
+          <legend>Customer Party</legend>
 
-                  <button
-                    type="button"
-                    onClick={() => {
-                      field.removeValue(index);
-                    }}
-                  >
-                    Remove
-                  </button>
-                </fieldset>
-              ))}
+          <AccountingParty
+            form={form}
+            fields="accountingCustomerParty"
+            title="Customer Party"
+          />
+        </fieldset>
+      </section>
 
-              <button
-                type="button"
-                onClick={() => {
-                  field.pushValue(emptyAllowanceCharge);
-                }}
-              >
-                Add
-              </button>
-            </fieldset>
-          );
-        }}
-      </form.AppField>
+      <section>
+        <h2>Allowance / Charges</h2>
 
-      <form.AppField name="taxTotal" mode="array">
-        {(field) => {
-          const taxTotals = field.state.value ?? [];
+        <form.AppField name="allowanceCharge" mode="array">
+          {(field) => {
+            const allowanceCharges = field.state.value ?? [];
 
-          return (
-            <fieldset>
-              <legend>Tax Totals</legend>
+            return (
+              <div>
+                {allowanceCharges.map((_, index) => (
+                  <fieldset key={index}>
+                    <legend>Allowance / Charge {index + 1}</legend>
 
-              {taxTotals.map((_, index) => (
-                <fieldset key={index}>
-                  <TaxTotal
-                    form={form}
-                    fields={`taxTotal[${index}]`}
-                    title={`Tax Total ${index + 1}`}
-                  />
+                    <AllowanceCharge
+                      form={form}
+                      fields={`allowanceCharge[${index}]`}
+                      title={`Allowance / Charge ${index + 1}`}
+                    />
 
-                  <button
-                    type="button"
-                    onClick={() => {
-                      field.removeValue(index);
-                    }}
-                  >
-                    Remove
-                  </button>
-                </fieldset>
-              ))}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        field.removeValue(index);
+                      }}
+                    >
+                      Remove
+                    </button>
+                  </fieldset>
+                ))}
 
-              <button
-                type="button"
-                onClick={() => {
-                  field.pushValue(emptyTaxTotal);
-                }}
-              >
-                Add
-              </button>
-            </fieldset>
-          );
-        }}
-      </form.AppField>
+                <button
+                  type="button"
+                  onClick={() => {
+                    field.pushValue(emptyAllowanceCharge);
+                  }}
+                >
+                  Add
+                </button>
+              </div>
+            );
+          }}
+        </form.AppField>
+      </section>
 
-      <LegalMonetaryTotal
-        form={form}
-        fields="legalMonetaryTotal"
-        title="Legal Monetary Total"
-      />
+      <section>
+        <h2>Tax Totals</h2>
 
-      <form.AppField name="invoiceLine" mode="array">
-        {(field) => {
-          const invoiceLines = field.state.value ?? [];
+        <form.AppField name="taxTotal" mode="array">
+          {(field) => {
+            const taxTotals = field.state.value ?? [];
 
-          return (
-            <fieldset>
-              <legend>Invoice Lines</legend>
+            return (
+              <div>
+                {taxTotals.map((_, index) => (
+                  <fieldset key={index}>
+                    <legend>Tax Total {index + 1}</legend>
 
-              {invoiceLines.map((_, index) => (
-                <fieldset key={index}>
-                  <InvoiceLine
-                    form={form}
-                    fields={`invoiceLine[${index}]`}
-                    title={`Invoice Line ${index + 1}`}
-                  />
+                    <TaxTotal
+                      form={form}
+                      fields={`taxTotal[${index}]`}
+                      title={`Tax Total ${index + 1}`}
+                    />
 
-                  <button
-                    type="button"
-                    onClick={() => {
-                      field.removeValue(index);
-                    }}
-                  >
-                    Remove
-                  </button>
-                </fieldset>
-              ))}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        field.removeValue(index);
+                      }}
+                    >
+                      Remove
+                    </button>
+                  </fieldset>
+                ))}
 
-              <button
-                type="button"
-                onClick={() => {
-                  field.pushValue(emptyInvoiceLine);
-                }}
-              >
-                Add
-              </button>
-            </fieldset>
-          );
-        }}
-      </form.AppField>
+                <button
+                  type="button"
+                  onClick={() => {
+                    field.pushValue(emptyTaxTotal);
+                  }}
+                >
+                  Add
+                </button>
+              </div>
+            );
+          }}
+        </form.AppField>
+      </section>
 
-      <button type="submit">Save</button>
+      <section>
+        <h2>Legal Monetary Total</h2>
+
+        <LegalMonetaryTotal
+          form={form}
+          fields="legalMonetaryTotal"
+          title="Legal Monetary Total"
+        />
+      </section>
+
+      <section>
+        <h2>Invoice Lines</h2>
+
+        <form.AppField name="invoiceLine" mode="array">
+          {(field) => {
+            const invoiceLines = field.state.value ?? [];
+
+            return (
+              <div>
+                {invoiceLines.map((_, index) => (
+                  <fieldset key={index}>
+                    <legend>Invoice Line {index + 1}</legend>
+
+                    <InvoiceLine
+                      form={form}
+                      fields={`invoiceLine[${index}]`}
+                      title={`Invoice Line ${index + 1}`}
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        field.removeValue(index);
+                      }}
+                    >
+                      Remove
+                    </button>
+                  </fieldset>
+                ))}
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    field.pushValue(emptyInvoiceLine);
+                  }}
+                >
+                  Add
+                </button>
+              </div>
+            );
+          }}
+        </form.AppField>
+      </section>
+
+      <footer>
+        <button type="submit">Save</button>
+      </footer>
     </form>
   );
 }
