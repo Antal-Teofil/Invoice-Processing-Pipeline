@@ -1,14 +1,21 @@
 import z from "zod";
 import AmountFormSchema from "./amount.schema";
+import { objectDefault } from "../../shared/utility/zod-default.utility";
 
 const LegalMonetaryTotalFormSchema = z.object({
-    lineExtensionAmount: AmountFormSchema.nullable().default(null),
-    taxExclusiveAmount: AmountFormSchema.nullable().default(null),
-    allowanceTotalAmount: AmountFormSchema.nullable().default(null),
-    chargeTotalAmount: AmountFormSchema.nullable().default(null),
-    prepaidAmount: AmountFormSchema.nullable().default(null),
-    payableRoundingAmount: AmountFormSchema.nullable().default(null),
-    payableAmount: AmountFormSchema.nullable().default(null),
+  lineExtensionAmount: objectDefault(AmountFormSchema),
+
+  taxExclusiveAmount: objectDefault(AmountFormSchema),
+
+  allowanceTotalAmount: objectDefault(AmountFormSchema),
+
+  chargeTotalAmount: objectDefault(AmountFormSchema),
+
+  prepaidAmount: objectDefault(AmountFormSchema),
+
+  payableRoundingAmount: objectDefault(AmountFormSchema),
+
+  payableAmount: objectDefault(AmountFormSchema),
 });
 
 export default LegalMonetaryTotalFormSchema;

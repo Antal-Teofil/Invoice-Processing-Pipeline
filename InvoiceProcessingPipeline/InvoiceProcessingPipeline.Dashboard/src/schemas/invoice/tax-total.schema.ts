@@ -1,10 +1,14 @@
 import z from "zod";
 import AmountSchema from "./amount.schema";
 import TaxSubtotalFormSchema from "./tax-subtotal.schema";
+import {
+  arrayDefault,
+  objectDefault,
+} from "../../shared/utility/zod-default.utility";
 
 const TaxTotalFormSchema = z.object({
-    taxAmount: AmountSchema.nullable().default(null),
-    taxSubtotal: z.array(TaxSubtotalFormSchema).nullable().default(null),
-});
+  taxAmount: objectDefault(AmountSchema),
 
+  taxSubtotal: arrayDefault(TaxSubtotalFormSchema),
+});
 export default TaxTotalFormSchema;
