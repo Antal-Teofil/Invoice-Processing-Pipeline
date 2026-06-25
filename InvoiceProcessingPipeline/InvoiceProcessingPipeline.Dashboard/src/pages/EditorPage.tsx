@@ -20,7 +20,7 @@ export function EditorPage({
   return (
     <main className="editor-page-shell">
       <Group orientation="horizontal" className="editor-page-panels">
-        <Panel defaultSize="60%" minSize="25%">
+        <Panel defaultSize="60%" minSize="25%" maxSize="55%">
           <section className="editor-viewer-panel">
             <InvoiceViewer
               url={invoiceURL}
