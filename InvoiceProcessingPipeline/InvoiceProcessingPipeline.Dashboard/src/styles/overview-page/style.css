@@ -1,0 +1,241 @@
+@utility editor-page-shell {
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+@utility editor-page-panels {
+  height: 100%;
+  width: 100%;
+}
+
+@utility editor-viewer-panel {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: #ffffff;
+  padding: 1.5rem 1rem 1.5rem 1.5rem;
+}
+
+@utility editor-form-panel {
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+  background: #ffffff;
+  padding: 1.5rem;
+}
+
+@utility editor-resize-separator {
+  display: flex;
+  width: 0.625rem;
+  cursor: col-resize;
+  align-items: center;
+  justify-content: center;
+  background: #f8fafc;
+  border-left: 1px solid #e9d5ff;
+  border-right: 1px solid #e9d5ff;
+  transition: background-color 160ms ease;
+}
+
+@utility editor-resize-grip {
+  height: 3rem;
+  width: 0.25rem;
+  border-radius: 999px;
+  background: #c4b5fd;
+  transition: background-color 160ms ease;
+}
+
+@utility invoice-viewer-shell {
+  display: flex;
+  height: 100%;
+  min-height: 0;
+  width: 100%;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #e9d5ff;
+  border-radius: 1rem;
+  background: #ffffff;
+  box-shadow: 0 14px 34px rgba(88, 28, 135, 0.08);
+}
+
+@utility invoice-viewer-header {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid #f3e8ff;
+  padding: 1.125rem 1.25rem;
+  background: #ffffff;
+}
+
+@utility invoice-viewer-title-row {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+@utility invoice-viewer-title-content {
+  min-width: 0;
+}
+
+@utility invoice-viewer-pdf-badge {
+  display: flex;
+  height: 2.5rem;
+  width: 2.5rem;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.8rem;
+  background: #7c3aed;
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  box-shadow: 0 10px 20px rgba(124, 58, 237, 0.22);
+}
+
+@utility invoice-viewer-eyebrow {
+  margin: 0;
+  color: #7c3aed;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+@utility invoice-viewer-title {
+  margin: 0.2rem 0 0;
+  max-width: 38rem;
+  overflow: hidden;
+  color: #111827;
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@utility invoice-viewer-status {
+  flex: 0 0 auto;
+  border: 1px solid #ddd6fe;
+  border-radius: 999px;
+  background: #faf5ff;
+  color: #6d28d9;
+  font-size: 0.75rem;
+  font-weight: 800;
+  line-height: 1;
+  padding: 0.45rem 0.75rem;
+  white-space: nowrap;
+}
+
+@utility invoice-viewer-surface {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, rgba(124, 58, 237, 0.035) 25%, transparent 25%),
+    linear-gradient(225deg, rgba(124, 58, 237, 0.035) 25%, transparent 25%),
+    #fbfaff;
+  background-position:
+    0 0,
+    0 0;
+  background-size: 1.25rem 1.25rem;
+  padding: 1rem;
+}
+
+@utility invoice-viewer-pdf-frame {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid #e9d5ff;
+  border-radius: 0.875rem;
+  background: #ffffff;
+  box-shadow: inset 0 0 0 1px rgba(250, 245, 255, 0.9);
+}
+
+@utility invoice-viewer-empty-state {
+  position: absolute;
+  inset: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed #c4b5fd;
+  border-radius: 0.875rem;
+  background: rgba(255, 255, 255, 0.78);
+  color: #6b7280;
+  padding: 2rem;
+  text-align: center;
+}
+
+@utility invoice-viewer-empty-icon {
+  display: flex;
+  height: 3.75rem;
+  width: 3.75rem;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  border: 1px solid #e9d5ff;
+  border-radius: 1rem;
+  background: #faf5ff;
+  color: #7c3aed;
+  font-size: 1.75rem;
+}
+
+@utility invoice-viewer-empty-title {
+  margin: 0;
+  color: #111827;
+  font-size: 0.95rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+@utility invoice-viewer-empty-description {
+  margin: 0.45rem 0 0;
+  max-width: 28rem;
+  color: #64748b;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+/* Tailwind @utility nem lehet nested, ezért ezek sima selectorok. */
+.editor-resize-separator:hover {
+  background: #faf5ff;
+}
+
+.editor-resize-separator:hover .editor-resize-grip {
+  background: #7c3aed;
+}
+
+.invoice-viewer-pdf-frame > div {
+  height: 100%;
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .editor-viewer-panel {
+    padding: 1rem;
+  }
+
+  .editor-form-panel {
+    padding: 1rem;
+  }
+
+  .invoice-viewer-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .invoice-viewer-status {
+    align-self: flex-start;
+  }
+
+  .invoice-viewer-title {
+    max-width: 100%;
+  }
+}

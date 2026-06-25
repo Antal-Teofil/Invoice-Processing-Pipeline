@@ -9,12 +9,12 @@ export function EmailField({ label }: EmailFieldProps) {
   const field = useFieldContext<string>();
 
   return (
-    <label>
+    <label className="text-form-field">
       <span>{label}</span>
 
       <input
         type="email"
-        value={field.state.value}
+        value={field.state.value ?? ""}
         onBlur={field.handleBlur}
         onChange={(event) => {
           field.handleChange(event.target.value);

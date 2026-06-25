@@ -15,11 +15,11 @@ export default function OptionField({
   const field = useFieldContext<string>();
 
   return (
-    <label>
+    <label className="option-form-field">
       <span>{label}</span>
 
       <select
-        value={field.state.value}
+        value={field.state.value ?? ""}
         onBlur={field.handleBlur}
         onChange={(event) => {
           field.handleChange(event.target.value);

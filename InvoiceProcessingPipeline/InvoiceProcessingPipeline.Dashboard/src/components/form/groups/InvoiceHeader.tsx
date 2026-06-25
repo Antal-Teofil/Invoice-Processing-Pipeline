@@ -8,7 +8,7 @@ export const InvoiceHeader = withForm({
 
   render: function Render({ form }) {
     return (
-      <fieldset>
+      <fieldset className="invoice-header-section">
         <legend>Invoice Header</legend>
 
         <form.AppField name="invoiceNumber">

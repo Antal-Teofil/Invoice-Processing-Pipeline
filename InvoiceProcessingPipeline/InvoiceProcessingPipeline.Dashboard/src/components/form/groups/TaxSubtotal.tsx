@@ -12,7 +12,7 @@ export const TaxSubtotal = withFieldGroup({
 
   render: function Render({ group, title }) {
     return (
-      <fieldset>
+      <fieldset className="tax-subtotal-section">
         <legend>{title}</legend>
 
         <AmountField

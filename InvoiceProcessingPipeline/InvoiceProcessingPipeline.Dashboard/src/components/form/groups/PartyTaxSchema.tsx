@@ -10,7 +10,7 @@ export const PartyTaxScheme = withFieldGroup({
 
   render: function Render({ group, title }) {
     return (
-      <fieldset>
+      <fieldset className="party-tax-scheme-section">
         <legend>{title}</legend>
 
         <group.AppField name="companyId">

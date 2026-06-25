@@ -18,7 +18,7 @@ export const Item = withFieldGroup({
 
   render: function Render({ group, title }) {
     return (
-      <fieldset>
+      <fieldset className="item-section">
         <legend>{title}</legend>
 
         <group.AppField name="name">
@@ -49,36 +49,42 @@ export const Item = withFieldGroup({
             const properties = field.state.value ?? [];
 
             return (
-              <fieldset>
+              <fieldset className="form-array-section">
                 <legend>Additional Item Properties</legend>
 
                 {properties.map((_, index) => (
-                  <fieldset key={index}>
+                  <fieldset key={index} className="form-array-item">
                     <AdditionalItemProperty
                       form={group}
                       fields={`additionalItemProperty[${index}]`}
                       title={`Additional Item Property ${index + 1}`}
                     />
 
-                    <button
-                      type="button"
-                      onClick={() => {
-                        field.removeValue(index);
-                      }}
-                    >
-                      Remove
-                    </button>
+                    <div className="form-array-actions">
+                      <button
+                        type="button"
+                        className="form-button form-button-danger"
+                        onClick={() => {
+                          field.removeValue(index);
+                        }}
+                      >
+                        Remove
+                      </button>
+                    </div>
                   </fieldset>
                 ))}
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    field.pushValue(emptyAdditionalItemProperty);
-                  }}
-                >
-                  Add
-                </button>
+                <div className="form-array-actions">
+                  <button
+                    type="button"
+                    className="form-button form-button-primary"
+                    onClick={() => {
+                      field.pushValue(emptyAdditionalItemProperty);
+                    }}
+                  >
+                    Add
+                  </button>
+                </div>
               </fieldset>
             );
           }}

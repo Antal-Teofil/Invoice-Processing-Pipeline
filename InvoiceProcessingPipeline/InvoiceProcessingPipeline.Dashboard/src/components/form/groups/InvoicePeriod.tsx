@@ -11,7 +11,7 @@ export const InvoicePeriodFields = withFieldGroup({
 
   render: function Render({ group, title }) {
     return (
-      <fieldset>
+      <fieldset className="invoice-period-section">
         <legend>{title}</legend>
 
         <group.AppField name="startDate">

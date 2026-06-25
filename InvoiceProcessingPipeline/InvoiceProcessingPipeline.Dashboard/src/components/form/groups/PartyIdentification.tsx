@@ -10,7 +10,7 @@ export const PartyIdentification = withFieldGroup({
 
   render: function Render({ group, title }) {
     return (
-      <fieldset>
+      <fieldset className="form-group">
         <legend>{title}</legend>
 
         <group.AppField name="id">

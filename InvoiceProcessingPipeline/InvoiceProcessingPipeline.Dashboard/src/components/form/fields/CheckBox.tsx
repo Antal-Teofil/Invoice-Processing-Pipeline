@@ -8,7 +8,7 @@ export function CheckboxField({ label }: CheckboxFieldProps) {
   const field = useFieldContext<boolean>();
 
   return (
-    <label>
+    <label className="checkbox-form-field">
       <input
         type="checkbox"
         checked={field.state.value ?? false}

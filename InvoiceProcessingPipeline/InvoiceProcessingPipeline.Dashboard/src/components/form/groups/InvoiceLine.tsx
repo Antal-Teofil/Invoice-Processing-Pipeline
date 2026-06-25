@@ -21,7 +21,7 @@ export const InvoiceLine = withFieldGroup({
 
   render: function Render({ group, title }) {
     return (
-      <fieldset>
+      <fieldset className="invoice-line-section">
         <legend>{title}</legend>
 
         <group.AppField name="lineId">
@@ -55,36 +55,42 @@ export const InvoiceLine = withFieldGroup({
             const allowanceCharges = field.state.value ?? [];
 
             return (
-              <fieldset>
+              <fieldset className="form-array-section">
                 <legend>Allowance / Charges</legend>
 
                 {allowanceCharges.map((_, index) => (
-                  <fieldset key={index}>
+                  <fieldset key={index} className="form-array-item">
                     <AllowanceCharge
                       form={group}
                       fields={`allowanceCharge[${index}]`}
                       title={`Allowance / Charge ${index + 1}`}
                     />
 
-                    <button
-                      type="button"
-                      onClick={() => {
-                        field.removeValue(index);
-                      }}
-                    >
-                      Remove allowance / charge
-                    </button>
+                    <div className="form-array-actions">
+                      <button
+                        type="button"
+                        className="form-button form-button-danger"
+                        onClick={() => {
+                          field.removeValue(index);
+                        }}
+                      >
+                        Remove allowance / charge
+                      </button>
+                    </div>
                   </fieldset>
                 ))}
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    field.pushValue(emptyAllowanceCharge);
-                  }}
-                >
-                  Add allowance / charge
-                </button>
+                <div className="form-array-actions">
+                  <button
+                    type="button"
+                    className="form-button form-button-primary"
+                    onClick={() => {
+                      field.pushValue(emptyAllowanceCharge);
+                    }}
+                  >
+                    Add allowance / charge
+                  </button>
+                </div>
               </fieldset>
             );
           }}

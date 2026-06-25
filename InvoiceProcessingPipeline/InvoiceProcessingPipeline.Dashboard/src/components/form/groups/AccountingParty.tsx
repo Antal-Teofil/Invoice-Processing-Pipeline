@@ -2,7 +2,7 @@ import AccountingPartyFormSchema from "../../../schemas/invoice/accounting-party
 import PartyIdentificationFormSchema from "../../../schemas/invoice/party-identification.schema";
 import PartyTaxSchemeFormSchema from "../../../schemas/invoice/party-tax-scheme.schema";
 
-import { PartyIdentification } from "../fields/PartyIdentification";
+import { PartyIdentification } from "./PartyIdentification";
 
 import { withFieldGroup } from "../setup/invoice-form";
 import { PostalAddress } from "./Address";
@@ -22,7 +22,7 @@ export const AccountingParty = withFieldGroup({
 
   render: function Render({ group, title }) {
     return (
-      <fieldset>
+      <fieldset className="accounting-party-section">
         <legend>{title}</legend>
 
         <group.AppField name="partyName">
@@ -34,37 +34,43 @@ export const AccountingParty = withFieldGroup({
             const identifications = field.state.value ?? [];
 
             return (
-              <fieldset>
+              <fieldset className="form-array-section">
                 <legend>Party Identifications</legend>
 
                 {identifications.map((_, index) => (
-                  <fieldset key={index}>
+                  <fieldset key={index} className="form-array-item">
                     <PartyIdentification
                       form={group}
                       fields={`partyIdentification[${index}]`}
                       title={`Party Identification ${index + 1}`}
                     />
 
-                    <button
-                      type="button"
-                      onClick={() => {
-                        field.removeValue(index);
-                      }}
-                    >
-                      Remove identification
-                    </button>
+                    <div className="form-array-actions">
+                      <button
+                        type="button"
+                        className="form-button form-button-danger"
+                        onClick={() => {
+                          field.removeValue(index);
+                        }}
+                      >
+                        Remove identification
+                      </button>
+                    </div>
                   </fieldset>
                 ))}
 
-                <button
-                  type="button"
-                  disabled={identifications.length >= 2}
-                  onClick={() => {
-                    field.pushValue(emptyPartyIdentification);
-                  }}
-                >
-                  Add identification
-                </button>
+                <div className="form-array-actions">
+                  <button
+                    type="button"
+                    className="form-button form-button-primary"
+                    disabled={identifications.length >= 2}
+                    onClick={() => {
+                      field.pushValue(emptyPartyIdentification);
+                    }}
+                  >
+                    Add identification
+                  </button>
+                </div>
               </fieldset>
             );
           }}
@@ -81,36 +87,42 @@ export const AccountingParty = withFieldGroup({
             const taxSchemes = field.state.value ?? [];
 
             return (
-              <fieldset>
+              <fieldset className="form-array-section">
                 <legend>Party Tax Schemes</legend>
 
                 {taxSchemes.map((_, index) => (
-                  <fieldset key={index}>
+                  <fieldset key={index} className="form-array-item">
                     <PartyTaxScheme
                       form={group}
                       fields={`partyTaxScheme[${index}]`}
                       title={`Party Tax Scheme ${index + 1}`}
                     />
 
-                    <button
-                      type="button"
-                      onClick={() => {
-                        field.removeValue(index);
-                      }}
-                    >
-                      Remove
-                    </button>
+                    <div className="form-array-actions">
+                      <button
+                        type="button"
+                        className="form-button form-button-danger"
+                        onClick={() => {
+                          field.removeValue(index);
+                        }}
+                      >
+                        Remove
+                      </button>
+                    </div>
                   </fieldset>
                 ))}
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    field.pushValue(emptyPartyTaxScheme);
-                  }}
-                >
-                  Add
-                </button>
+                <div className="form-array-actions">
+                  <button
+                    type="button"
+                    className="form-button form-button-primary"
+                    onClick={() => {
+                      field.pushValue(emptyPartyTaxScheme);
+                    }}
+                  >
+                    Add
+                  </button>
+                </div>
               </fieldset>
             );
           }}

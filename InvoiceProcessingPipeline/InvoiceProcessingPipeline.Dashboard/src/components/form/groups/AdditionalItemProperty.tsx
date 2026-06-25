@@ -10,7 +10,7 @@ export const AdditionalItemProperty = withFieldGroup({
 
   render: function Render({ group, title }) {
     return (
-      <fieldset>
+      <fieldset className="additional-item-property-form-group">
         <legend>{title}</legend>
 
         <group.AppField name="name">

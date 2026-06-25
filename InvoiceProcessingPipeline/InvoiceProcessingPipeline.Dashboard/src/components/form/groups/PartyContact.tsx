@@ -10,7 +10,7 @@ export const Contact = withFieldGroup({
 
   render: function Render({ group, title }) {
     return (
-      <fieldset>
+      <fieldset className="contact-section">
         <legend>{title}</legend>
 
         <group.AppField name="name">

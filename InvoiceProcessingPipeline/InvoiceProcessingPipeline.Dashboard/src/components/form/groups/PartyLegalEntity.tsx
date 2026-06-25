@@ -10,7 +10,7 @@ export const PartyLegalEntity = withFieldGroup({
 
   render: function Render({ group, title }) {
     return (
-      <fieldset>
+      <fieldset className="party-legal-entity-section">
         <legend>{title}</legend>
 
         <group.AppField name="registrationName">

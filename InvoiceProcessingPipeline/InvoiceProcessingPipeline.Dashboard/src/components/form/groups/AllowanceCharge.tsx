@@ -13,7 +13,7 @@ export const AllowanceCharge = withFieldGroup({
 
   render: function Render({ group, title }) {
     return (
-      <fieldset>
+      <fieldset className="allowance-charge-section">
         <legend>{title}</legend>
 
         <group.AppField name="chargeIndicator">

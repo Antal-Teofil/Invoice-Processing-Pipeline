@@ -14,7 +14,7 @@ export const Price = withFieldGroup({
 
   render: function Render({ group, title }) {
     return (
-      <fieldset>
+      <fieldset className="price-section">
         <legend>{title}</legend>
 
         <AmountField

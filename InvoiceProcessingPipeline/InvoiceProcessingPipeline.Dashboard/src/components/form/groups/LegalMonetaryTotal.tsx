@@ -11,7 +11,7 @@ export const LegalMonetaryTotal = withFieldGroup({
 
   render: function Render({ group, title }) {
     return (
-      <fieldset>
+      <fieldset className="legal-monetary-total-section">
         <legend>{title}</legend>
 
         <AmountField

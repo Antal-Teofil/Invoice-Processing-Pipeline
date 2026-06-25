@@ -16,7 +16,7 @@ export const TaxTotal = withFieldGroup({
 
   render: function Render({ group, title }) {
     return (
-      <fieldset>
+      <fieldset className="tax-total-section">
         <legend>{title}</legend>
 
         <AmountField
@@ -30,36 +30,42 @@ export const TaxTotal = withFieldGroup({
             const subtotals = field.state.value ?? [];
 
             return (
-              <fieldset>
+              <fieldset className="tax-subtotal-array-section">
                 <legend>Tax Subtotals</legend>
 
                 {subtotals.map((_, index) => (
-                  <fieldset key={index}>
+                  <fieldset key={index} className="tax-subtotal-array-item">
                     <TaxSubtotal
                       form={group}
                       fields={`taxSubtotal[${index}]`}
                       title={`Tax Subtotal ${index + 1}`}
                     />
 
-                    <button
-                      type="button"
-                      onClick={() => {
-                        field.removeValue(index);
-                      }}
-                    >
-                      Remove
-                    </button>
+                    <div className="form-array-actions">
+                      <button
+                        type="button"
+                        className="form-button form-button-danger"
+                        onClick={() => {
+                          field.removeValue(index);
+                        }}
+                      >
+                        Remove
+                      </button>
+                    </div>
                   </fieldset>
                 ))}
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    field.pushValue(emptyTaxSubtotal);
-                  }}
-                >
-                  Add
-                </button>
+                <div className="form-array-actions">
+                  <button
+                    type="button"
+                    className="form-button form-button-primary"
+                    onClick={() => {
+                      field.pushValue(emptyTaxSubtotal);
+                    }}
+                  >
+                    Add
+                  </button>
+                </div>
               </fieldset>
             );
           }}

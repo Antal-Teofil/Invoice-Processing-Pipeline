@@ -11,7 +11,7 @@ export const PostalAddress = withFieldGroup({
 
   render: function Render({ group, title }) {
     return (
-      <fieldset>
+      <fieldset className="postal-address-section">
         <legend>{title}</legend>
 
         <group.AppField name="streetName">
