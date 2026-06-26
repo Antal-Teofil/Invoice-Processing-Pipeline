@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import type { InvoiceSummaryRecord } from "../types/invoice-summary-record";
 
 function formatStatus(status: string) {
@@ -35,33 +35,45 @@ export default function InvoiceSummaryRecordRow({
   auditStatus,
   updatedAt,
 }: InvoiceSummaryRecord) {
-  const navigate = useNavigate();
-
-  const handleRowClick = () => {
-    navigate(`/editor/${documentId}`);
-  };
-
   return (
-    <tr onClick={handleRowClick}>
-      <td>{invoiceNumber ?? documentId}</td>
-
-      <td>{supplier ?? "-"}</td>
-
-      <td>{phoneNumber ?? "-"}</td>
-
-      <td>{emailAddress ?? "-"}</td>
-
-      <td>{formatAmount(totalAmount, currencyCode)}</td>
-
-      <td>{currencyCode ?? "-"}</td>
-
-      <td>{auditor ?? "-"}</td>
-
-      <td>
-        <span>{formatStatus(auditStatus)}</span>
+    <tr className="summary-card-row">
+      <td className="summary-card-cell summary-card-cell-strong">
+        <Link
+          to={`/editor/${documentId}`}
+          aria-label={`Edit invoice ${invoiceNumber ?? documentId}`}
+          className="summary-card-link"
+        >
+          {invoiceNumber ?? "-"}
+        </Link>
       </td>
 
-      <td>{formatDate(updatedAt)}</td>
+      <td className="summary-card-cell">{supplier ?? "-"}</td>
+
+      <td className="summary-card-cell summary-card-cell-muted">
+        {phoneNumber ?? "-"}
+      </td>
+
+      <td className="summary-card-cell summary-card-cell-muted">
+        {emailAddress ?? "-"}
+      </td>
+
+      <td className="summary-card-cell summary-card-cell-strong">
+        {formatAmount(totalAmount, currencyCode)}
+      </td>
+
+      <td className="summary-card-cell">{currencyCode ?? "-"}</td>
+
+      <td className="summary-card-cell">{auditor ?? "-"}</td>
+
+      <td className="summary-card-cell">
+        <span className="summary-card-status" data-status={auditStatus}>
+          {formatStatus(auditStatus)}
+        </span>
+      </td>
+
+      <td className="summary-card-cell summary-card-cell-muted">
+        {formatDate(updatedAt)}
+      </td>
     </tr>
   );
 }

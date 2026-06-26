@@ -1,4 +1,6 @@
 @import "tailwindcss";
 
-@import "./form/form.style.css";
-@import "./overview-page/style.css";
+@import "./editor-page/form.style.css";
+@import "./editor-page/viewer.style.css";
+@import "./overview-page/record-table.style.css";
+@import "./home-page/style.css";

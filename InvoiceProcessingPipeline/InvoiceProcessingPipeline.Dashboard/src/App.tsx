@@ -10,7 +10,7 @@ export default function App() {
       <Routes>
         <Route path="/home" element={<HomePage/>}></Route>
         <Route path="/dashboard" element={<OverviewPage/>}></Route>
-        <Route path="/editor" element={<EditorPage invoiceId=""/>}></Route>
+        <Route path="/editor/:documentId" element={<EditorPage/>}></Route>
       </Routes>
     </BrowserRouter>
   );
