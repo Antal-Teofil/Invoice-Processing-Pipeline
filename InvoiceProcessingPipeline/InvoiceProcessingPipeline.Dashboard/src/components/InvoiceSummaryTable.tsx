@@ -1,5 +1,5 @@
 import { useInvoiceSummaryRecords } from "../hooks/useInvoiceSummaryRecords.hook";
-import { useInvoiceSummaryRecordTableStore } from "../stores/useInvoiceSummaryRecordTable.store";
+import { useInvoiceSummaryRecordTableStore } from "../stores/record-table.store";
 import InvoiceSummaryRecordRow from "./InvoiceSummaryRecordRow";
 
 function InvoiceSummaryTable() {

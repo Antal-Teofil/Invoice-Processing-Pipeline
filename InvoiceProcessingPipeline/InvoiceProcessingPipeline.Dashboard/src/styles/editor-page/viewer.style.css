@@ -1,6 +1,8 @@
 @utility editor-page-shell {
   height: 100vh;
-  width: 100%;
+  width: 100vw;
+  min-width: 0;
+  min-height: 0;
   overflow: hidden;
   background: #ffffff;
 }
@@ -8,11 +10,16 @@
 @utility editor-page-panels {
   height: 100%;
   width: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
 }
 
 @utility editor-viewer-panel {
   height: 100%;
   width: 100%;
+  min-width: 0;
+  min-height: 0;
   overflow: hidden;
   background: #ffffff;
   padding: 1.5rem 1rem 1.5rem 1.5rem;
@@ -21,14 +28,19 @@
 @utility editor-form-panel {
   height: 100%;
   width: 100%;
+  min-width: 0;
+  min-height: 0;
   overflow-y: auto;
+  overflow-x: hidden;
   background: #ffffff;
   padding: 1.5rem;
 }
 
 @utility editor-resize-separator {
   display: flex;
+  flex: 0 0 0.625rem;
   width: 0.625rem;
+  min-width: 0.625rem;
   cursor: col-resize;
   align-items: center;
   justify-content: center;
@@ -51,6 +63,7 @@
   height: 100%;
   min-height: 0;
   width: 100%;
+  min-width: 0;
   flex-direction: column;
   overflow: hidden;
   border: 1px solid #e9d5ff;
@@ -62,6 +75,7 @@
 @utility invoice-viewer-header {
   display: flex;
   flex: 0 0 auto;
+  min-width: 0;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
@@ -136,6 +150,7 @@
   position: relative;
   flex: 1 1 auto;
   min-height: 0;
+  min-width: 0;
   overflow: hidden;
   background:
     linear-gradient(135deg, rgba(124, 58, 237, 0.035) 25%, transparent 25%),
@@ -151,6 +166,8 @@
 @utility invoice-viewer-pdf-frame {
   height: 100%;
   width: 100%;
+  min-height: 0;
+  min-width: 0;
   overflow: hidden;
   border: 1px solid #e9d5ff;
   border-radius: 0.875rem;
@@ -204,6 +221,22 @@
 }
 
 /* Tailwind @utility nem lehet nested, ezért ezek sima selectorok. */
+.editor-page-panels > [data-panel],
+.editor-page-panels [data-panel] {
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.editor-page-panels > [data-resize-handle],
+.editor-page-panels [data-resize-handle],
+.editor-page-panels > [data-panel-resize-handle],
+.editor-page-panels [data-panel-resize-handle] {
+  flex: 0 0 0.625rem;
+  width: 0.625rem;
+  min-width: 0.625rem;
+}
+
 .editor-resize-separator:hover {
   background: #faf5ff;
 }
@@ -212,9 +245,19 @@
   background: #7c3aed;
 }
 
+.invoice-viewer-pdf-frame > *,
 .invoice-viewer-pdf-frame > div {
-  height: 100%;
+  height: 100% !important;
+  width: 100% !important;
+  min-width: 0;
+  min-height: 0;
+}
+
+.invoice-viewer-pdf-frame iframe {
+  display: block;
   width: 100%;
+  height: 100%;
+  border: 0;
 }
 
 @media (max-width: 900px) {

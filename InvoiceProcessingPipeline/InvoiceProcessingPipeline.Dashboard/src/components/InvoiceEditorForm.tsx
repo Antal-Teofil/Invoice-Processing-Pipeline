@@ -12,23 +12,28 @@ import { InvoiceLine } from "./form/groups/InvoiceLine";
 import TaxTotalFormSchema from "../schemas/invoice/tax-total.schema";
 import AllowanceChargeFormSchema from "../schemas/invoice/allowance-charge.schema";
 import InvoiceLineFormSchema from "../schemas/invoice/invoice-line.schema";
+import { useSubmitInvoice } from "../hooks/invoice-form.hook";
 
 const emptyTaxTotal = TaxTotalFormSchema.parse({});
 const emptyAllowanceCharge = AllowanceChargeFormSchema.parse({});
 const emptyInvoiceLine = InvoiceLineFormSchema.parse({});
 
 export function CommercialInvoiceEditorForm({
+  documentId,
   invoice,
 }: {
   invoice: CommercialInvoiceType;
+  documentId: string;
 }) {
+  const submitInvoice = useSubmitInvoice(documentId);
 
-  
   const form = useAppForm({
     defaultValues: invoice,
 
-    onSubmit: ({ value }) => {
-      console.log(JSON.stringify(value, null, 2));
+    onSubmit: async ({ value }) => {
+      const updatedInvoiceForm = await submitInvoice.mutateAsync(value);
+
+      form.reset(updatedInvoiceForm.data);
     },
   });
 
@@ -188,7 +193,6 @@ export function CommercialInvoiceEditorForm({
 
             return (
               <fieldset className="form-array-section">
-
                 {invoiceLines.map((_, index) => (
                   <div key={index} className="form-array-item-flat">
                     <InvoiceLine
@@ -229,9 +233,13 @@ export function CommercialInvoiceEditorForm({
       </section>
 
       <footer className="invoice-editor-footer">
-        <button type="submit" className="invoice-submit-button">
-          Save
-        </button>
+        <form.AppForm>
+          <form.InvoiceSubmitButton isPending={submitInvoice.isPending} />
+        </form.AppForm>
+
+        {submitInvoice.isError && (
+          <p className="form-error">{submitInvoice.error.message}</p>
+        )}
       </footer>
     </form>
   );

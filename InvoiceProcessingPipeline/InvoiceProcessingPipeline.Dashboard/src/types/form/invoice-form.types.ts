@@ -30,4 +30,3 @@ export type PostalAddressType = z.infer<typeof PostalAddressFormSchema>;
 export type TaxCategoryType = z.infer<typeof TaxCategoryFormSchema>;
 export type TaxSubtotalType = z.infer<typeof TaxSubtotalFormSchema>;
 export type TaxTotalType = z.infer<typeof TaxTotalFormSchema>; 
-export type 

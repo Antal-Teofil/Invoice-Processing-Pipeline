@@ -3,7 +3,7 @@ import {
   useInfiniteQuery,
   type InfiniteData,
 } from "@tanstack/react-query";
-import { useInvoiceSummaryRecordTableStore } from "../stores/useInvoiceSummaryRecordTable.store";
+import { useInvoiceSummaryRecordTableStore } from "../stores/record-table.store";
 import type { InvoiceSummaryRecord, PagedInvoiceSummaryRecordDTO } from "../types/invoice-summary-record";
 import { fetchInvoiceSummaryRecordsAsync } from "../services/invoice-records.service";
 import { mapInvoiceSummaryRecordDtoToTableRow } from "../mappers/invoice-summary-record.mapper";

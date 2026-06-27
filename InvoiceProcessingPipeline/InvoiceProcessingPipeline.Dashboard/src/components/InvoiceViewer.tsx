@@ -1,11 +1,13 @@
 import { PDFViewer, ZoomMode } from "@embedpdf/react-pdf-viewer";
 
 type InvoiceViewerProperties = {
-  url: string;
+  url?: string;
   invoiceName: string;
 };
 
 export function InvoiceViewer({ url, invoiceName }: InvoiceViewerProperties) {
+
+  console.log("PDF URL:", url);
   return (
     <div className="invoice-viewer-shell">
       <header className="invoice-viewer-header">
@@ -15,19 +17,13 @@ export function InvoiceViewer({ url, invoiceName }: InvoiceViewerProperties) {
           </div>
 
           <div className="invoice-viewer-title-content">
-            <p className="invoice-viewer-eyebrow">
-              Számla előnézet
-            </p>
+            <p className="invoice-viewer-eyebrow">Számla előnézet</p>
 
-            <h1 className="invoice-viewer-title">
-              {invoiceName}
-            </h1>
+            <h1 className="invoice-viewer-title">{invoiceName}</h1>
           </div>
         </div>
 
-        <span className="invoice-viewer-status">
-          Dokumentum előnézet
-        </span>
+        <span className="invoice-viewer-status">Dokumentum előnézet</span>
       </header>
 
       <div className="invoice-viewer-surface">
@@ -42,12 +38,14 @@ export function InvoiceViewer({ url, invoiceName }: InvoiceViewerProperties) {
             </h2>
 
             <p className="invoice-viewer-empty-description">
-              A számla PDF-előnézete automatikusan megjelenik, amint a dokumentum elkészült.
+              A számla PDF-előnézete automatikusan megjelenik, amint a
+              dokumentum elkészült.
             </p>
           </div>
         ) : (
           <div className="invoice-viewer-pdf-frame">
             <PDFViewer
+              key={url}
               config={{
                 src: url,
                 theme: {

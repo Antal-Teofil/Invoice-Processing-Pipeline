@@ -5,6 +5,7 @@ import DateField from '../components/form/fields/DateField';
 import OptionField from '../components/form/fields/OptionField';
 import { EmailField } from '../components/form/fields/Email';
 import { CheckboxField } from '../components/form/fields/CheckBox';
+import { InvoiceSubmitButton } from '../components/form/groups/SubmitButton';
 
 export const { fieldContext, useFieldContext, formContext, useFormContext} = createFormHookContexts();
 
@@ -19,5 +20,7 @@ export const { useAppForm } = createFormHook({
     EmailField,
     CheckboxField
   },
-  formComponents: {},
+  formComponents: {
+    InvoiceSubmitButton
+  },
 });

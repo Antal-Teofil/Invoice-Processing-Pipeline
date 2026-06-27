@@ -6,6 +6,7 @@ import DateField from "../fields/DateField";
 import OptionField from "../fields/OptionField";
 import { EmailField } from "../fields/Email";
 import { CheckboxField } from "../fields/CheckBox";
+import { InvoiceSubmitButton } from "../groups/SubmitButton";
 
 export const {
   useAppForm,
@@ -22,5 +23,7 @@ export const {
     EmailField,
     CheckboxField
   },
-  formComponents: {},
+  formComponents: {
+    InvoiceSubmitButton
+  },
 });
