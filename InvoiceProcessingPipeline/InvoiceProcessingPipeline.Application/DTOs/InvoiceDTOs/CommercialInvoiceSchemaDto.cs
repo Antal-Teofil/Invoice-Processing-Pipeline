@@ -2,7 +2,7 @@
 
 namespace InvoiceProcessingPipeline.Application.DTOs.InvoiceDTOs
 {
-    public sealed record CommercialInvoiceSchemaDTO
+    public sealed record CommercialInvoiceSchemaDto
     {
         [JsonPropertyName("header")]
         public required DocumentMetadataDto Metadata { get; set; }

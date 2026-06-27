@@ -20,30 +20,9 @@ namespace InvoiceProcessingPipeline.Functions.Triggers
     HttpRequestData req,
     string documentId)
         {
-            var invoice = await store.RetrieveCanonicalizedDocumentSchemeAsync<CommercialInvoice>(
-                documentId);
+            var invoice = await store.RetrieveCanonicalizedDocumentSchemeAsync<CommercialInvoice>(documentId);
 
-            if (invoice is null)
-            {
-                var notFoundResponse = req.CreateResponse(HttpStatusCode.NotFound);
-
-                await notFoundResponse.WriteAsJsonAsync(new
-                {
-                    message = $"Document with id {documentId} was not found."
-                });
-
-                return notFoundResponse;
-            }
-
-            var okResponse = req.CreateResponse(HttpStatusCode.OK);
-
-            await okResponse.WriteAsJsonAsync(new
-            {
-                message = $"Document with id {documentId} was successfully retrieved.",
-                data = invoice
-            });
-
-            return okResponse;
+            
         }
     }
 }

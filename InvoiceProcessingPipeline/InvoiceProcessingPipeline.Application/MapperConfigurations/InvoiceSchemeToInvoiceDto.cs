@@ -12,7 +12,7 @@ namespace InvoiceProcessingPipeline.Application.MapperConfigurations
     {
         public void Register(TypeAdapterConfig config)
         {
-            config.NewConfig<CommercialInvoice, CommercialInvoiceSchemaDTO>()
+            config.NewConfig<CommercialInvoice, CommercialInvoiceSchemaDto>()
                 .Map(dest => dest.Metadata.DocumentId, src => src.DocumentId)
                 .Map(dest => dest.Metadata.WorkflowId, src => src.WorkflowId)
                 .Map(dest => dest.Metadata.AuditStatus, src => Enum.Parse<AuditStatus>(src.AuditStatus))

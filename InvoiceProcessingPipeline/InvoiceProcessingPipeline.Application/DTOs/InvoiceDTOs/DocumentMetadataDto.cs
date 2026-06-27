@@ -16,6 +16,9 @@ namespace InvoiceProcessingPipeline.Application.DTOs.InvoiceDTOs
 
         [JsonPropertyName("updatedAt")]
         public required DateTimeOffset UpdatedAt { get; init; }
+
+        [JsonPropertyName("documentResourceUri")]
+        public required Uri DocumentSasUri { get; init; }
     }
 }
 
