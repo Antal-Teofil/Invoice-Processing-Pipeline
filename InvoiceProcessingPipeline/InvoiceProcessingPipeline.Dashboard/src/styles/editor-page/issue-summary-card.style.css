@@ -1,0 +1,121 @@
+@utility issue-summary-card {
+  --summary-accent: #7c3aed;
+  --summary-border: #ede9fe;
+  --summary-soft: #f5f3ff;
+  --summary-text: #111827;
+  --summary-muted: #6b7280;
+
+  position: relative;
+  width: 100%;
+
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+
+  margin-bottom: 1.5rem;
+  padding: 1rem 1rem 1rem 1.25rem;
+
+  border: 1px solid var(--summary-border);
+  border-radius: 1.25rem;
+
+  background:
+    radial-gradient(circle at top left, rgb(124 58 237 / 0.08), transparent 18rem),
+    #ffffff;
+
+  color: var(--summary-text);
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+
+  box-shadow: 0 10px 24px rgb(17 24 39 / 0.06);
+
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    border-color 160ms ease,
+    opacity 160ms ease;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 1rem;
+    bottom: 1rem;
+    width: 4px;
+    border-radius: 999px;
+    background: var(--summary-accent);
+  }
+
+  & > div {
+    min-width: 0;
+
+    display: grid;
+    gap: 0.35rem;
+
+    padding: 0.85rem;
+    border: 1px solid #f3f0ff;
+    border-radius: 1rem;
+
+    background: rgb(255 255 255 / 0.76);
+  }
+
+  & span {
+    color: var(--summary-muted);
+
+    font-size: 0.72rem;
+    font-weight: 800;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  & strong {
+    display: block;
+
+    color: var(--summary-text);
+
+    font-size: 1.45rem;
+    font-weight: 850;
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+
+  & [data-issue-summary-item="error"] strong {
+    color: #dc2626;
+  }
+
+  & [data-issue-summary-item="warning"] strong {
+    color: #d97706;
+  }
+
+  & [data-issue-summary-item="total"] strong {
+    color: var(--summary-accent);
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: var(--summary-accent);
+    box-shadow:
+      0 14px 30px rgb(17 24 39 / 0.1),
+      0 8px 18px rgb(124 58 237 / 0.08);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.58;
+  }
+
+  &:disabled:hover {
+    transform: none;
+    border-color: var(--summary-border);
+    box-shadow: 0 10px 24px rgb(17 24 39 / 0.06);
+  }
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}

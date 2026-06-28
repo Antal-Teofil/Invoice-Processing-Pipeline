@@ -8,11 +8,14 @@ import { LegalMonetaryTotal } from "./form/groups/LegalMonetaryTotal";
 import { TaxTotal } from "./form/groups/TaxTotal";
 import { AllowanceCharge } from "./form/groups/AllowanceCharge";
 import { InvoiceLine } from "./form/groups/InvoiceLine";
+import { FormSection } from "./FormSection";
 
 import TaxTotalFormSchema from "../schemas/invoice/tax-total.schema";
 import AllowanceChargeFormSchema from "../schemas/invoice/allowance-charge.schema";
 import InvoiceLineFormSchema from "../schemas/invoice/invoice-line.schema";
+
 import { useSubmitInvoice } from "../hooks/invoice-form.hook";
+import { INVOICE_SECTION_IDS } from "../shared/constants/form-sections.constants";
 
 const emptyTaxTotal = TaxTotalFormSchema.parse({});
 const emptyAllowanceCharge = AllowanceChargeFormSchema.parse({});
@@ -46,9 +49,10 @@ export function CommercialInvoiceEditorForm({
         form.handleSubmit();
       }}
     >
-      <section className="invoice-editor-section">
-        <h2 className="invoice-editor-section-title">Invoice Details</h2>
-
+      <FormSection
+        id={INVOICE_SECTION_IDS.invoiceDetails}
+        title="Invoice Details"
+      >
         <InvoiceHeader form={form} />
 
         <InvoicePeriodFields
@@ -56,27 +60,30 @@ export function CommercialInvoiceEditorForm({
           fields="invoicePeriod"
           title="Invoice Period"
         />
-      </section>
+      </FormSection>
 
-      <section className="invoice-editor-section">
-        <h2 className="invoice-editor-section-title">Parties</h2>
+      <FormSection id={INVOICE_SECTION_IDS.parties} title="Parties">
+        <div id={INVOICE_SECTION_IDS.supplierParty} className="scroll-mt-6">
+          <AccountingParty
+            form={form}
+            fields="accountingSupplierParty"
+            title="Supplier Party"
+          />
+        </div>
 
-        <AccountingParty
-          form={form}
-          fields="accountingSupplierParty"
-          title="Supplier Party"
-        />
+        <div id={INVOICE_SECTION_IDS.customerParty} className="scroll-mt-6">
+          <AccountingParty
+            form={form}
+            fields="accountingCustomerParty"
+            title="Customer Party"
+          />
+        </div>
+      </FormSection>
 
-        <AccountingParty
-          form={form}
-          fields="accountingCustomerParty"
-          title="Customer Party"
-        />
-      </section>
-
-      <section className="invoice-editor-section">
-        <h2 className="invoice-editor-section-title">Allowance / Charges</h2>
-
+      <FormSection
+        id={INVOICE_SECTION_IDS.allowanceCharges}
+        title="Allowance / Charges"
+      >
         <form.AppField name="allowanceCharge" mode="array">
           {(field) => {
             const allowanceCharges = field.state.value ?? [];
@@ -86,7 +93,11 @@ export function CommercialInvoiceEditorForm({
                 <legend>Allowance / Charges</legend>
 
                 {allowanceCharges.map((_, index) => (
-                  <div key={index} className="form-array-item-flat">
+                  <div
+                    key={index}
+                    id={INVOICE_SECTION_IDS.allowanceChargeItem(index)}
+                    className="form-array-item-flat scroll-mt-6"
+                  >
                     <AllowanceCharge
                       form={form}
                       fields={`allowanceCharge[${index}]`}
@@ -122,11 +133,9 @@ export function CommercialInvoiceEditorForm({
             );
           }}
         </form.AppField>
-      </section>
+      </FormSection>
 
-      <section className="invoice-editor-section">
-        <h2 className="invoice-editor-section-title">Tax Totals</h2>
-
+      <FormSection id={INVOICE_SECTION_IDS.taxTotals} title="Tax Totals">
         <form.AppField name="taxTotal" mode="array">
           {(field) => {
             const taxTotals = field.state.value ?? [];
@@ -136,7 +145,11 @@ export function CommercialInvoiceEditorForm({
                 <legend>Tax Totals</legend>
 
                 {taxTotals.map((_, index) => (
-                  <div key={index} className="form-array-item-flat">
+                  <div
+                    key={index}
+                    id={INVOICE_SECTION_IDS.taxTotalItem(index)}
+                    className="form-array-item-flat scroll-mt-6"
+                  >
                     <TaxTotal
                       form={form}
                       fields={`taxTotal[${index}]`}
@@ -172,21 +185,20 @@ export function CommercialInvoiceEditorForm({
             );
           }}
         </form.AppField>
-      </section>
+      </FormSection>
 
-      <section className="invoice-editor-section">
-        <h2 className="invoice-editor-section-title">Legal Monetary Total</h2>
-
+      <FormSection
+        id={INVOICE_SECTION_IDS.legalMonetaryTotal}
+        title="Legal Monetary Total"
+      >
         <LegalMonetaryTotal
           form={form}
           fields="legalMonetaryTotal"
           title="Legal Monetary Total"
         />
-      </section>
+      </FormSection>
 
-      <section className="invoice-editor-section">
-        <h2 className="invoice-editor-section-title">Invoice Lines</h2>
-
+      <FormSection id={INVOICE_SECTION_IDS.invoiceLines} title="Invoice Lines">
         <form.AppField name="invoiceLine" mode="array">
           {(field) => {
             const invoiceLines = field.state.value ?? [];
@@ -194,7 +206,11 @@ export function CommercialInvoiceEditorForm({
             return (
               <fieldset className="form-array-section">
                 {invoiceLines.map((_, index) => (
-                  <div key={index} className="form-array-item-flat">
+                  <div
+                    key={index}
+                    id={INVOICE_SECTION_IDS.invoiceLineItem(index)}
+                    className="form-array-item-flat scroll-mt-6"
+                  >
                     <InvoiceLine
                       form={form}
                       fields={`invoiceLine[${index}]`}
@@ -230,7 +246,7 @@ export function CommercialInvoiceEditorForm({
             );
           }}
         </form.AppField>
-      </section>
+      </FormSection>
 
       <footer className="invoice-editor-footer">
         <form.AppForm>

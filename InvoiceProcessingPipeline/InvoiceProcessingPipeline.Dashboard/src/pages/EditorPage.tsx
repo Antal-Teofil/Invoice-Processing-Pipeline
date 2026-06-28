@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 
 import { CommercialInvoiceEditorForm } from "../components/InvoiceEditorForm";
 import { InvoiceViewer } from "../components/InvoiceViewer";
+import { IssueBoard } from "../components/IssueBoard";
 import { useInvoice } from "../hooks/invoice-form.hook";
 
 export function EditorPage() {
@@ -56,6 +57,8 @@ export function EditorPage() {
 
         <Panel defaultSize="45%" minSize="45%">
           <aside className="editor-form-panel">
+            <IssueBoard issues={invoiceForm.issues ?? []} />
+
             <CommercialInvoiceEditorForm
               documentId={documentId}
               invoice={invoiceForm.data}
