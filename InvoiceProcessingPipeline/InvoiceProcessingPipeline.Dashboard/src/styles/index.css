@@ -5,3 +5,5 @@
 @import "./overview-page/record-table.style.css";
 @import "./home-page/style.css";
 @import "./editor-page/issue-drawer.style.css";
+@import "./editor-page/issue-summary-card.style.css";
+@import "./editor-page/issue-card.style.css";
