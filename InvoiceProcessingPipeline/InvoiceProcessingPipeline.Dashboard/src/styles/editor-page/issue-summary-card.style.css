@@ -5,7 +5,10 @@
   --summary-text: #111827;
   --summary-muted: #6b7280;
 
-  position: relative;
+  position: sticky;
+  top: 0rem;
+  z-index: 50;
+
   width: 100%;
 
   display: grid;

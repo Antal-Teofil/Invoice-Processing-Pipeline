@@ -13,6 +13,9 @@ export function IssueDrawer({ issues }: IssueDrawerProps) {
   const isOpen = useIssueStore((state) => state.isOpen);
   const setOpen = useIssueStore((state) => state.setOpen);
   const closeDrawer = useIssueStore((state) => state.closeDrawer);
+  const sortedIssues = [...issues].sort((a, b) => {
+    return (a.severity ?? "").localeCompare(b.severity ?? "");
+  });
 
   if (!isOpen) {
     return null;
@@ -52,8 +55,8 @@ export function IssueDrawer({ issues }: IssueDrawerProps) {
             </header>
 
             <div data-issue-drawer-list>
-              {issues.length > 0 ? (
-                issues.map((issue, index) => (
+              {sortedIssues.length > 0 ? (
+                sortedIssues.map((issue, index) => (
                   <IssueCard
                     key={`${issue.issueCode ?? "issue"}-${index}`}
                     issue={issue}
