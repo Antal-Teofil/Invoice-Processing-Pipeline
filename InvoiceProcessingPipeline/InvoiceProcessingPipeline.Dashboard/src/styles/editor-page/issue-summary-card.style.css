@@ -6,8 +6,8 @@
   --summary-muted: #6b7280;
 
   position: sticky;
-  top: 0rem;
-  z-index: 50;
+  top: 1rem;
+  z-index: 30;
 
   width: 100%;
 
@@ -15,7 +15,7 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.75rem;
 
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
   padding: 1rem 1rem 1rem 1.25rem;
 
   border: 1px solid var(--summary-border);
@@ -30,7 +30,7 @@
   font: inherit;
   cursor: pointer;
 
-  box-shadow: 0 10px 24px rgb(17 24 39 / 0.06);
+  box-shadow: 0 14px 30px rgb(17 24 39 / 0.07);
 
   transition:
     transform 160ms ease,
@@ -96,7 +96,7 @@
   }
 
   &:hover {
-    transform: translateY(-2px);
+    transform: translateY(-1px);
     border-color: var(--summary-accent);
     box-shadow:
       0 14px 30px rgb(17 24 39 / 0.1),

@@ -1,63 +1,3 @@
-@utility editor-page-shell {
-  height: 100vh;
-  width: 100vw;
-  min-width: 0;
-  min-height: 0;
-  overflow: hidden;
-  background: #ffffff;
-}
-
-@utility editor-page-panels {
-  height: 100%;
-  width: 100%;
-  min-width: 0;
-  min-height: 0;
-  overflow: hidden;
-}
-
-@utility editor-viewer-panel {
-  height: 100%;
-  width: 100%;
-  min-width: 0;
-  min-height: 0;
-  overflow: hidden;
-  background: #ffffff;
-  padding: 1.5rem 1rem 1.5rem 1.5rem;
-}
-
-@utility editor-form-panel {
-  height: 100%;
-  width: 100%;
-  min-width: 0;
-  min-height: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
-  background: #ffffff;
-  padding: 1.5rem;
-}
-
-@utility editor-resize-separator {
-  display: flex;
-  flex: 0 0 0.625rem;
-  width: 0.625rem;
-  min-width: 0.625rem;
-  cursor: col-resize;
-  align-items: center;
-  justify-content: center;
-  background: #f8fafc;
-  border-left: 1px solid #e9d5ff;
-  border-right: 1px solid #e9d5ff;
-  transition: background-color 160ms ease;
-}
-
-@utility editor-resize-grip {
-  height: 3rem;
-  width: 0.25rem;
-  border-radius: 999px;
-  background: #c4b5fd;
-  transition: background-color 160ms ease;
-}
-
 @utility invoice-viewer-shell {
   display: flex;
   height: 100%;
@@ -218,31 +158,6 @@
   color: #64748b;
   font-size: 0.875rem;
   line-height: 1.5;
-}
-
-/* Tailwind @utility nem lehet nested, ezért ezek sima selectorok. */
-.editor-page-panels > [data-panel],
-.editor-page-panels [data-panel] {
-  min-width: 0;
-  min-height: 0;
-  overflow: hidden;
-}
-
-.editor-page-panels > [data-resize-handle],
-.editor-page-panels [data-resize-handle],
-.editor-page-panels > [data-panel-resize-handle],
-.editor-page-panels [data-panel-resize-handle] {
-  flex: 0 0 0.625rem;
-  width: 0.625rem;
-  min-width: 0.625rem;
-}
-
-.editor-resize-separator:hover {
-  background: #faf5ff;
-}
-
-.editor-resize-separator:hover .editor-resize-grip {
-  background: #7c3aed;
 }
 
 .invoice-viewer-pdf-frame > *,

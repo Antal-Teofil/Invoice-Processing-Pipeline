@@ -1,5 +1,6 @@
 import ContactFormSchema from "../../../schemas/invoice/contact.schema";
 import { withFieldGroup } from "../setup/invoice-form";
+import { contactFieldValidators } from "../../../validation/invoice";
 
 export const Contact = withFieldGroup({
   defaultValues: ContactFormSchema.parse({}),
@@ -17,11 +18,11 @@ export const Contact = withFieldGroup({
           {(field) => <field.TextField label="Name" />}
         </group.AppField>
 
-        <group.AppField name="telephone">
+        <group.AppField name="telephone" validators={contactFieldValidators.telephone}>
           {(field) => <field.TextField label="Telephone" />}
         </group.AppField>
 
-        <group.AppField name="electronicMail">
+        <group.AppField name="electronicMail" validators={contactFieldValidators.electronicMail}>
           {(field) => <field.EmailField label="Email" />}
         </group.AppField>
       </fieldset>

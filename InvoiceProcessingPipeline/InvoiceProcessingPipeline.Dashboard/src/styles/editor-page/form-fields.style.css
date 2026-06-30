@@ -1,0 +1,180 @@
+@utility text-form-field {
+  @apply flex min-w-0 flex-col gap-1.5 self-start;
+  position: relative;
+  overflow: visible;
+  z-index: 1;
+
+  & > span {
+    @apply max-w-full break-words text-sm font-medium leading-snug text-zinc-700;
+  }
+
+  & > input {
+    @apply min-h-10 w-full rounded-xl border border-violet-200 bg-white px-3.5 py-2.5 text-zinc-950 outline-none transition duration-200 placeholder:text-zinc-400;
+    box-shadow: var(--invoice-shadow-xs);
+  }
+
+  & > input:hover {
+    @apply border-violet-300;
+  }
+
+  & > input:focus {
+    @apply border-violet-500 ring-4 ring-violet-500/15;
+  }
+}
+
+@utility number-form-field {
+  @apply flex min-w-0 flex-col gap-1.5 self-start;
+  position: relative;
+  overflow: visible;
+  z-index: 1;
+
+  & > span {
+    @apply max-w-full break-words text-sm font-medium leading-snug text-zinc-700;
+  }
+
+  & > input {
+    @apply min-h-10 w-full rounded-xl border border-violet-200 bg-white px-3.5 py-2.5 text-zinc-950 outline-none transition duration-200 placeholder:text-zinc-400;
+    box-shadow: var(--invoice-shadow-xs);
+  }
+
+  & > input:hover {
+    @apply border-violet-300;
+  }
+
+  & > input:focus {
+    @apply border-violet-500 ring-4 ring-violet-500/15;
+  }
+}
+
+@utility option-form-field {
+  @apply flex min-w-0 flex-col gap-1.5 self-start;
+  position: relative;
+  overflow: visible;
+  z-index: 1;
+
+  & > span {
+    @apply max-w-full break-words text-sm font-medium leading-snug text-zinc-700;
+  }
+
+  & > select {
+    @apply min-h-10 w-full cursor-pointer rounded-xl border border-violet-200 bg-white px-3.5 py-2.5 text-zinc-950 outline-none transition duration-200;
+    box-shadow: var(--invoice-shadow-xs);
+  }
+
+  & > select:hover {
+    @apply border-violet-300;
+  }
+
+  & > select:focus {
+    @apply border-violet-500 ring-4 ring-violet-500/15;
+  }
+
+  & > select > option {
+    @apply bg-white text-zinc-950;
+  }
+}
+
+@utility date-form-field {
+  @apply flex min-w-0 flex-col gap-1.5 self-start;
+  position: relative;
+  overflow: visible;
+  z-index: 1;
+
+  & > span {
+    @apply max-w-full break-words text-sm font-medium leading-snug text-zinc-700;
+  }
+
+  & > input {
+    @apply min-h-10 w-full rounded-xl border border-violet-200 bg-white px-3.5 py-2.5 text-zinc-950 outline-none transition duration-200;
+    color-scheme: light;
+    box-shadow: var(--invoice-shadow-xs);
+  }
+
+  & > input:hover {
+    @apply border-violet-300;
+  }
+
+  & > input:focus {
+    @apply border-violet-500 ring-4 ring-violet-500/15;
+  }
+
+  & > input::-webkit-calendar-picker-indicator {
+    opacity: 0.75;
+    cursor: pointer;
+  }
+
+  & > input::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+  }
+}
+
+@utility checkbox-form-field {
+  @apply flex min-w-0 cursor-pointer select-none items-start gap-3 self-start rounded-xl border border-violet-200 bg-white px-3.5 py-2.5 transition duration-200;
+  position: relative;
+  overflow: visible;
+  z-index: 1;
+  box-shadow: var(--invoice-shadow-xs);
+
+  &:hover {
+    @apply border-violet-300 bg-violet-50;
+    transform: translateY(-1px);
+  }
+
+  &:focus-within {
+    @apply border-violet-500 ring-4 ring-violet-500/15;
+  }
+
+  & > input {
+    @apply mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border-violet-300 bg-white accent-violet-600 outline-none;
+  }
+
+  & > span {
+    @apply max-w-full break-words text-sm font-medium leading-snug text-zinc-700;
+  }
+}
+
+.text-form-field:hover,
+.text-form-field:focus-within,
+.number-form-field:hover,
+.number-form-field:focus-within,
+.date-form-field:hover,
+.date-form-field:focus-within,
+.option-form-field:hover,
+.option-form-field:focus-within,
+.checkbox-form-field:hover,
+.checkbox-form-field:focus-within {
+  z-index: 20;
+}
+
+.text-form-field > input[aria-invalid="true"],
+.number-form-field > input[aria-invalid="true"],
+.date-form-field > input[aria-invalid="true"],
+.option-form-field > select[aria-invalid="true"] {
+  @apply border-red-300 bg-white ring-4 ring-red-500/10;
+  box-shadow:
+    0 0 0 1px rgb(248 113 113 / 0.18),
+    0 10px 22px -18px rgb(220 38 38 / 0.45),
+    var(--invoice-shadow-xs);
+}
+
+.text-form-field > input[aria-invalid="true"]:hover,
+.number-form-field > input[aria-invalid="true"]:hover,
+.date-form-field > input[aria-invalid="true"]:hover,
+.option-form-field > select[aria-invalid="true"]:hover {
+  @apply border-red-400;
+}
+
+.text-form-field > input[aria-invalid="true"]:focus,
+.number-form-field > input[aria-invalid="true"]:focus,
+.date-form-field > input[aria-invalid="true"]:focus,
+.option-form-field > select[aria-invalid="true"]:focus {
+  @apply border-red-400 ring-red-500/15;
+}
+
+.checkbox-form-field:has(input[aria-invalid="true"]) {
+  @apply border-red-300 bg-white ring-4 ring-red-500/10;
+  box-shadow:
+    0 0 0 1px rgb(248 113 113 / 0.16),
+    0 10px 22px -18px rgb(220 38 38 / 0.35),
+    var(--invoice-shadow-xs);
+}

@@ -1,6 +1,7 @@
 import AmountFormSchema from "../../../schemas/invoice/amount.schema";
 import { CURRENCY_CODE_OPTIONS } from "../../../shared/constants/currency-code.constant";
 import { withFieldGroup } from "../setup/invoice-form";
+import { amountFieldValidators } from "../../../validation/invoice";
 
 export const AmountField = withFieldGroup({
   defaultValues: AmountFormSchema.parse({}),
@@ -14,7 +15,7 @@ export const AmountField = withFieldGroup({
       <fieldset className="amount-section">
         <legend>{title}</legend>
 
-        <group.AppField name="amount">
+        <group.AppField name="amount" validators={amountFieldValidators.amount}>
           {(field) => <field.NumberField label="Amount" />}
         </group.AppField>
 

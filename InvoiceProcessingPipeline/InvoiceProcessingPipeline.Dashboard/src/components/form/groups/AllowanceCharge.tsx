@@ -1,5 +1,6 @@
 import AllowanceChargeFormSchema from "../../../schemas/invoice/allowance-charge.schema";
 import { withFieldGroup } from "../setup/invoice-form";
+import { allowanceChargeFieldValidators } from "../../../validation/invoice";
 
 import { AmountField } from "./Amount";
 import { TaxCategory } from "./TaxCategory";
@@ -32,7 +33,7 @@ export const AllowanceCharge = withFieldGroup({
           )}
         </group.AppField>
 
-        <group.AppField name="multiplierFactorNumeric">
+        <group.AppField name="multiplierFactorNumeric" validators={allowanceChargeFieldValidators.multiplierFactorNumeric}>
           {(field) => (
             <field.NumberField label="Multiplier Factor Numeric" />
           )}

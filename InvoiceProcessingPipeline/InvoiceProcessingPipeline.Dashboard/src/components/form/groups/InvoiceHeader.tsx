@@ -2,6 +2,7 @@ import { CommercialInvoiceFormSchema } from "../../../schemas/invoice/invoice.sc
 import { CURRENCY_CODE_OPTIONS } from "../../../shared/constants/currency-code.constant";
 import { INVOICE_TYPE_OPTIONS } from "../../../shared/constants/invoice-type-code.constant";
 import { withForm } from "../setup/invoice-form";
+import { invoiceHeaderFieldValidators } from "../../../validation/invoice";
 
 export const InvoiceHeader = withForm({
   defaultValues: CommercialInvoiceFormSchema.parse({}),
@@ -11,19 +12,19 @@ export const InvoiceHeader = withForm({
       <fieldset className="invoice-header-section">
         <legend>Invoice Header</legend>
 
-        <form.AppField name="invoiceNumber">
+        <form.AppField name="invoiceNumber" validators={invoiceHeaderFieldValidators.invoiceNumber}>
           {(field) => <field.TextField label="Invoice Number" />}
         </form.AppField>
 
-        <form.AppField name="issueDate">
+        <form.AppField name="issueDate" validators={invoiceHeaderFieldValidators.issueDate}>
           {(field) => <field.DateField label="Issue Date" />}
         </form.AppField>
 
-        <form.AppField name="dueDate">
+        <form.AppField name="dueDate" validators={invoiceHeaderFieldValidators.dueDate}>
           {(field) => <field.DateField label="Due Date" />}
         </form.AppField>
 
-        <form.AppField name="typeCode">
+        <form.AppField name="typeCode" validators={invoiceHeaderFieldValidators.typeCode}>
           {(field) => (
             <field.OptionField
               label="Invoice Type Code"
@@ -32,11 +33,11 @@ export const InvoiceHeader = withForm({
           )}
         </form.AppField>
 
-        <form.AppField name="taxPointDate">
+        <form.AppField name="taxPointDate" validators={invoiceHeaderFieldValidators.taxPointDate}>
           {(field) => <field.DateField label="Tax Point Date" />}
         </form.AppField>
 
-        <form.AppField name="documentCurrencyCode">
+        <form.AppField name="documentCurrencyCode" validators={invoiceHeaderFieldValidators.documentCurrencyCode}>
           {(field) => (
             <field.OptionField
               label="Document Currency Code"

@@ -1,3 +1,5 @@
+import { revalidateLogic } from "@tanstack/react-form";
+
 import type { CommercialInvoiceType } from "../types/form/invoice-form.types";
 import { useAppForm } from "./form/setup/invoice-form";
 
@@ -9,6 +11,8 @@ import { TaxTotal } from "./form/groups/TaxTotal";
 import { AllowanceCharge } from "./form/groups/AllowanceCharge";
 import { InvoiceLine } from "./form/groups/InvoiceLine";
 import { FormSection } from "./FormSection";
+import { FieldErrors } from "./form/fields/FieldErrors";
+import { shouldShowFieldErrors } from "./form/fields/field-error-visibility";
 
 import TaxTotalFormSchema from "../schemas/invoice/tax-total.schema";
 import AllowanceChargeFormSchema from "../schemas/invoice/allowance-charge.schema";
@@ -16,6 +20,7 @@ import InvoiceLineFormSchema from "../schemas/invoice/invoice-line.schema";
 
 import { useSubmitInvoice } from "../hooks/invoice-form.hook";
 import { INVOICE_SECTION_IDS } from "../shared/constants/form-sections.constants";
+import { invoiceFormValidators } from "../validation/invoice";
 
 const emptyTaxTotal = TaxTotalFormSchema.parse({});
 const emptyAllowanceCharge = AllowanceChargeFormSchema.parse({});
@@ -29,9 +34,15 @@ export function CommercialInvoiceEditorForm({
   documentId: string;
 }) {
   const submitInvoice = useSubmitInvoice(documentId);
-
   const form = useAppForm({
     defaultValues: invoice,
+
+    validationLogic: revalidateLogic({
+      mode: "submit",
+      modeAfterSubmission: "change",
+    }),
+
+    validators: invoiceFormValidators,
 
     onSubmit: async ({ value }) => {
       const updatedInvoiceForm = await submitInvoice.mutateAsync(value);
@@ -202,9 +213,15 @@ export function CommercialInvoiceEditorForm({
         <form.AppField name="invoiceLine" mode="array">
           {(field) => {
             const invoiceLines = field.state.value ?? [];
+            const showArrayError = shouldShowFieldErrors(field);
 
             return (
               <fieldset className="form-array-section">
+                <FieldErrors
+                  show={showArrayError}
+                  errors={field.state.meta.errors}
+                  fieldName={field.name}
+                />
                 {invoiceLines.map((_, index) => (
                   <div
                     key={index}

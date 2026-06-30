@@ -1,6 +1,7 @@
 import InvoicePeriodFormSchema from "../../../schemas/invoice/invoice-period.shema";
 import { VAT_DATE_CODE_OPTIONS } from "../../../shared/constants/vat-date-code.constant";
 import { withFieldGroup } from "../setup/invoice-form";
+import { invoicePeriodFieldValidators } from "../../../validation/invoice";
 
 export const InvoicePeriodFields = withFieldGroup({
   defaultValues: InvoicePeriodFormSchema.parse({}),
@@ -14,11 +15,11 @@ export const InvoicePeriodFields = withFieldGroup({
       <fieldset className="invoice-period-section">
         <legend>{title}</legend>
 
-        <group.AppField name="startDate">
+        <group.AppField name="startDate" validators={invoicePeriodFieldValidators.startDate}>
           {(field) => <field.DateField label="Start Date" />}
         </group.AppField>
 
-        <group.AppField name="endDate">
+        <group.AppField name="endDate" validators={invoicePeriodFieldValidators.endDate}>
           {(field) => <field.DateField label="End Date" />}
         </group.AppField>
 

@@ -1,6 +1,7 @@
 import PostalAddressFormSchema from "../../../schemas/invoice/postal-address.schema";
 import { COUNTRY_CODE_OPTIONS } from "../../../shared/constants/country-code.constant";
 import { withFieldGroup } from "../setup/invoice-form";
+import { postalAddressFieldValidators } from "../../../validation/invoice";
 
 export const PostalAddress = withFieldGroup({
   defaultValues: PostalAddressFormSchema.parse({}),
@@ -14,7 +15,7 @@ export const PostalAddress = withFieldGroup({
       <fieldset className="postal-address-section">
         <legend>{title}</legend>
 
-        <group.AppField name="streetName">
+        <group.AppField name="streetName" validators={postalAddressFieldValidators.streetName}>
           {(field) => <field.TextField label="Street Name" />}
         </group.AppField>
 
@@ -22,11 +23,11 @@ export const PostalAddress = withFieldGroup({
           {(field) => <field.TextField label="Additional Street Name" />}
         </group.AppField>
 
-        <group.AppField name="cityName">
+        <group.AppField name="cityName" validators={postalAddressFieldValidators.cityName}>
           {(field) => <field.TextField label="City" />}
         </group.AppField>
 
-        <group.AppField name="postalZone">
+        <group.AppField name="postalZone" validators={postalAddressFieldValidators.postalZone}>
           {(field) => <field.TextField label="Postal Zone" />}
         </group.AppField>
 
@@ -34,11 +35,11 @@ export const PostalAddress = withFieldGroup({
           {(field) => <field.TextField label="Country Subentity" />}
         </group.AppField>
 
-        <group.AppField name="addressLine">
+        <group.AppField name="addressLine" validators={postalAddressFieldValidators.addressLine}>
           {(field) => <field.TextField label="Address Line" />}
         </group.AppField>
 
-        <group.AppField name="countryCode">
+        <group.AppField name="countryCode" validators={postalAddressFieldValidators.countryCode}>
           {(field) => (
             <field.OptionField
               label="Country Code"

@@ -9,6 +9,9 @@ import { PostalAddress } from "./Address";
 import { Contact } from "./PartyContact";
 import { PartyLegalEntity } from "./PartyLegalEntity";
 import { PartyTaxScheme } from "./PartyTaxSchema";
+import { accountingPartyFieldValidators } from "../../../validation/invoice";
+import { FieldErrors } from "../fields/FieldErrors";
+import { shouldShowFieldErrors } from "../fields/field-error-visibility";
 
 const emptyPartyIdentification = PartyIdentificationFormSchema.parse({});
 const emptyPartyTaxScheme = PartyTaxSchemeFormSchema.parse({});
@@ -25,17 +28,24 @@ export const AccountingParty = withFieldGroup({
       <fieldset className="accounting-party-section">
         <legend>{title}</legend>
 
-        <group.AppField name="partyName">
+        <group.AppField name="partyName" validators={accountingPartyFieldValidators.partyName}>
           {(field) => <field.TextField label="Party Name" />}
         </group.AppField>
 
         <group.AppField name="partyIdentification" mode="array">
           {(field) => {
             const identifications = field.state.value ?? [];
+            const showArrayError = shouldShowFieldErrors(field);
 
             return (
               <fieldset className="form-array-section">
                 <legend>Party Identifications</legend>
+
+                <FieldErrors
+                  show={showArrayError}
+                  errors={field.state.meta.errors}
+                  fieldName={field.name}
+                />
 
                 {identifications.map((_, index) => (
                   <fieldset key={index} className="form-array-item">
@@ -85,10 +95,17 @@ export const AccountingParty = withFieldGroup({
         <group.AppField name="partyTaxScheme" mode="array">
           {(field) => {
             const taxSchemes = field.state.value ?? [];
+            const showArrayError = shouldShowFieldErrors(field);
 
             return (
               <fieldset className="form-array-section">
                 <legend>Party Tax Schemes</legend>
+
+                <FieldErrors
+                  show={showArrayError}
+                  errors={field.state.meta.errors}
+                  fieldName={field.name}
+                />
 
                 {taxSchemes.map((_, index) => (
                   <fieldset key={index} className="form-array-item">

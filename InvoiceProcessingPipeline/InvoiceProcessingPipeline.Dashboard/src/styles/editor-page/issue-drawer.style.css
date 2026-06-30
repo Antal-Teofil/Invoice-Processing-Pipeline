@@ -7,7 +7,7 @@
 
   position: fixed;
   inset: 0;
-  z-index: 60;
+  z-index: 110;
   pointer-events: none;
 
   & [data-issue-drawer-overlay] {
@@ -17,7 +17,7 @@
     background:
       radial-gradient(circle at right center, rgb(124 58 237 / 0.14), transparent 34rem),
       rgb(17 24 39 / 0.28);
-    backdrop-filter: blur(2px);
+    backdrop-filter: blur(3px);
     animation: issue-drawer-overlay-in 160ms ease-out;
   }
 

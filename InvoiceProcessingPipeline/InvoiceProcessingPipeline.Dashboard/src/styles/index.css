@@ -1,9 +1,14 @@
 @import "tailwindcss";
 
-@import "./editor-page/form.style.css";
+@import "./editor-page/editor-layout.style.css";
 @import "./editor-page/viewer.style.css";
+@import "./editor-page/form-base.style.css";
+@import "./editor-page/form-fields.style.css";
+@import "./editor-page/form-sections.style.css";
+@import "./editor-page/validation-popover.style.css";
+@import "./editor-page/form-actions.style.css";
+@import "./editor-page/issue-summary-card.style.css";
+@import "./editor-page/issue-drawer.style.css";
+@import "./editor-page/issue-card.style.css";
 @import "./overview-page/record-table.style.css";
 @import "./home-page/style.css";
-@import "./editor-page/issue-drawer.style.css";
-@import "./editor-page/issue-summary-card.style.css";
-@import "./editor-page/issue-card.style.css";
